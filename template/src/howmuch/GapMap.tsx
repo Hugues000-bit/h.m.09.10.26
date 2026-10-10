@@ -1,0 +1,184 @@
+// HOW MUCH?! — "The map has holes": 10 s Reel (1080x1920, 30 fps, 120 BPM grid)
+// Real Bezirk boundaries + real count of places with prices per Bezirk. Pushes people to add the first price.
+import React, { useEffect, useMemo, useState } from "react";
+import { AbsoluteFill, Easing, continueRender, delayRender, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
+import { BRAND, a, g, applyTheme, loadBrandFonts, Theme } from "./brand";
+import { Accented, Backdrop, Bloom, Sfx, Sub, entrance, typed } from "./PriceVideo";
+import { DISTRICTS, MAP_H, MAP_W } from "./gapmap-data";
+
+const BEAT = 15;
+const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
+export const GAP_FRAMES = 300;
+
+const MAP_X = 80;
+const MAP_Y = 770;
+const FILL_FROM = 5 * BEAT; // 75
+const FILL_TO = 10 * BEAT; // 150
+const ZERO_AT = 10 * BEAT; // 150
+const FIRST_AT = 14 * BEAT; // 210
+const END_AT = 17 * BEAT; // 255
+
+type Block = { from: number; to: number; label?: string; lines: string[]; accent: string; de?: string; size?: number };
+
+const TextBlock: React.FC<{ b: Block }> = ({ b }) => {
+  const f = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  if (f < b.from - 2 || f > b.to) return null;
+  const out = interpolate(f, [b.to - 7, b.to], [1, 0], clamp);
+  const lf = f - b.from;
+  const kinds = ["slam", "snapLeft", "rise"] as const;
+  return (
+    <div style={{ position: "absolute", top: 300, left: 80, right: 80, opacity: out, transform: `translateY(${(1 - out) * -30}px)` }}>
+      {b.label && (
+        <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 32, letterSpacing: 6, color: BRAND.green, marginBottom: 18 }}>
+          {typed(b.label, lf, 0, 12)}
+        </div>
+      )}
+      {b.lines.map((ln, i) => (
+        <div
+          key={i}
+          style={{
+            fontFamily: BRAND.heading,
+            fontWeight: 700,
+            fontSize: b.size ?? 118,
+            lineHeight: 1.04,
+            letterSpacing: -3,
+            color: BRAND.text,
+            whiteSpace: "nowrap",
+            ...entrance(kinds[i % 3], lf, i * 5, fps),
+          }}
+        >
+          <Accented text={ln} accent={b.accent} glow />
+        </div>
+      ))}
+      <Sub text={b.de} style={{ marginTop: 16, fontSize: 42, opacity: interpolate(lf, [12, 20], [0, 1], clamp) }} />
+    </div>
+  );
+};
+
+export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
+  applyTheme(theme);
+  const f = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const [h] = useState(() => delayRender("fonts"));
+  useEffect(() => {
+    loadBrandFonts().then(() => continueRender(h)).catch(() => continueRender(h));
+  }, [h]);
+
+  const total = DISTRICTS.reduce((s, d) => s + d.n, 0);
+  const zeros = DISTRICTS.filter((d) => d.n === 0);
+  // fill order: fullest first, so the empty ones are left grey at the end
+  const order = useMemo(() => [...DISTRICTS].filter((d) => d.n > 0).sort((x, y) => y.n - x.n), []);
+  const fillAt = (nr: number) => {
+    const i = order.findIndex((d) => d.nr === nr);
+    return i < 0 ? Infinity : FILL_FROM + (i / Math.max(1, order.length - 1)) * (FILL_TO - FILL_FROM - 10);
+  };
+  const draw = interpolate(f, [4, 40], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const endP = interpolate(f, [END_AT - 4, END_AT + 8], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
+  const zeroPulse = 0.5 + 0.5 * Math.sin(((f - ZERO_AT) / BEAT) * Math.PI);
+
+  const blocks: Block[] = [
+    { from: 0, to: FILL_FROM, label: "WIEN · 23 BEZIRKE", lines: [`*${zeros.length}* Bezirke.`, "Zero prices."], accent: BRAND.pink, de: `${zeros.length} Bezirke. Null Preise.` },
+    { from: FILL_FROM, to: ZERO_AT, label: `${total} PLACES SO FAR`, lines: ["Here's where", "the prices are."], accent: BRAND.green, de: "Hier gibt's schon Preise.", size: 104 },
+    { from: ZERO_AT, to: FIRST_AT, label: "MEIDLING · PENZING · WÄHRING …", lines: ["Is *yours*", "empty?"], accent: BRAND.pink, de: "Ist deiner leer?" },
+    { from: FIRST_AT, to: END_AT, label: "1 PRICE = 10 SECONDS", lines: ["Be the *first*", "in your Bezirk."], accent: BRAND.green, de: "Sei der Erste in deinem Bezirk.", size: 104 },
+  ];
+
+  return (
+    <AbsoluteFill style={{ backgroundColor: BRAND.bg }}>
+      <Backdrop />
+      {order.map((d, i) => (i % 2 === 0 ? <Sfx key={d.nr} at={fillAt(d.nr)} src={i % 4 ? "pluck_001" : "pluck_002"} volume={0.3} /> : null))}
+      <Sfx at={ZERO_AT} src="glitch_002" volume={0.6} />
+      <Sfx at={ZERO_AT + 2} src="impactPlate_heavy_001" volume={0.45} />
+      <Sfx at={FIRST_AT} src="powerUp2" volume={0.4} />
+      <Sfx at={END_AT} src="confirmation_002" volume={0.55} />
+      {[FILL_FROM, ZERO_AT, FIRST_AT].map((t) => (
+        <Sfx key={t} at={t} src="maximize_006" volume={0.35} />
+      ))}
+
+      {/* map */}
+      <div style={{ position: "absolute", left: MAP_X, top: MAP_Y, width: MAP_W, height: MAP_H, opacity: 1 - 0.88 * endP, transform: `scale(${1 - 0.06 * endP})`, transformOrigin: "50% 40%" }}>
+        <svg width={MAP_W} height={MAP_H} viewBox={`0 0 ${MAP_W} ${MAP_H}`} style={{ overflow: "visible" }}>
+          {DISTRICTS.map((d) => {
+            const at = fillAt(d.nr);
+            const fp = d.n > 0 ? spring({ frame: f - at, fps, config: { damping: 14, stiffness: 160 } }) : 0;
+            const strength = d.n < 5 ? 0.1 : d.n < 20 ? 0.45 : 0.8; // 1–4 places = still basically empty
+            const isZero = d.n === 0 && f >= ZERO_AT;
+            const fill = d.n > 0 ? a(BRAND.green, strength * Math.min(1, fp)) : isZero ? a(BRAND.pink, 0.08 + 0.12 * zeroPulse) : "transparent";
+            return (
+              <path
+                key={d.nr}
+                d={d.d}
+                pathLength={1}
+                fill={fill}
+                stroke={isZero ? BRAND.pink : BRAND.muted}
+                strokeWidth={isZero ? 3.5 : 2}
+                strokeDasharray={isZero ? "0.012 0.008" : `${draw} 1`}
+                strokeLinejoin="round"
+                style={{ filter: isZero ? `drop-shadow(0 0 ${6 + 8 * zeroPulse}px ${g(BRAND.pink, 0.8)})` : undefined }}
+              />
+            );
+          })}
+        </svg>
+        {/* counts on the fullest Bezirke */}
+        {DISTRICTS.filter((d) => d.n >= 9999).map((d) => {
+          const p = spring({ frame: f - fillAt(d.nr) - 4, fps, config: { damping: 12, stiffness: 200 } });
+          return (
+            <div key={d.nr} style={{ position: "absolute", left: d.cx, top: d.cy, transform: `translate(-50%,-50%) scale(${p})`, fontFamily: BRAND.mono, fontWeight: 700, fontSize: d.n >= 20 ? 30 : 24, color: BRAND.bg, background: BRAND.green, borderRadius: 6, padding: "2px 8px" }}>
+              {d.n}
+            </div>
+          );
+        })}
+        {/* zero labels */}
+        {zeros.map((d, i) => {
+          const p = spring({ frame: f - ZERO_AT - i * 2, fps, config: { damping: 9, stiffness: 220, mass: 0.6 } });
+          return (
+            <div key={d.nr} style={{ position: "absolute", left: d.cx, top: d.cy + (d.nr === 18 ? -10 : 0), transform: `translate(-50%,-50%) scale(${f >= ZERO_AT ? p : 0})`, textAlign: "center", whiteSpace: "nowrap" }}>
+              <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 46, lineHeight: 1, color: BRAND.pink, textShadow: `0 0 18px ${g(BRAND.pink, 0.6)}` }}>0</div>
+              <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 19, letterSpacing: 1, color: BRAND.pink, marginTop: 2 }}>{d.name.toUpperCase()}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {blocks.map((b, i) => (
+        <TextBlock key={i} b={b} />
+      ))}
+
+      {/* end card */}
+      {f >= END_AT - 4 && (
+        <AbsoluteFill>
+          <Bloom color={a(BRAND.green, 0.85 * (BRAND.glow as number))} start={END_AT} top={720} size={900} />
+          <div style={{ position: "absolute", top: 520, width: "100%", textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 112, letterSpacing: -3, color: BRAND.text }}>
+              Add <Accented text="*one*" accent={BRAND.green} glow /> price.
+            </div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 44, color: BRAND.muted, marginTop: 6 }}>Trag einen Preis ein.</div>
+          </div>
+          <div style={{ position: "absolute", top: 760, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 96, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live</div>
+            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 32, color: BRAND.muted, marginTop: 10 }}>link in bio · Link in Bio</div>
+          </div>
+          <div style={{ position: "absolute", top: 1010, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 64, color: BRAND.text }}>
+              Comment your <Accented text="*Bezirk*" accent={BRAND.yellow} />
+            </div>
+            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 30, color: BRAND.muted, marginTop: 8 }}>Schreib deinen Bezirk in die Kommentare</div>
+            <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 84, color: BRAND.yellow, marginTop: 8, transform: `translateY(${Math.sin((f / fps) * Math.PI * 4) * 12}px)` }}>↓</div>
+          </div>
+        </AbsoluteFill>
+      )}
+
+      <div style={{ position: "absolute", top: 1440, left: 80, right: 80, textAlign: "center", fontFamily: BRAND.mono, fontWeight: 500, fontSize: 22, color: BRAND.muted, opacity: interpolate(f, [END_AT, END_AT + 10], [0, 0.9], clamp) }}>
+        Places with prices per Bezirk · HOW MUCH?! · 10 Oct 2026 · Map: data.wien.gv.at (CC BY 4.0)
+      </div>
+
+      {/* chrome */}
+      <div style={{ position: "absolute", top: 0, left: 0, height: 8, width: `${(f / (GAP_FRAMES - 1)) * 100}%`, background: BRAND.green }} />
+      <div style={{ position: "absolute", top: 190, left: 80, right: 80, display: "flex", justifyContent: "space-between", fontFamily: BRAND.mono, fontSize: 28, letterSpacing: 2, opacity: 1 - endP }}>
+        <span style={{ color: BRAND.green, fontWeight: 700 }}>HOW MUCH?!</span>
+        <span style={{ color: BRAND.muted, fontWeight: 500 }}>howmuch.live</span>
+      </div>
+    </AbsoluteFill>
+  );
+};

@@ -1,0 +1,22 @@
+{
+  "name": "howmuch-video-template",
+  "private": true,
+  "version": "1.0.0",
+  "description": "HOW MUCH?! — vidéos de prix 9:16 (Remotion)",
+  "scripts": {
+    "studio": "remotion studio src/howmuch/index.tsx",
+    "render:bier": "remotion render src/howmuch/index.tsx HowMuchBierWien out/howmuch-bier-wien.mp4 --codec=h264 --crf=18",
+    "render:doener": "remotion render src/howmuch/index.tsx HowMuchDoenerWien out/howmuch-doener-wien.mp4 --codec=h264 --crf=18"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.484",
+    "@remotion/transitions": "4.0.484",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "remotion": "4.0.484"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "typescript": "^5.3.0"
+  }
+}
