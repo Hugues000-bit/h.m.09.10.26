@@ -66,3 +66,12 @@ Where's the <min> one? It's on the map → link in bio.
 6. Répondre à Hugues avec un tableau date / post / statut, puis les prix à vérifier en une ou deux lignes.
 
 Quand Hugues dit qu'il a modifié la base : refaire l'étape 2 pour tous les posts à venir, ne refaire que les vidéos dont les chiffres ont changé, et les remplacer dans Metricool sans changer les dates.
+
+## TikTok (compte howmuch.live, relié à Metricool)
+
+- **Aucun produit avec alcool sur TikTok** (contrainte de Hugues) : pas de bière, Spritzer, vin, cocktail. Seulement café, nourriture, boissons sans alcool, et la carte à trous.
+- **3 vidéos par semaine : mardi, jeudi et samedi à 12 h 30**, en décalé avec Instagram. Hugues peut répondre aux commentaires avant 16 h.
+- Mêmes vidéos que les Reels quand le produit est sans alcool, sinon des vidéos dédiées (fichiers `tt-*`).
+- `providers: [{"network":"tiktok"}]`, et **`tiktokData.title` est obligatoire** (la question courte, par exemple « Schnitzel in Vienna: 10,90 € or 39,90 €? »). `isAigc: false`, `privacyOption: "PUBLIC_TO_EVERYONE"`.
+- Légende comme une recherche : le mot-clé au début (« schnitzel prices in vienna: … »), puis « where's the X one? → howmuch.live », une ligne en allemand et 5 hashtags au plus. Pas de « link in bio » (lien de profil limité sur TikTok).
+- Pour les grandes fourchettes de prix (plus de 12 €), le template regroupe les prix par tranches de 1 à 2 € pour que les points restent lisibles.
