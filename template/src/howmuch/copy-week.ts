@@ -110,3 +110,36 @@ export const COPY_BURGER: PriceVideoCopy = {
   ctaQuestion: "Where's the *{min}* one?",
   footer: "Data: HOW MUCH?! community · Wien · Burger · n = {n}",
 };
+
+export const COPY_SCHNITZEL: PriceVideoCopy = {
+  ...base,
+  hookLabel: "WIEN · SCHNITZEL + SALAT",
+  hookLines: ["*29\u00a0€* difference.", "For a Schnitzel.", "In Vienna."],
+  hookDe: "29 € Unterschied für ein Schnitzel.",
+  dataLabel: "{n} PLACES · PORK OR VEAL · WITH SALAD",
+  dataLines: [{ t: "Same city." }, { t: "Wild prices.", c: "pink" }],
+  dataDe: "Gleiche Stadt. Wilde Preise.",
+  punchKicker: "FROM {min} TO {max}",
+  punchLines: [],
+  pctCaption: "for a Schnitzel with salad.",
+  pctDe: "für ein Schnitzel mit Salat.",
+  ctaQuestion: "Where's the *{min}* one?",
+  footer: "Data: HOW MUCH?! community · Wien · Schnitzel + salad · n = {n}",
+};
+
+export const COPY_LATTE: PriceVideoCopy = {
+  ...base,
+  theme: "light",
+  hookLabel: "WIEN · CAFFÈ LATTE",
+  hookLines: ["The *cheapest*", "latte in", "Vienna costs…"],
+  hookDe: "Der billigste Latte in Wien kostet…",
+  dataLabel: "{n} PLACES · ALL OF VIENNA",
+  dataLines: [{ t: "Same latte." }, { t: "Double the price.", c: "pink" }],
+  dataDe: "Gleicher Latte. Doppelter Preis.",
+  punchKicker: "FROM {min} TO {max}",
+  punchLines: [],
+  pctCaption: "for the same latte.",
+  pctDe: "für den gleichen Latte.",
+  ctaQuestion: "Where's the *{min}* one?",
+  footer: "Data: HOW MUCH?! community · Wien · Caffè Latte · n = {n}",
+};

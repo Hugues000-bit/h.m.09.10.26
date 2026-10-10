@@ -3,7 +3,7 @@ import { Composition, registerRoot } from "remotion";
 import { PriceVideo, PRICE_VIDEO_FRAMES } from "./PriceVideo";
 import { WEEK } from "./data-week";
 import { GapMap, GAP_FRAMES } from "./GapMap";
-import { COPY_NEUBAU, COPY_FUENFHAUS, COPY_WEISSER, COPY_DOENER, COPY_CAPPUCCINO, COPY_BURGER } from "./copy-week";
+import { COPY_NEUBAU, COPY_FUENFHAUS, COPY_WEISSER, COPY_DOENER, COPY_CAPPUCCINO, COPY_BURGER, COPY_SCHNITZEL, COPY_LATTE } from "./copy-week";
 
 const V = [
   { id: "Neubau", points: WEEK.NEUBAU, copy: COPY_NEUBAU },
@@ -12,6 +12,8 @@ const V = [
   { id: "Doener", points: WEEK.KEBAB, copy: COPY_DOENER },
   { id: "Cappuccino", points: WEEK.CAPPUCCINO, copy: COPY_CAPPUCCINO },
   { id: "Burger", points: WEEK.BURGER, copy: COPY_BURGER },
+  { id: "Schnitzel", points: WEEK.SCHNITZEL, copy: COPY_SCHNITZEL },
+  { id: "Latte", points: WEEK.LATTE, copy: COPY_LATTE },
 ];
 
 const Root: React.FC = () => (

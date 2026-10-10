@@ -491,10 +491,12 @@ type DotLayout = { lo: number; hi: number; bin: number; perRow: number; d: numbe
 
 // Picks the bin width and dots-per-row that give the biggest readable dots inside the chart box.
 const chooseLayout = (prices: number[]): DotLayout => {
-  const lo = Math.floor(Math.min(...prices) * 2) / 2;
-  const hi = Math.ceil((Math.max(...prices) + 0.001) * 2) / 2;
   let best: DotLayout | null = null;
-  for (const bin of [0.5, 0.25, 0.2, 0.1]) {
+  const span = Math.max(...prices) - Math.min(...prices);
+  const bins = span > 12 ? [2, 1] : [0.5, 0.25, 0.2, 0.1];
+  for (const bin of bins) {
+    const lo = Math.floor(Math.min(...prices) / bin) * bin;
+    const hi = Math.ceil((Math.max(...prices) + 0.001) / bin) * bin;
     const slots = Math.round((hi - lo) / bin);
     const slotW = (X1 - X0) / slots;
     const counts: Record<number, number> = {};
@@ -511,6 +513,7 @@ const chooseLayout = (prices: number[]): DotLayout => {
       }
     }
   }
+  const lo = Math.floor(Math.min(...prices)), hi = Math.ceil(Math.max(...prices) + 0.001);
   return best ?? { lo, hi, bin: 0.1, perRow: 4, d: 10, step: 12 };
 };
 
