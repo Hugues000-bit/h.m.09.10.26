@@ -8,15 +8,19 @@ import { DISTRICTS, MAP_H, MAP_W } from "./gapmap-data";
 
 const BEAT = 15;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-export const GAP_FRAMES = 300;
+export const GAP_FRAMES = 360;
 
 const MAP_X = 80;
 const MAP_Y = 770;
 const FILL_FROM = 5 * BEAT; // 75
 const FILL_TO = 10 * BEAT; // 150
 const ZERO_AT = 10 * BEAT; // 150
-const FIRST_AT = 14 * BEAT; // 210
-const END_AT = 17 * BEAT; // 255
+const LOW_AT = 13 * BEAT; // 195
+const FIRST_AT = 16 * BEAT; // 240
+const END_AT = 19 * BEAT; // 285
+const LOW_MAX = 5; // 1–5 places = "almost empty"
+// small central Bezirke: number only, nudged so they don't overlap
+const LOW_NUDGE: Record<number, [number, number]> = { 3: [4, 10], 4: [6, 0], 5: [-10, 14] };
 
 type Block = { from: number; to: number; label?: string; lines: string[]; accent: string; de?: string; size?: number };
 
@@ -67,8 +71,10 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
 
   const total = DISTRICTS.reduce((s, d) => s + d.n, 0);
   const zeros = DISTRICTS.filter((d) => d.n === 0);
-  // fill order: fullest first, so the empty ones are left grey at the end
-  const order = useMemo(() => [...DISTRICTS].filter((d) => d.n > 0).sort((x, y) => y.n - x.n), []);
+  const lows = DISTRICTS.filter((d) => d.n > 0 && d.n <= LOW_MAX).sort((x, y) => x.n - y.n);
+  const weak = zeros.length + lows.length;
+  // fill order: fullest first; the almost-empty ones are left unfilled until LOW_AT
+  const order = useMemo(() => [...DISTRICTS].filter((d) => d.n > LOW_MAX).sort((x, y) => y.n - x.n), []);
   const fillAt = (nr: number) => {
     const i = order.findIndex((d) => d.nr === nr);
     return i < 0 ? Infinity : FILL_FROM + (i / Math.max(1, order.length - 1)) * (FILL_TO - FILL_FROM - 10);
@@ -76,11 +82,13 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
   const draw = interpolate(f, [4, 40], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
   const endP = interpolate(f, [END_AT - 4, END_AT + 8], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
   const zeroPulse = 0.5 + 0.5 * Math.sin(((f - ZERO_AT) / BEAT) * Math.PI);
+  const lowPulse = 0.5 + 0.5 * Math.sin(((f - LOW_AT) / BEAT) * Math.PI);
 
   const blocks: Block[] = [
-    { from: 0, to: FILL_FROM, label: "WIEN · 23 BEZIRKE", lines: [`*${zeros.length}* Bezirke.`, "Zero prices."], accent: BRAND.pink, de: `${zeros.length} Bezirke. Null Preise.` },
+    { from: 0, to: FILL_FROM, label: "WIEN · 23 BEZIRKE", lines: [`*${weak}* Bezirke.`, "Almost no prices."], accent: BRAND.pink, de: `${weak} von 23 Bezirken: fast keine Preise.`, size: 110 },
     { from: FILL_FROM, to: ZERO_AT, label: `${total} PLACES SO FAR`, lines: ["Here's where", "the prices are."], accent: BRAND.green, de: "Hier gibt's schon Preise.", size: 104 },
-    { from: ZERO_AT, to: FIRST_AT, label: "MEIDLING · PENZING · WÄHRING …", lines: ["Is *yours*", "empty?"], accent: BRAND.pink, de: "Ist deiner leer?" },
+    { from: ZERO_AT, to: LOW_AT, label: `${zeros.length} × ZERO · MEIDLING · WÄHRING …`, lines: ["Is *yours*", "empty?"], accent: BRAND.pink, de: "Ist deiner leer?" },
+    { from: LOW_AT, to: FIRST_AT, label: `${lows.length} × UNDER 6 · FAVORITEN · DÖBLING …`, lines: ["Or *almost*", "empty?"], accent: BRAND.yellow, de: "Oder fast leer?" },
     { from: FIRST_AT, to: END_AT, label: "1 PRICE = 10 SECONDS", lines: ["Be the *first*", "in your Bezirk."], accent: BRAND.green, de: "Sei der Erste in deinem Bezirk.", size: 104 },
   ];
 
@@ -101,21 +109,25 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
         <svg width={MAP_W} height={MAP_H} viewBox={`0 0 ${MAP_W} ${MAP_H}`} style={{ overflow: "visible" }}>
           {DISTRICTS.map((d) => {
             const at = fillAt(d.nr);
-            const fp = d.n > 0 ? spring({ frame: f - at, fps, config: { damping: 14, stiffness: 160 } }) : 0;
-            const strength = d.n < 5 ? 0.1 : d.n < 20 ? 0.45 : 0.8; // 1–4 places = still basically empty
+            const fp = d.n > LOW_MAX ? spring({ frame: f - at, fps, config: { damping: 14, stiffness: 160 } }) : 0;
+            const fp2 = d.n > LOW_MAX ? fp : 0;
+            const strength = d.n < 20 ? 0.45 : 0.8;
             const isZero = d.n === 0 && f >= ZERO_AT;
-            const fill = d.n > 0 ? a(BRAND.green, strength * Math.min(1, fp)) : isZero ? a(BRAND.pink, 0.08 + 0.12 * zeroPulse) : "transparent";
+            const isLow = d.n > 0 && d.n <= LOW_MAX && f >= LOW_AT;
+            const fill = d.n > LOW_MAX ? a(BRAND.green, strength * Math.min(1, fp2)) : isZero ? a(BRAND.pink, 0.08 + 0.12 * zeroPulse) : isLow ? a(BRAND.yellow, 0.1 + 0.14 * lowPulse) : "transparent";
+            const hot = isZero ? BRAND.pink : isLow ? BRAND.yellow : null;
+            const hotPulse = isZero ? zeroPulse : lowPulse;
             return (
               <path
                 key={d.nr}
                 d={d.d}
                 pathLength={1}
                 fill={fill}
-                stroke={isZero ? BRAND.pink : BRAND.muted}
-                strokeWidth={isZero ? 3.5 : 2}
-                strokeDasharray={isZero ? "0.012 0.008" : `${draw} 1`}
+                stroke={hot ?? BRAND.muted}
+                strokeWidth={hot ? 3.5 : 2}
+                strokeDasharray={hot ? "0.012 0.008" : `${draw} 1`}
                 strokeLinejoin="round"
-                style={{ filter: isZero ? `drop-shadow(0 0 ${6 + 8 * zeroPulse}px ${g(BRAND.pink, 0.8)})` : undefined }}
+                style={{ filter: hot ? `drop-shadow(0 0 ${6 + 8 * hotPulse}px ${g(hot, 0.8)})` : undefined }}
               />
             );
           })}
@@ -126,6 +138,18 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
           return (
             <div key={d.nr} style={{ position: "absolute", left: d.cx, top: d.cy, transform: `translate(-50%,-50%) scale(${p})`, fontFamily: BRAND.mono, fontWeight: 700, fontSize: d.n >= 20 ? 30 : 24, color: BRAND.bg, background: BRAND.green, borderRadius: 6, padding: "2px 8px" }}>
               {d.n}
+            </div>
+          );
+        })}
+        {/* almost-empty labels (1–5 places) */}
+        {lows.map((d, i) => {
+          const p = spring({ frame: f - LOW_AT - i * 2, fps, config: { damping: 9, stiffness: 220, mass: 0.6 } });
+          const small = d.nr in LOW_NUDGE;
+          const [dx, dy] = LOW_NUDGE[d.nr] ?? (d.nr === 2 ? [40, -30] : [0, 0]);
+          return (
+            <div key={d.nr} style={{ position: "absolute", left: d.cx + dx, top: d.cy + dy, transform: `translate(-50%,-50%) scale(${f >= LOW_AT ? p : 0})`, textAlign: "center", whiteSpace: "nowrap" }}>
+              <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: small ? 30 : 42, lineHeight: 1, color: BRAND.yellow, textShadow: `0 0 16px ${g(BRAND.yellow, 0.6)}` }}>{d.n}</div>
+              {!small && <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 18, letterSpacing: 1, color: BRAND.yellow, marginTop: 2 }}>{d.name.toUpperCase()}</div>}
             </div>
           );
         })}
@@ -170,7 +194,7 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
       )}
 
       <div style={{ position: "absolute", top: 1440, left: 80, right: 80, textAlign: "center", fontFamily: BRAND.mono, fontWeight: 500, fontSize: 22, color: BRAND.muted, opacity: interpolate(f, [END_AT, END_AT + 10], [0, 0.9], clamp) }}>
-        Places with prices per Bezirk · HOW MUCH?! · 10 Oct 2026 · Map: data.wien.gv.at (CC BY 4.0)
+        Places with prices per Bezirk · HOW MUCH?! · 14 Oct 2026 · Map: data.wien.gv.at (CC BY 4.0)
       </div>
 
       {/* chrome */}
