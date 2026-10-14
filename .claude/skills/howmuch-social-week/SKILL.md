@@ -75,3 +75,24 @@ Quand Hugues dit qu'il a modifié la base : refaire l'étape 2 pour tous les pos
 - `providers: [{"network":"tiktok"}]`, et **`tiktokData.title` est obligatoire** (la question courte, par exemple « Schnitzel in Vienna: 10,90 € or 39,90 €? »). `isAigc: false`, `privacyOption: "PUBLIC_TO_EVERYONE"`.
 - Légende comme une recherche : le mot-clé au début (« schnitzel prices in vienna: … »), puis « where's the X one? → howmuch.live », une ligne en allemand et 5 hashtags au plus. Pas de « link in bio » (lien de profil limité sur TikTok).
 - Pour les grandes fourchettes de prix (plus de 12 €), le template regroupe les prix par tranches de 1 à 2 € pour que les points restent lisibles.
+
+## Bilan mensuel (composition `Monthly`, `MonthlyMap.tsx`)
+
+Publié le 1er lundi du mois (Instagram 12 h) et le mardi suivant (TikTok 12 h 30 : pas d'alcool à l'écran, OK). Mardi/jeudi/samedi restent les jours TikTok habituels.
+1. Rafraîchir les comptes cumulés par Bezirk dans `gapmap-data.ts` (requête « lieux avec prix », code postal sinon GPS).
+2. Requête du mois (remplacer les dates) :
+   ```sql
+   with v as (select p.id, p.created_at, coalesce(substring(address from '\m1(0[1-9]|1\d|2[0-3])0\M'), round(lat::numeric,5)||','||round(lng::numeric,5)) loc
+     from places p where lat between 48.11 and 48.33 and lng between 16.17 and 16.59 and status='active'
+     and exists (select 1 from place_prices x where x.place_id=p.id and x.status='active'))
+   select v.loc, count(distinct v.id) filter (where v.created_at >= 'DEBUT' and v.created_at < 'FIN') new_places,
+     count(pp.id) filter (where pp.created_at >= 'DEBUT' and pp.created_at < 'FIN') prices
+   from v left join place_prices pp on pp.place_id=v.id and pp.status='active' group by 1
+   ```
+   `place_prices.created_at` = date du prix (les imports sont antidatés), pas la date de saisie.
+3. Prix confirmés par les commerçants : `count(*) where submitted_as_owner and created_at` dans le mois. Hausses et baisses : comparer seulement le **même lieu + produit + variante** (`lag(price) over (partition by place_id, product, coalesce(variant,'') order by created_at)`). Jamais de moyenne de la ville : elle bouge selon les lieux ajoutés, pas selon les vrais prix.
+4. Écrire `template/data/monthly/AAAA-MM.json` (voir 2026-10.json), lancer `python3 -I scripts/monthly_data.py data/monthly/AAAA-MM.json`, rendre `Monthly` (couverture frame 120). Les blocs « hausses/baisses » et « confirmés par les commerçants » n'apparaissent que s'il y a des données.
+
+## Réclamation de fiche (compositions `ClaimBar` / `ClaimCafe`, `ClaimCard.tsx`)
+
+Carte générique « Your bar / Your café » (jamais un vrai commerce). Lien : `howmuch.live/business` (on cherche son lieu, on le réclame gratuitement : infos, confirmation des prix avec badge, vues). Instagram : version bar ; TikTok : version café (pas d'alcool). À reprendre environ une fois par mois, en changeant le Bezirk et le produit dans les props.
