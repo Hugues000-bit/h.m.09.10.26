@@ -1,9 +1,9 @@
 ---
 name: howmuch-social-week
-description: Prépare et programme une semaine de Reels Instagram HOW MUCH?! (vrais prix de la base, template vidéo, Metricool). À utiliser pour « prépare la semaine », « nouveaux posts », « mets à jour les posts ».
+description: Prépare et programme les posts HOW MUCH?! sur Instagram et TikTok (Reels de prix, carte à trous, bilan mensuel, réclamation de fiche) avec les vrais prix de la base, le template vidéo et Metricool. À utiliser pour « prépare la semaine », « nouveaux posts », « mets à jour les posts », « bilan du mois ».
 ---
 
-# HOW MUCH?! · semaine de posts Instagram
+# HOW MUCH?! · posts Instagram et TikTok
 
 Objectif du compte @howmuch.live : faire venir des **contributeurs** (des gens qui ajoutent des prix sur howmuch.live), pas seulement des abonnés. Chaque post finit par une action : trouver le lieu sur la carte, ajouter un prix, commenter son Bezirk.
 
@@ -15,7 +15,7 @@ Réponds à Hugues en français, direct et honnête.
 - **Template vidéo** : dépôt GitHub `Hugues000-bit/h.m.09.10.26`, dossier `template/` (Remotion 4.0.484, React 18). Ajouter le dépôt avec `add_repo` (accès push), cloner, `npm install` dans `template/`.
 - **Hébergement des médias** : même dépôt, dossier `AAAA-MM/`. Les liens publics sont `https://raw.githubusercontent.com/Hugues000-bit/h.m.09.10.26/main/<chemin>`. Toujours donner un **nouveau nom de fichier** à une version refaite (suffixe `-vMMDD`), sinon le cache renvoie l'ancienne.
 - **Programmation** : connecteur Metricool, marque `blogId 7319232` (Instagram howmuch.live), fuseau `Europe/Vienna`. Metricool copie les médias chez lui au moment de la programmation.
-- **Rendu** : `npx remotion render src/howmuch/index.tsx <Id> out.mp4 --codec=h264 --crf=18 --browser-executable=<chromium headless_shell>`. Dans l'espace cloud : `/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell`. Couverture : `npx remotion still ... --frame=70` (190 pour la carte à trous).
+- **Rendu** : `npx remotion render src/howmuch/index.tsx <Id> out.mp4 --codec=h264 --crf=18 --browser-executable=<chromium headless_shell>`. Dans l'espace cloud : `/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell`. Couvertures : `npx remotion still ... --frame=N` avec N = 70 pour `PriceVideo`, 230 pour `GapMap`, 120 pour `Monthly`, 210 pour `ClaimBar`/`ClaimCafe`.
 
 ## Données : les règles
 
@@ -36,25 +36,40 @@ Réponds à Hugues en français, direct et honnête.
 - **Varier les produits** : pas deux Reels du même produit dans la même semaine si on peut l'éviter.
 - Formats disponibles dans le template :
   - `PriceVideo` (10 s) : accroche « The cheapest X in Y costs… » + ticker ?,?? €, les points de prix, l'écart en %, le tampon « ARE WE BEING RIPPED OFF? », puis « Where's the {min} one? ». Copies dans `copy-week.ts`, données dans `data-week.ts`, compositions dans `index.tsx`.
-  - `GapMap` (10 s) : la carte des Bezirke, les Bezirke vides en rose avec « 0 », et l'appel « Be the first in your Bezirk ». Recalculer les comptes dans `gapmap-data.ts`.
+  - `GapMap` (12 s, clair) : la carte des Bezirke. Bezirke à 0 lieu en rose (« Is yours empty? »), de 1 à 5 lieux en jaune avec leur nombre (« Or almost empty? »), accroche « N Bezirke. Almost no prices. », fin « Add one price · Comment your Bezirk ». Recalculer les comptes dans `gapmap-data.ts`.
+  - `Monthly` : le bilan du mois (voir plus bas).
+  - `ClaimBar` / `ClaimCafe` : la réclamation de fiche pour les commerçants (voir plus bas).
 - Idées de formats suivants pour faire contribuer : « Know a cheaper one? Add it and take #1 », « Still true? » (un prix daté, à confirmer ou corriger), un tuto de 10 s pour ajouter un prix (à épingler), et plus tard le merci aux contributeurs.
 
 ## Légende (modèle)
 
 ```
-<Accroche en anglais, 1 ligne> <emoji>
+<Produit> in <lieu>: <min> or <max>? <phrase courte> <emoji>
 
-<Les deux prix, le nombre de lieux>.
-Where's the <min> one? It's on the map → link in bio.
-<Question précise qui fait commenter> 👇
+<n> places compared. Want the 3 cheapest? 💬 Comment <MOTCLÉ> and we DM you the list.
+📩 Send this to <la personne précise à qui l'envoyer>.
 
-🇦🇹 <Le même message, court, en allemand>.
+🇦🇹 <Le même message, court, en allemand>. Kommentier <MOTCLÉ>, wir schicken dir den Link per DM <emoji>
 
-<n> places · HOW MUCH?! community
 #wien #<bezirk ou produit> #<produit> #vienna #howmuch
 ```
 
-5 hashtags au maximum. Premier commentaire : `🔗 howmuch.live · find the cheapest one near you / finde das günstigste in deiner Nähe`.
+5 hashtags au maximum. Premier commentaire : `💬 Comment <MOTCLÉ> → we DM you the list / Kommentier <MOTCLÉ> → Link per DM`.
+
+## Commentaire → message privé (ManyChat, réglé par Hugues)
+
+Chaque Reel Instagram demande de commenter un mot-clé ; ManyChat répond en public (« Sent you a DM 📩 », 3 variantes) et envoie le lien en message privé avec un bouton. Je ne peux pas me connecter à ManyChat : pour un nouveau mot-clé, donner à Hugues le mot-clé, le texte du message et le lien.
+
+| Mot-clé | Lien (bouton du message) |
+|---|---|
+| COFFEE | `https://www.howmuch.live/coffee/vienna?v=cappuccino&utm_source=instagram&utm_medium=dm` |
+| BEER | `https://www.howmuch.live/beer/vienna?v=draft_large&utm_source=instagram&utm_medium=dm` |
+| BURGER | `https://www.howmuch.live/burger/vienna?v=craft&utm_source=instagram&utm_medium=dm` |
+| SPRITZER | `https://www.howmuch.live/spritzer/vienna?v=weisser&utm_source=instagram&utm_medium=dm` |
+| DONER | `https://www.howmuch.live/kebab/vienna?v=sandwich&utm_source=instagram&utm_medium=dm` |
+| carte à trous, bilan | n'importe quel commentaire sur ce Reel précis (à régler après la publication) → `https://www.howmuch.live/?utm_source=instagram&utm_medium=dm` |
+
+Page d'un produit : `https://www.howmuch.live/<item>/vienna?v=<variante>` (top 3 des moins chers, par Bezirk, bouton « ajouter un prix »). Ne pas utiliser un mot-clé qui n'existe pas encore dans ManyChat sans prévenir Hugues : sinon les commentaires restent sans réponse.
 
 ## Déroulé
 
@@ -63,7 +78,7 @@ Where's the <min> one? It's on the map → link in bio.
 3. Écrire les données et les copies, rendre les vidéos, puis **regarder des images clés** (accroche, points, %, fin) pour vérifier les débordements de texte et les chevauchements.
 4. Envoyer sur GitHub (nouveaux noms de fichiers), vérifier que chaque lien répond 200.
 5. Programmer dans Metricool (`instagramData.type = "REEL"`, `videoThumbnailUrl` = la couverture), ou mettre à jour les posts existants (`updateScheduledPost` avec le contenu complet).
-6. Répondre à Hugues avec un tableau date / post / statut, puis les prix à vérifier en une ou deux lignes.
+6. Répondre à Hugues avec un tableau date / post / statut, puis les prix à vérifier et les mots-clés ManyChat à créer, en une ou deux lignes.
 
 Quand Hugues dit qu'il a modifié la base : refaire l'étape 2 pour tous les posts à venir, ne refaire que les vidéos dont les chiffres ont changé, et les remplacer dans Metricool sans changer les dates.
 
@@ -73,12 +88,13 @@ Quand Hugues dit qu'il a modifié la base : refaire l'étape 2 pour tous les pos
 - **3 vidéos par semaine : mardi, jeudi et samedi à 12 h 30**, en décalé avec Instagram. Hugues peut répondre aux commentaires avant 16 h.
 - Mêmes vidéos que les Reels quand le produit est sans alcool, sinon des vidéos dédiées (fichiers `tt-*`).
 - `providers: [{"network":"tiktok"}]`, et **`tiktokData.title` est obligatoire** (la question courte, par exemple « Schnitzel in Vienna: 10,90 € or 39,90 €? »). `isAigc: false`, `privacyOption: "PUBLIC_TO_EVERYONE"`.
-- Légende comme une recherche : le mot-clé au début (« schnitzel prices in vienna: … »), puis « where's the X one? → howmuch.live », une ligne en allemand et 5 hashtags au plus. Pas de « link in bio » (lien de profil limité sur TikTok).
+- Légende comme une recherche : le mot-clé au début (« schnitzel prices in vienna: … »), puis « where's the X one? → howmuch.live », une ligne en allemand et 5 hashtags au plus. Pas de « link in bio » (lien de profil limité sur TikTok) ni de mot-clé ManyChat (Instagram seulement).
 - Pour les grandes fourchettes de prix (plus de 12 €), le template regroupe les prix par tranches de 1 à 2 € pour que les points restent lisibles.
 
 ## Bilan mensuel (composition `Monthly`, `MonthlyMap.tsx`)
 
-Publié le 1er lundi du mois (Instagram 12 h) et le mardi suivant (TikTok 12 h 30 : pas d'alcool à l'écran, OK). Mardi/jeudi/samedi restent les jours TikTok habituels.
+Publié le 1er lundi du mois (Instagram 12 h) et le mardi suivant (TikTok 12 h 30 : pas d'alcool à l'écran, OK). Mardi/jeudi/samedi restent les jours TikTok habituels. Programmer les deux en **brouillon** pendant le mois, puis refaire chiffres et vidéo le 1er et les sortir du brouillon.
+Contenu : Bezirke actifs du mois (+prix, +lieux), top 5 avec barres, hausses et baisses au même lieu, prix confirmés par les commerçants, Bezirke encore à 0, « Next update: <date> ». Légende : les totaux, les 3 Bezirke les plus actifs, les Bezirke à 0, « Comment your Bezirk ».
 1. Rafraîchir les comptes cumulés par Bezirk dans `gapmap-data.ts` (requête « lieux avec prix », code postal sinon GPS).
 2. Requête du mois (remplacer les dates) :
    ```sql
@@ -96,3 +112,4 @@ Publié le 1er lundi du mois (Instagram 12 h) et le mardi suivant (TikTok 12 h 3
 ## Réclamation de fiche (compositions `ClaimBar` / `ClaimCafe`, `ClaimCard.tsx`)
 
 Carte générique « Your bar / Your café » (jamais un vrai commerce). Lien : `howmuch.live/business` (on cherche son lieu, on le réclame gratuitement : infos, confirmation des prix avec badge, vues). Instagram : version bar ; TikTok : version café (pas d'alcool). À reprendre environ une fois par mois, en changeant le Bezirk et le produit dans les props.
+Légende Instagram : « Bar owners in Vienna: your prices are probably already on the map », ce qu'on gagne (✓ infos, ✓ prix confirmés avec badge, ✓ vues), « → howmuch.live/business or DM us CLAIM », « Know a bar owner? Tag them 👇 », puis l'allemand. Ne jamais dire combien de fiches sont déjà réclamées tant que le chiffre est très bas.
