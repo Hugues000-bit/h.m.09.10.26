@@ -15,6 +15,8 @@ const base = {
 
 export const COPY_NEUBAU: PriceVideoCopy = {
   ...base,
+  clash: "for a Krügerl in Neubau.",
+  clashDe: "für ein Krügerl in Neubau.",
   hookLabel: "NEUBAU · KRÜGERL 0,5 L",
   hookLines: ["The *cheapest*", "Krügerl in", "Neubau costs…"],
   hookDe: "Das billigste Krügerl in Neubau kostet…",
@@ -31,6 +33,8 @@ export const COPY_NEUBAU: PriceVideoCopy = {
 
 export const COPY_FUENFHAUS: PriceVideoCopy = {
   ...base,
+  clash: "for a Krügerl in the 15th.",
+  clashDe: "für ein Krügerl im 15.",
   hookLabel: "15. BEZIRK · KRÜGERL 0,5 L",
   hookLines: ["*2\u00a0€* difference.", "Same Krügerl.", "Same Bezirk."],
   hookDe: "2 € Unterschied im gleichen Bezirk.",
@@ -47,6 +51,8 @@ export const COPY_FUENFHAUS: PriceVideoCopy = {
 
 export const COPY_WEISSER: PriceVideoCopy = {
   ...base,
+  clash: "for a G'spritzter in Vienna.",
+  clashDe: "für einen G'spritzten in Wien.",
   theme: "light",
   hookLabel: "WIEN · WEISSER SPRITZER",
   hookLines: ["The *cheapest*", "G'spritzter in", "Vienna costs…"],
@@ -64,6 +70,8 @@ export const COPY_WEISSER: PriceVideoCopy = {
 
 export const COPY_DOENER: PriceVideoCopy = {
   ...base,
+  clash: "for a Döner in Vienna.",
+  clashDe: "für einen Döner in Wien.",
   theme: "light",
   hookLabel: "WIEN · DÖNER IM BROT",
   hookLines: ["The *cheapest*", "Döner in", "Vienna costs…"],
@@ -81,6 +89,8 @@ export const COPY_DOENER: PriceVideoCopy = {
 
 export const COPY_CAPPUCCINO: PriceVideoCopy = {
   ...base,
+  clash: "for a cappuccino in Vienna.",
+  clashDe: "für einen Cappuccino in Wien.",
   hookLabel: "WIEN · CAPPUCCINO",
   hookLines: ["The *cheapest*", "cappuccino in", "Vienna costs…"],
   hookDe: "Der billigste Cappuccino in Wien kostet…",
@@ -97,6 +107,8 @@ export const COPY_CAPPUCCINO: PriceVideoCopy = {
 
 export const COPY_BURGER: PriceVideoCopy = {
   ...base,
+  clash: "for a burger in Vienna.",
+  clashDe: "für einen Burger in Wien.",
   hookLabel: "WIEN · BURGER",
   hookLines: ["*11 €* difference.", "Same burger.", "Same city."],
   hookDe: "11 € Unterschied. Gleicher Burger.",
@@ -113,6 +125,8 @@ export const COPY_BURGER: PriceVideoCopy = {
 
 export const COPY_SCHNITZEL: PriceVideoCopy = {
   ...base,
+  clash: "for a Schnitzel in Vienna.",
+  clashDe: "für ein Schnitzel in Wien.",
   hookLabel: "WIEN · SCHNITZEL + SALAT",
   hookLines: ["*29\u00a0€* difference.", "For a Schnitzel.", "In Vienna."],
   hookDe: "29 € Unterschied für ein Schnitzel.",
@@ -129,6 +143,8 @@ export const COPY_SCHNITZEL: PriceVideoCopy = {
 
 export const COPY_LATTE: PriceVideoCopy = {
   ...base,
+  clash: "for a latte in Vienna.",
+  clashDe: "für einen Latte in Wien.",
   theme: "light",
   hookLabel: "WIEN · CAFFÈ LATTE",
   hookLines: ["The *cheapest*", "latte in", "Vienna costs…"],

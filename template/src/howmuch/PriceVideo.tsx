@@ -56,6 +56,8 @@ export type PriceVideoCopy = {
   footer: string;
   // Optional German sub-lines (small, muted) under the English hero text
   hookDe?: string;
+  clash?: string; // line under the two prices, e.g. "for a Krügerl in Neubau."
+  clashDe?: string;
   dataDe?: string;
   pctDe?: string;
   stampDe?: string;
@@ -79,11 +81,11 @@ const TONE = new Proxy({} as Record<Tone, string>, { get: (_, k: string) => BRAN
 
 // Scene lengths are chosen so every scene starts on a beat:
 // S1 0 · S2 75 (beat 5) · S3 180 (beat 12) · S4 240 (beat 16) · end 300
-const S1 = 87;
+const S1 = 48;
 const T1 = 12;
-const S2 = 117;
+const S2 = 80;
 const T2 = 12;
-const S3 = 70;
+const S3 = 62;
 const T3 = 10;
 const S4 = 60;
 const START = { s2: S1 - T1, s3: S1 - T1 + S2 - T2, s4: S1 - T1 + S2 - T2 + S3 - T3 };
@@ -478,6 +480,45 @@ const Hook: React.FC<{ copy: PriceVideoCopy }> = ({ copy }) => {
   );
 };
 
+
+// Scene 1 (v2, Oct 2026) — the two prices are on screen from frame 0: "4,50 € or 6,00 € for a Krügerl in Neubau."
+// Stats showed 73 % of viewers left in the first 3 s of the old question + ticker hook.
+const Clash: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> }> = ({ copy, tokens }) => {
+  const f = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const pop = (start: number) => spring({ frame: f - start, fps, config: { damping: 14, stiffness: 260 } });
+  const pMin = f <= 0 ? 1 : pop(0);
+  const pMax = f <= 0 ? 1 : pop(3);
+  const hit = 14; // max price glitches + impact on the first beat
+  const big: React.CSSProperties = { fontFamily: BRAND.mono, fontWeight: 700, fontSize: 210, lineHeight: 1, letterSpacing: -6, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" };
+  const clash = copy.clash ? fillTokens(copy.clash, tokens) : "";
+  return (
+    <AbsoluteFill>
+      <Sfx at={1} src="impactPlate_heavy_001" volume={0.45} />
+      <Sfx at={hit} src="glitch_002" volume={0.6} />
+      <div style={{ position: "absolute", top: 330, left: 80, fontFamily: BRAND.mono, fontWeight: 700, fontSize: 34, letterSpacing: 6, color: BRAND.green }}>
+        {copy.hookLabel}
+      </div>
+      <div style={{ position: "absolute", top: 420, left: 80, right: 80 }}>
+        <div style={{ ...big, color: BRAND.green, textShadow: `0 0 40px ${g(BRAND.green, 0.45)}`, transform: `scale(${1.12 - 0.12 * Math.min(1, pMin)})`, transformOrigin: "left center" }}>
+          {tokens.min}
+        </div>
+        <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 72, color: BRAND.muted, margin: "6px 0 2px 8px" }}>
+          or <span style={{ fontSize: 44, fontWeight: 500 }}>· oder</span>
+        </div>
+        <div style={{ transform: `scale(${1.12 - 0.12 * Math.min(1, pMax)})`, transformOrigin: "left center" }}>
+          <Glitch text={tokens.max} active={f >= hit && f < hit + 6} seed="clash" intensity={16}
+            style={{ ...big, color: BRAND.pink, textShadow: `0 0 40px ${g(BRAND.pink, 0.45)}` }} />
+        </div>
+        <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 72, lineHeight: 1.08, letterSpacing: -2, color: BRAND.text, marginTop: 40, whiteSpace: "nowrap" }}>
+          <Accented text={clash} accent={BRAND.green} glow />
+        </div>
+        <Sub text={copy.clashDe ? fillTokens(copy.clashDe, tokens) : copy.hookDe} style={{ marginTop: 14, fontSize: 44 }} />
+      </div>
+    </AbsoluteFill>
+  );
+};
+
 // ---------------------------------------------------------------------------
 // Scene 2 — every real price as a dot (auto-binned unit histogram)
 // ---------------------------------------------------------------------------
@@ -545,13 +586,13 @@ const DotPlot: React.FC<{ points: PricePoint[]; copy: PriceVideoCopy; tokens: Re
   }, [sorted, L]);
   const topOfColumns = Math.min(...dots.map((d) => d.cy)) - L.d / 2;
 
-  const DROP_FROM = BEAT; // beat 6 overall
-  const DROP_SPAN = 2.5 * BEAT;
-  const MEDIAN_AT = 4 * BEAT; // beat 9
-  const CALLOUT_AT = 5 * BEAT; // beat 10
+  const DROP_FROM = 6;
+  const DROP_SPAN = 1.8 * BEAT;
+  const MEDIAN_AT = 3 * BEAT;
+  const CALLOUT_AT = 3 * BEAT;
   const delayOf = (i: number) => DROP_FROM + (n > 1 ? (i / (n - 1)) * DROP_SPAN : 0);
 
-  const axisGrow = interpolate(f, [6, 20], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
+  const axisGrow = interpolate(f, [0, 12], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
   const medianSpring = spring({ frame: f - MEDIAN_AT, fps, config: { damping: 20, stiffness: 200 } });
   const medianTop = topOfColumns - 70;
   const pulse = (start: number) =>
@@ -1047,7 +1088,7 @@ const EndCard: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> }
 
 // ---------------------------------------------------------------------------
 
-export const PRICE_VIDEO_FRAMES = S1 + S2 + S3 + S4 - T1 - T2 - T3; // 300
+export const PRICE_VIDEO_FRAMES = S1 + S2 + S3 + S4 - T1 - T2 - T3; // 216 (7.2 s)
 
 export const PriceVideo: React.FC<PriceVideoProps> = ({ points, copy }) => {
   applyTheme(copy.theme ?? "dark");
@@ -1081,7 +1122,7 @@ export const PriceVideo: React.FC<PriceVideoProps> = ({ points, copy }) => {
       ))}
       <TransitionSeries>
         <TransitionSeries.Sequence durationInFrames={S1}>
-          <Hook copy={copy} />
+          <Clash copy={copy} tokens={tokens} />
         </TransitionSeries.Sequence>
         <TransitionSeries.Transition presentation={slide({ direction: "from-bottom" })} timing={smooth(T1)} />
         <TransitionSeries.Sequence durationInFrames={S2}>
