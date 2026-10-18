@@ -15,7 +15,7 @@ Réponds à Hugues en français, direct et honnête.
 - **Template vidéo** : dépôt GitHub `Hugues000-bit/h.m.09.10.26`, dossier `template/` (Remotion 4.0.484, React 18). Ajouter le dépôt avec `add_repo` (accès push), cloner, `npm install` dans `template/`.
 - **Hébergement des médias** : même dépôt, dossier `AAAA-MM/`. Les liens publics sont `https://raw.githubusercontent.com/Hugues000-bit/h.m.09.10.26/main/<chemin>`. Toujours donner un **nouveau nom de fichier** à une version refaite (suffixe `-vMMDD`), sinon le cache renvoie l'ancienne.
 - **Programmation** : connecteur Metricool, marque `blogId 7319232` (Instagram howmuch.live), fuseau `Europe/Vienna`. Metricool copie les médias chez lui au moment de la programmation.
-- **Rendu** : `npx remotion render src/howmuch/index.tsx <Id> out.mp4 --codec=h264 --crf=18 --browser-executable=<chromium headless_shell>`. Dans l'espace cloud : `/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell`. Couvertures : `npx remotion still ... --frame=N` avec N = 70 pour `PriceVideo`, 230 pour `GapMap`, 120 pour `Monthly`, 210 pour `ClaimBar`/`ClaimCafe`.
+- **Rendu** : `npx remotion render src/howmuch/index.tsx <Id> out.mp4 --codec=h264 --crf=18 --browser-executable=<chromium headless_shell>`. Dans l'espace cloud : `/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell`. Couvertures : `npx remotion still ... --frame=N` avec N = 10 pour `PriceVideo`, 230 pour `GapMap`, 120 pour `Monthly`, 210 pour `ClaimBar`/`ClaimCafe`.
 
 ## Données : les règles
 
@@ -35,7 +35,7 @@ Réponds à Hugues en français, direct et honnête.
 - **Langue** : anglais en grand, allemand en petit dessous (`hookDe`, `dataDe`, `pctDe`, `stampDe`, `ctaDe`). Les mots viennois (Krügerl, Bezirk, G'spritzter) ne se traduisent pas.
 - **Varier les produits** : pas deux Reels du même produit dans la même semaine si on peut l'éviter.
 - Formats disponibles dans le template :
-  - `PriceVideo` (10 s) : accroche « The cheapest X in Y costs… » + ticker ?,?? €, les points de prix, l'écart en %, le tampon « ARE WE BEING RIPPED OFF? », puis « Where's the {min} one? ». Copies dans `copy-week.ts`, données dans `data-week.ts`, compositions dans `index.tsx`.
+  - `PriceVideo` (7 s, depuis le 18/10) : **les deux prix en très gros dès la première image** (« 4,50 € or 6,00 € » + `clash` « for a Krügerl in Neubau. » / `clashDe`), puis les points de prix, l'écart en %, le tampon « ARE WE BEING RIPPED OFF? », puis « Where's the {min} one? ». Raison : avec l'ancienne accroche (question + ticker), 73 % des gens partaient avant 3 s. Copies dans `copy-week.ts` (chaque copie doit avoir `clash` et `clashDe`), données dans `data-week.ts`, compositions dans `index.tsx`.
   - `GapMap` (12 s, clair) : la carte des Bezirke. Bezirke à 0 lieu en rose (« Is yours empty? »), de 1 à 5 lieux en jaune avec leur nombre (« Or almost empty? »), accroche « N Bezirke. Almost no prices. », fin « Add one price · Comment your Bezirk ». Recalculer les comptes dans `gapmap-data.ts`.
   - `Monthly` : le bilan du mois (voir plus bas).
   - `ClaimBar` / `ClaimCafe` : la réclamation de fiche pour les commerçants (voir plus bas).
