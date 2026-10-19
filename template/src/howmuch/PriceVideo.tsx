@@ -81,7 +81,7 @@ const TONE = new Proxy({} as Record<Tone, string>, { get: (_, k: string) => BRAN
 
 // Scene lengths are chosen so every scene starts on a beat:
 // S1 0 · S2 75 (beat 5) · S3 180 (beat 12) · S4 240 (beat 16) · end 300
-const S1 = 48;
+const S1 = 72; // REVEAL at 30 + 1.2 s to read the cheapest price
 const T1 = 12;
 const S2 = 80;
 const T2 = 12;
@@ -481,36 +481,49 @@ const Hook: React.FC<{ copy: PriceVideoCopy }> = ({ copy }) => {
 };
 
 
-// Scene 1 (v2, Oct 2026) — the two prices are on screen from frame 0: "4,50 € or 6,00 € for a Krügerl in Neubau."
-// Stats showed 73 % of viewers left in the first 3 s of the old question + ticker hook.
-const Clash: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> }> = ({ copy, tokens }) => {
-  const f = useCurrentFrame();
+// Scene 1 (v3, 19 Oct 2026) — viral-format rules: payoff before 1.7 s, a guess to comment, a frame-0 cover that teases.
+// Frame 0: the PRICIEST price (shock) + "?,?? €" for the cheapest. At REVEAL the cheapest drops in.
+// The same frame-0 layout comes back at the very end, so the video loops seamlessly (replays count).
+const REVEAL = 30; // 1 s
+const Clash: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string>; still?: boolean }> = ({ copy, tokens, still }) => {
+  const cf = useCurrentFrame();
+  const f = still ? 0 : cf;
   const { fps } = useVideoConfig();
-  const pop = (start: number) => spring({ frame: f - start, fps, config: { damping: 14, stiffness: 260 } });
-  const pMin = f <= 0 ? 1 : pop(0);
-  const pMax = f <= 0 ? 1 : pop(3);
-  const hit = 14; // max price glitches + impact on the first beat
+  const pop = (start: number) => (f <= start ? (f === 0 ? 1 : 0) : spring({ frame: f - start, fps, config: { damping: 12, stiffness: 260 } }));
+  const pMax = 1; // static: frame 0 must equal the loop-back frame
+  const revealed = f >= REVEAL;
+  const pMin = revealed ? spring({ frame: f - REVEAL, fps, config: { damping: 11, stiffness: 280 } }) : 0;
   const big: React.CSSProperties = { fontFamily: BRAND.mono, fontWeight: 700, fontSize: 210, lineHeight: 1, letterSpacing: -6, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" };
   const clash = copy.clash ? fillTokens(copy.clash, tokens) : "";
+  const blink = Math.floor(f / 6) % 2 === 0;
   return (
-    <AbsoluteFill>
-      <Sfx at={1} src="impactPlate_heavy_001" volume={0.45} />
-      <Sfx at={hit} src="glitch_002" volume={0.6} />
+    <AbsoluteFill style={still ? { backgroundColor: BRAND.bg } : undefined}>
+      {!still && <Sfx at={1} src="impactPlate_heavy_001" volume={0.45} />}
+      {!still && [8, 16, 24].map((t) => <Sfx key={t} at={t} src="tick_002" volume={0.4} />)}
+      {!still && <Sfx at={REVEAL} src="glitch_002" volume={0.65} />}
       <div style={{ position: "absolute", top: 330, left: 80, fontFamily: BRAND.mono, fontWeight: 700, fontSize: 34, letterSpacing: 6, color: BRAND.green }}>
         {copy.hookLabel}
       </div>
       <div style={{ position: "absolute", top: 420, left: 80, right: 80 }}>
-        <div style={{ ...big, color: BRAND.green, textShadow: `0 0 40px ${g(BRAND.green, 0.45)}`, transform: `scale(${1.12 - 0.12 * Math.min(1, pMin)})`, transformOrigin: "left center" }}>
-          {tokens.min}
+        <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 30, letterSpacing: 4, color: BRAND.muted, marginBottom: 6 }}>PRICIEST · TEUERSTE</div>
+        <div style={{ ...big, color: BRAND.pink, textShadow: `0 0 40px ${g(BRAND.pink, 0.45)}`, transform: `scale(${1.12 - 0.12 * Math.min(1, pMax)})`, transformOrigin: "left center" }}>
+          {tokens.max}
         </div>
-        <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 72, color: BRAND.muted, margin: "6px 0 2px 8px" }}>
-          or <span style={{ fontSize: 44, fontWeight: 500 }}>· oder</span>
+        <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 30, letterSpacing: 4, color: revealed ? BRAND.green : BRAND.yellow, margin: "34px 0 6px" }}>
+          {revealed ? "CHEAPEST · BILLIGSTE" : "CHEAPEST? GUESS ↓ · RATE MAL"}
         </div>
-        <div style={{ transform: `scale(${1.12 - 0.12 * Math.min(1, pMax)})`, transformOrigin: "left center" }}>
-          <Glitch text={tokens.max} active={f >= hit && f < hit + 6} seed="clash" intensity={16}
-            style={{ ...big, color: BRAND.pink, textShadow: `0 0 40px ${g(BRAND.pink, 0.45)}` }} />
+        <div style={{ position: "relative", height: 210 }}>
+          {!revealed && (
+            <div style={{ ...big, position: "absolute", color: BRAND.yellow, opacity: blink ? 1 : 0.55, textShadow: `0 0 30px ${g(BRAND.yellow, 0.4)}` }}>?,?? €</div>
+          )}
+          {revealed && (
+            <div style={{ position: "absolute", transform: `scale(${1.25 - 0.25 * Math.min(1, pMin)})`, transformOrigin: "left center" }}>
+              <Glitch text={tokens.min} active={f < REVEAL + 6} seed="clash" intensity={16}
+                style={{ ...big, color: BRAND.green, textShadow: `0 0 40px ${g(BRAND.green, 0.5)}` }} />
+            </div>
+          )}
         </div>
-        <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 72, lineHeight: 1.08, letterSpacing: -2, color: BRAND.text, marginTop: 40, whiteSpace: "nowrap" }}>
+        <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 72, lineHeight: 1.08, letterSpacing: -2, color: BRAND.text, marginTop: 40, whiteSpace: "nowrap", }}>
           <Accented text={clash} accent={BRAND.green} glow />
         </div>
         <Sub text={copy.clashDe ? fillTokens(copy.clashDe, tokens) : copy.hookDe} style={{ marginTop: 14, fontSize: 44 }} />
@@ -1088,7 +1101,20 @@ const EndCard: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> }
 
 // ---------------------------------------------------------------------------
 
-export const PRICE_VIDEO_FRAMES = S1 + S2 + S3 + S4 - T1 - T2 - T3; // 216 (7.2 s)
+const LoopBack: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> }> = ({ copy, tokens }) => {
+  const f = useCurrentFrame();
+  return (
+    <AbsoluteFill>
+      <AbsoluteFill style={{ backgroundColor: BRAND.bg, opacity: interpolate(f, [0, 4], [0, 1], clamp) }} />
+      <AbsoluteFill style={{ opacity: interpolate(f, [4, 8], [0, 1], clamp) }}>
+        <Backdrop />
+        <Clash copy={copy} tokens={tokens} still />
+      </AbsoluteFill>
+    </AbsoluteFill>
+  );
+};
+
+export const PRICE_VIDEO_FRAMES = S1 + S2 + S3 + S4 - T1 - T2 - T3; // 240 (8 s)
 
 export const PriceVideo: React.FC<PriceVideoProps> = ({ points, copy }) => {
   applyTheme(copy.theme ?? "dark");
@@ -1137,6 +1163,10 @@ export const PriceVideo: React.FC<PriceVideoProps> = ({ points, copy }) => {
           <EndCard copy={copy} tokens={tokens} />
         </TransitionSeries.Sequence>
       </TransitionSeries>
+      {/* seamless loop: fade back to the frame-0 layout during the last 9 frames */}
+      <Sequence from={PRICE_VIDEO_FRAMES - 9} durationInFrames={9} layout="none">
+        <LoopBack copy={copy} tokens={tokens} />
+      </Sequence>
       <Chrome />
     </AbsoluteFill>
   );

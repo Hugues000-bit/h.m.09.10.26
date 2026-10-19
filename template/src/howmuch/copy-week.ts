@@ -33,6 +33,8 @@ export const COPY_NEUBAU: PriceVideoCopy = {
 
 export const COPY_FUENFHAUS: PriceVideoCopy = {
   ...base,
+  ctaSub: "📩 Send this to your Fünfhaus crew",
+  ctaDe: "Schick's deiner Crew im 15.",
   clash: "for a Krügerl in the 15th.",
   clashDe: "für ein Krügerl im 15.",
   hookLabel: "15. BEZIRK · KRÜGERL 0,5 L",
@@ -51,6 +53,8 @@ export const COPY_FUENFHAUS: PriceVideoCopy = {
 
 export const COPY_WEISSER: PriceVideoCopy = {
   ...base,
+  ctaSub: "📩 Send this to your Spritzer partner",
+  ctaDe: "Schick's deinem Spritzer-Partner",
   clash: "for a G'spritzter in Vienna.",
   clashDe: "für einen G'spritzten in Wien.",
   theme: "light",
@@ -70,6 +74,8 @@ export const COPY_WEISSER: PriceVideoCopy = {
 
 export const COPY_DOENER: PriceVideoCopy = {
   ...base,
+  ctaSub: "📩 Send this to your 2 am Döner buddy",
+  ctaDe: "Schick's deinem Döner-Buddy",
   clash: "for a Döner in Vienna.",
   clashDe: "für einen Döner in Wien.",
   theme: "light",
@@ -107,6 +113,8 @@ export const COPY_CAPPUCCINO: PriceVideoCopy = {
 
 export const COPY_BURGER: PriceVideoCopy = {
   ...base,
+  ctaSub: "📩 Send this to your burger buddy",
+  ctaDe: "Schick's deinem Burger-Buddy",
   clash: "for a burger in Vienna.",
   clashDe: "für einen Burger in Wien.",
   hookLabel: "WIEN · BURGER",
@@ -143,6 +151,8 @@ export const COPY_SCHNITZEL: PriceVideoCopy = {
 
 export const COPY_LATTE: PriceVideoCopy = {
   ...base,
+  ctaSub: "📩 Send this to your coffee date",
+  ctaDe: "Schick's deinem Kaffee-Date",
   clash: "for a latte in Vienna.",
   clashDe: "für einen Latte in Wien.",
   theme: "light",
