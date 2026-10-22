@@ -8,16 +8,14 @@ import { DISTRICTS, MAP_H, MAP_W } from "./gapmap-data";
 
 const BEAT = 15;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-export const GAP_FRAMES = 360;
+export const GAP_FRAMES = 270; // v2 (22 Oct): full map on frame 0, 9 s
 
 const MAP_X = 80;
 const MAP_Y = 770;
-const FILL_FROM = 5 * BEAT; // 75
-const FILL_TO = 10 * BEAT; // 150
-const ZERO_AT = 10 * BEAT; // 150
-const LOW_AT = 13 * BEAT; // 195
-const FIRST_AT = 16 * BEAT; // 240
-const END_AT = 19 * BEAT; // 285
+const ZERO_AT = 4 * BEAT; // 60
+const LOW_AT = 7 * BEAT; // 105
+const FIRST_AT = 10 * BEAT; // 150
+const END_AT = 13 * BEAT; // 195
 const LOW_MAX = 5; // 1–5 places = "almost empty"
 // small central Bezirke: number only, nudged so they don't overlap
 const LOW_NUDGE: Record<number, [number, number]> = { 3: [4, 10], 4: [6, 0], 5: [-10, 14] };
@@ -35,7 +33,7 @@ const TextBlock: React.FC<{ b: Block }> = ({ b }) => {
     <div style={{ position: "absolute", top: 300, left: 80, right: 80, opacity: out, transform: `translateY(${(1 - out) * -30}px)` }}>
       {b.label && (
         <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 32, letterSpacing: 6, color: BRAND.green, marginBottom: 18 }}>
-          {typed(b.label, lf, 0, 12)}
+          {b.from === 0 ? b.label : typed(b.label, lf, 0, 12)}
         </div>
       )}
       {b.lines.map((ln, i) => (
@@ -49,13 +47,13 @@ const TextBlock: React.FC<{ b: Block }> = ({ b }) => {
             letterSpacing: -3,
             color: BRAND.text,
             whiteSpace: "nowrap",
-            ...entrance(kinds[i % 3], lf, i * 5, fps),
+            ...(b.from === 0 ? {} : entrance(kinds[i % 3], lf, i * 5, fps)),
           }}
         >
           <Accented text={ln} accent={b.accent} glow />
         </div>
       ))}
-      <Sub text={b.de} style={{ marginTop: 16, fontSize: 42, opacity: interpolate(lf, [12, 20], [0, 1], clamp) }} />
+      <Sub text={b.de} style={{ marginTop: 16, fontSize: 42, opacity: b.from === 0 ? 1 : interpolate(lf, [12, 20], [0, 1], clamp) }} />
     </div>
   );
 };
@@ -75,32 +73,31 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
   const weak = zeros.length + lows.length;
   // fill order: fullest first; the almost-empty ones are left unfilled until LOW_AT
   const order = useMemo(() => [...DISTRICTS].filter((d) => d.n > LOW_MAX).sort((x, y) => y.n - x.n), []);
-  const fillAt = (nr: number) => {
-    const i = order.findIndex((d) => d.nr === nr);
-    return i < 0 ? Infinity : FILL_FROM + (i / Math.max(1, order.length - 1)) * (FILL_TO - FILL_FROM - 10);
-  };
-  const draw = interpolate(f, [4, 40], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const fillAt = (_nr: number) => 0; // v2: everything is on screen from frame 0 (cover = the full map)
+  const draw = 1;
+  const zeroPhase = f >= ZERO_AT && f < LOW_AT;
+  const lowPhase = f >= LOW_AT && f < FIRST_AT;
   const endP = interpolate(f, [END_AT - 4, END_AT + 8], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
   const zeroPulse = 0.5 + 0.5 * Math.sin(((f - ZERO_AT) / BEAT) * Math.PI);
   const lowPulse = 0.5 + 0.5 * Math.sin(((f - LOW_AT) / BEAT) * Math.PI);
 
   const blocks: Block[] = [
-    { from: 0, to: FILL_FROM, label: "WIEN · 23 BEZIRKE", lines: [`*${weak}* Bezirke.`, "Almost no prices."], accent: BRAND.pink, de: `${weak} von 23 Bezirken: fast keine Preise.`, size: 110 },
-    { from: FILL_FROM, to: ZERO_AT, label: `${total} PLACES SO FAR`, lines: ["Here's where", "the prices are."], accent: BRAND.green, de: "Hier gibt's schon Preise.", size: 104 },
-    { from: ZERO_AT, to: LOW_AT, label: `${zeros.length} × ZERO · MEIDLING · WÄHRING …`, lines: ["Is *yours*", "empty?"], accent: BRAND.pink, de: "Ist deiner leer?" },
-    { from: LOW_AT, to: FIRST_AT, label: `${lows.length} × UNDER 6 · FAVORITEN · DÖBLING …`, lines: ["Or *almost*", "empty?"], accent: BRAND.yellow, de: "Oder fast leer?" },
+    { from: 0, to: ZERO_AT, label: `WIEN · ${total} PLACES · 23 BEZIRKE`, lines: ["Is *your* Bezirk", "on the map?"], accent: BRAND.green, de: "Ist dein Bezirk auf der Karte?", size: 108 },
+    { from: ZERO_AT, to: LOW_AT, label: `${zeros.length} × ZERO · MEIDLING · WÄHRING …`, lines: [`*${zeros.length}* Bezirke:`, "zero prices."], accent: BRAND.pink, de: `${zeros.length} Bezirke: null Preise.` },
+    { from: LOW_AT, to: FIRST_AT, label: `${lows.length} × UNDER 6 · FAVORITEN · DÖBLING …`, lines: [`*${lows.length}* more:`, "almost empty."], accent: BRAND.yellow, de: `${lows.length} weitere: fast leer.` },
     { from: FIRST_AT, to: END_AT, label: "1 PRICE = 10 SECONDS", lines: ["Be the *first*", "in your Bezirk."], accent: BRAND.green, de: "Sei der Erste in deinem Bezirk.", size: 104 },
   ];
 
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bg }}>
       <Backdrop />
-      {order.map((d, i) => (i % 2 === 0 ? <Sfx key={d.nr} at={fillAt(d.nr)} src={i % 4 ? "pluck_001" : "pluck_002"} volume={0.3} /> : null))}
+      <Sfx at={1} src="impactPlate_heavy_001" volume={0.4} />
+      <Sfx at={LOW_AT} src="glitch_002" volume={0.5} />
       <Sfx at={ZERO_AT} src="glitch_002" volume={0.6} />
       <Sfx at={ZERO_AT + 2} src="impactPlate_heavy_001" volume={0.45} />
       <Sfx at={FIRST_AT} src="powerUp2" volume={0.4} />
       <Sfx at={END_AT} src="confirmation_002" volume={0.55} />
-      {[FILL_FROM, ZERO_AT, FIRST_AT].map((t) => (
+      {[ZERO_AT, FIRST_AT].map((t) => (
         <Sfx key={t} at={t} src="maximize_006" volume={0.35} />
       ))}
 
@@ -109,14 +106,16 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
         <svg width={MAP_W} height={MAP_H} viewBox={`0 0 ${MAP_W} ${MAP_H}`} style={{ overflow: "visible" }}>
           {DISTRICTS.map((d) => {
             const at = fillAt(d.nr);
-            const fp = d.n > LOW_MAX ? spring({ frame: f - at, fps, config: { damping: 14, stiffness: 160 } }) : 0;
-            const fp2 = d.n > LOW_MAX ? fp : 0;
+            const fp2 = d.n > LOW_MAX ? (zeroPhase || lowPhase ? 0.45 : 1) : 0; // dim the full ones while we point at the holes
+            void at;
             const strength = d.n < 20 ? 0.45 : 0.8;
-            const isZero = d.n === 0 && f >= ZERO_AT;
-            const isLow = d.n > 0 && d.n <= LOW_MAX && f >= LOW_AT;
-            const fill = d.n > LOW_MAX ? a(BRAND.green, strength * Math.min(1, fp2)) : isZero ? a(BRAND.pink, 0.08 + 0.12 * zeroPulse) : isLow ? a(BRAND.yellow, 0.1 + 0.14 * lowPulse) : "transparent";
+            const isZero = d.n === 0;
+            const isLow = d.n > 0 && d.n <= LOW_MAX;
+            const zp = zeroPhase ? zeroPulse : 0.4;
+            const lp = lowPhase ? lowPulse : 0.4;
+            const fill = d.n > LOW_MAX ? a(BRAND.green, strength * Math.min(1, fp2)) : isZero ? a(BRAND.pink, (lowPhase ? 0.05 : 0.08) + 0.12 * zp) : isLow ? a(BRAND.yellow, (zeroPhase ? 0.05 : 0.1) + 0.14 * lp) : "transparent";
             const hot = isZero ? BRAND.pink : isLow ? BRAND.yellow : null;
-            const hotPulse = isZero ? zeroPulse : lowPulse;
+            const hotPulse = isZero ? zp : lp;
             return (
               <path
                 key={d.nr}
@@ -147,7 +146,7 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
           const small = d.nr in LOW_NUDGE;
           const [dx, dy] = LOW_NUDGE[d.nr] ?? (d.nr === 2 ? [40, -30] : [0, 0]);
           return (
-            <div key={d.nr} style={{ position: "absolute", left: d.cx + dx, top: d.cy + dy, transform: `translate(-50%,-50%) scale(${f >= LOW_AT ? p : 0})`, textAlign: "center", whiteSpace: "nowrap" }}>
+            <div key={d.nr} style={{ position: "absolute", left: d.cx + dx, top: d.cy + dy, transform: `translate(-50%,-50%) scale(${lowPhase ? 1 + 0.18 * Math.min(1, p) : 1})`, textAlign: "center", whiteSpace: "nowrap" }}>
               <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: small ? 30 : 42, lineHeight: 1, color: BRAND.yellow, textShadow: `0 0 16px ${g(BRAND.yellow, 0.6)}` }}>{d.n}</div>
               {!small && <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 18, letterSpacing: 1, color: BRAND.yellow, marginTop: 2 }}>{d.name.toUpperCase()}</div>}
             </div>
@@ -157,7 +156,7 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
         {zeros.map((d, i) => {
           const p = spring({ frame: f - ZERO_AT - i * 2, fps, config: { damping: 9, stiffness: 220, mass: 0.6 } });
           return (
-            <div key={d.nr} style={{ position: "absolute", left: d.cx, top: d.cy + (d.nr === 18 ? -10 : 0), transform: `translate(-50%,-50%) scale(${f >= ZERO_AT ? p : 0})`, textAlign: "center", whiteSpace: "nowrap" }}>
+            <div key={d.nr} style={{ position: "absolute", left: d.cx, top: d.cy + (d.nr === 18 ? -10 : 0), transform: `translate(-50%,-50%) scale(${zeroPhase ? 1 + 0.18 * Math.min(1, p) : 1})`, textAlign: "center", whiteSpace: "nowrap" }}>
               <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 46, lineHeight: 1, color: BRAND.pink, textShadow: `0 0 18px ${g(BRAND.pink, 0.6)}` }}>0</div>
               <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 19, letterSpacing: 1, color: BRAND.pink, marginTop: 2 }}>{d.name.toUpperCase()}</div>
             </div>
@@ -194,7 +193,7 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
       )}
 
       <div style={{ position: "absolute", top: 1440, left: 80, right: 80, textAlign: "center", fontFamily: BRAND.mono, fontWeight: 500, fontSize: 22, color: BRAND.muted, opacity: interpolate(f, [END_AT, END_AT + 10], [0, 0.9], clamp) }}>
-        Places with prices per Bezirk · HOW MUCH?! · 14 Oct 2026 · Map: data.wien.gv.at (CC BY 4.0)
+        Places with prices per Bezirk · HOW MUCH?! · 22 Oct 2026 · Map: data.wien.gv.at (CC BY 4.0)
       </div>
 
       {/* chrome */}
