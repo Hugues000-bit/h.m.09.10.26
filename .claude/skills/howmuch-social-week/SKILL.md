@@ -30,7 +30,8 @@ Réponds à Hugues en français, direct et honnête.
 
 ## Format et calendrier
 
-- **3 Reels par semaine** : lundi 12 h 00, mercredi 12 h 30, vendredi 12 h 30. Les stories sont en publication manuelle (`autoPublish: false`, sans texte), parce que les stickers sondage et lien s'ajoutent à la main.
+- **3 Reels par semaine** : lundi 12 h 00, mercredi 12 h 30, vendredi 12 h 30.
+- **Pas de stories** (choix de Hugues, 22/10 : trop de travail à la main). Ne pas en programmer, ne pas en proposer.
 - **Thème** : séries de 4 Reels sombres puis 4 clairs (`theme: "light"` dans la copie, couleurs du mode jour de l'app). Garder le compte d'un mois sur l'autre en regardant les posts déjà programmés.
 - **Langue** : anglais en grand, allemand en petit dessous (`hookDe`, `dataDe`, `pctDe`, `stampDe`, `ctaDe`). Les mots viennois (Krügerl, Bezirk, G'spritzter) ne se traduisent pas.
 - **Varier les produits** : pas deux Reels du même produit dans la même semaine si on peut l'éviter.
