@@ -4,7 +4,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { AbsoluteFill, Easing, continueRender, delayRender, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { BRAND, a, g, applyTheme, loadBrandFonts, Theme } from "./brand";
 import { Accented, Backdrop, Bloom, Sfx, Sub, entrance, typed } from "./PriceVideo";
-import { DISTRICTS, MAP_H, MAP_W } from "./gapmap-data";
+import { DISTRICTS as ALL_DISTRICTS, MAP_H, MAP_W } from "./gapmap-data";
+import { CHEAPEST } from "./cheapest-data";
 
 const BEAT = 15;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -16,7 +17,8 @@ const ZERO_AT = 4 * BEAT; // 60
 const LOW_AT = 7 * BEAT; // 105
 const FIRST_AT = 10 * BEAT; // 150
 const END_AT = 13 * BEAT; // 195
-const LOW_MAX = 5; // 1–5 places = "almost empty"
+const LOW_MAX_PLACES = 5; // 1–5 places = "almost empty"
+const LOW_MAX_KRUEGERL = 2; // challenge: 1–2 Krügerl places = "barely there" (goal: 3 per Bezirk)
 // small central Bezirke: number only, nudged so they don't overlap
 const LOW_NUDGE: Record<number, [number, number]> = { 3: [4, 10], 4: [6, 0], 5: [-10, 14] };
 
@@ -58,7 +60,12 @@ const TextBlock: React.FC<{ b: Block }> = ({ b }) => {
   );
 };
 
-export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
+// mode "places": places with any price per Bezirk (default). mode "kruegerl": November challenge, places with a Krügerl price.
+export const GapMap: React.FC<{ theme?: Theme; mode?: "places" | "kruegerl"; date?: string }> = ({ theme = "light", mode = "places", date = "22 Oct 2026" }) => {
+  const K = mode === "kruegerl";
+  const kn = CHEAPEST.sets.KRUEGERL as unknown as Record<string, { n: number }>;
+  const DISTRICTS = K ? ALL_DISTRICTS.map((d) => ({ ...d, n: kn[String(d.nr)]?.n ?? 0 })) : ALL_DISTRICTS;
+  const LOW_MAX = K ? LOW_MAX_KRUEGERL : LOW_MAX_PLACES;
   applyTheme(theme);
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -72,7 +79,7 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
   const lows = DISTRICTS.filter((d) => d.n > 0 && d.n <= LOW_MAX).sort((x, y) => x.n - y.n);
   const weak = zeros.length + lows.length;
   // fill order: fullest first; the almost-empty ones are left unfilled until LOW_AT
-  const order = useMemo(() => [...DISTRICTS].filter((d) => d.n > LOW_MAX).sort((x, y) => y.n - x.n), []);
+  const order = useMemo(() => [...DISTRICTS].filter((d) => d.n > LOW_MAX).sort((x, y) => y.n - x.n), [mode]);
   const fillAt = (_nr: number) => 0; // v2: everything is on screen from frame 0 (cover = the full map)
   const draw = 1;
   const zeroPhase = f >= ZERO_AT && f < LOW_AT;
@@ -81,7 +88,13 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
   const zeroPulse = 0.5 + 0.5 * Math.sin(((f - ZERO_AT) / BEAT) * Math.PI);
   const lowPulse = 0.5 + 0.5 * Math.sin(((f - LOW_AT) / BEAT) * Math.PI);
 
-  const blocks: Block[] = [
+  const zeroNames = zeros.slice(0, 3).map((d) => d.name.toUpperCase()).join(" · ") + (zeros.length > 3 ? " …" : "");
+  const blocks: Block[] = K ? [
+    { from: 0, to: ZERO_AT, label: `KRÜGERL-CHALLENGE · ${23 - zeros.length}/23`, lines: [`*${zeros.length}* Bezirke.`, "No Krügerl price."], accent: BRAND.pink, de: "Kein einziger Krügerl-Preis.", size: 110 },
+    { from: ZERO_AT, to: LOW_AT, label: zeroNames, lines: ["Is *yours*", "one of them?"], accent: BRAND.pink, de: "Ist deiner dabei?" },
+    { from: LOW_AT, to: FIRST_AT, label: `${lows.length} × ONLY ${lows.every((d) => d.n === 1) ? "1 PLACE" : "1–2 PLACES"}`, lines: [`*${lows.length}* more:`, lows.every((d) => d.n === 1) ? "just 1 place." : "barely there."], accent: BRAND.yellow, de: `${lows.length} weitere: ${lows.every((d) => d.n === 1) ? "nur 1 Lokal" : "fast leer"}.` },
+    { from: FIRST_AT, to: END_AT, label: "2 NOV → 30 NOV · 23/23", lines: ["Let's fill it", "by *30 Nov*."], accent: BRAND.green, de: "Bis 30. November füllen wir sie.", size: 108 },
+  ] : [
     { from: 0, to: ZERO_AT, label: `WIEN · ${total} PLACES · 23 BEZIRKE`, lines: ["Is *your* Bezirk", "on the map?"], accent: BRAND.green, de: "Ist dein Bezirk auf der Karte?", size: 108 },
     { from: ZERO_AT, to: LOW_AT, label: `${zeros.length} × ZERO · MEIDLING · WÄHRING …`, lines: [`*${zeros.length}* Bezirke:`, "zero prices."], accent: BRAND.pink, de: `${zeros.length} Bezirke: null Preise.` },
     { from: LOW_AT, to: FIRST_AT, label: `${lows.length} × UNDER 6 · FAVORITEN · DÖBLING …`, lines: [`*${lows.length}* more:`, "almost empty."], accent: BRAND.yellow, de: `${lows.length} weitere: fast leer.` },
@@ -156,9 +169,9 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
         {zeros.map((d, i) => {
           const p = spring({ frame: f - ZERO_AT - i * 2, fps, config: { damping: 9, stiffness: 220, mass: 0.6 } });
           return (
-            <div key={d.nr} style={{ position: "absolute", left: d.cx, top: d.cy + (d.nr === 18 ? -10 : 0), transform: `translate(-50%,-50%) scale(${zeroPhase ? 1 + 0.18 * Math.min(1, p) : 1})`, textAlign: "center", whiteSpace: "nowrap" }}>
+            <div key={d.nr} style={{ position: "absolute", left: d.cx + (LOW_NUDGE[d.nr]?.[0] ?? 0), top: d.cy + (d.nr === 18 ? -10 : 0) + (LOW_NUDGE[d.nr]?.[1] ?? 0), transform: `translate(-50%,-50%) scale(${zeroPhase ? 1 + 0.18 * Math.min(1, p) : 1})`, textAlign: "center", whiteSpace: "nowrap" }}>
               <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 46, lineHeight: 1, color: BRAND.pink, textShadow: `0 0 18px ${g(BRAND.pink, 0.6)}` }}>0</div>
-              <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 19, letterSpacing: 1, color: BRAND.pink, marginTop: 2 }}>{d.name.toUpperCase()}</div>
+              {!(d.nr in LOW_NUDGE) && <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 19, letterSpacing: 1, color: BRAND.pink, marginTop: 2 }}>{d.name.toUpperCase()}</div>}
             </div>
           );
         })}
@@ -174,9 +187,9 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
           <Bloom color={a(BRAND.green, 0.85 * (BRAND.glow as number))} start={END_AT} top={720} size={900} />
           <div style={{ position: "absolute", top: 520, width: "100%", textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 112, letterSpacing: -3, color: BRAND.text }}>
-              Add <Accented text="*one*" accent={BRAND.green} glow /> price.
+              {K ? <>Snap the <Accented text="*menu*." accent={BRAND.green} glow /></> : <>Add <Accented text="*one*" accent={BRAND.green} glow /> price.</>}
             </div>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 44, color: BRAND.muted, marginTop: 6 }}>Trag einen Preis ein.</div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 44, color: BRAND.muted, marginTop: 6 }}>{K ? "Foto von der Karte, fertig. 20 Sekunden." : "Trag einen Preis ein."}</div>
           </div>
           <div style={{ position: "absolute", top: 760, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 96, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live</div>
@@ -184,16 +197,16 @@ export const GapMap: React.FC<{ theme?: Theme }> = ({ theme = "light" }) => {
           </div>
           <div style={{ position: "absolute", top: 1010, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 64, color: BRAND.text }}>
-              Comment your <Accented text="*Bezirk*" accent={BRAND.yellow} />
+              Comment <Accented text={K ? "*BEER*" : "your *Bezirk*"} accent={BRAND.yellow} />
             </div>
-            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 30, color: BRAND.muted, marginTop: 8 }}>Schreib deinen Bezirk in die Kommentare</div>
+            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 30, color: BRAND.muted, marginTop: 8 }}>{K ? "Kommentier BEER → Link per DM" : "Schreib deinen Bezirk in die Kommentare"}</div>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 84, color: BRAND.yellow, marginTop: 8, transform: `translateY(${Math.sin((f / fps) * Math.PI * 4) * 12}px)` }}>↓</div>
           </div>
         </AbsoluteFill>
       )}
 
       <div style={{ position: "absolute", top: 1440, left: 80, right: 80, textAlign: "center", fontFamily: BRAND.mono, fontWeight: 500, fontSize: 22, color: BRAND.muted, opacity: interpolate(f, [END_AT, END_AT + 10], [0, 0.9], clamp) }}>
-        Places with prices per Bezirk · HOW MUCH?! · 22 Oct 2026 · Map: data.wien.gv.at (CC BY 4.0)
+        {K ? "Places with a Krügerl (0,5 l draught) price per Bezirk" : "Places with prices per Bezirk"} · HOW MUCH?! · {date} · Map: data.wien.gv.at (CC BY 4.0)
       </div>
 
       {/* chrome */}

@@ -46,11 +46,13 @@ export type CheapestProps = {
   item: string; // "Krügerl", "cappuccino"
   itemDe: string; // "Krügerl", "Cappuccino"
   label: string; // "WIEN · KRÜGERL 0,5 L"
+  challenge?: boolean; // November Krügerl challenge: "X/23 Bezirke", "Who takes <Bezirk>?", "Comment BEER"
+  date?: string; // overrides CHEAPEST.date_en in the footer
 };
 
 const fmt = (v: number) => v.toFixed(2).replace(".", ",");
 
-export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item, itemDe, label }) => {
+export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item, itemDe, label, challenge = false, date }) => {
   applyTheme(theme);
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -72,10 +74,18 @@ export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item
   const pulse = 0.5 + 0.5 * Math.sin(((f - HOLES_AT) / BEAT) * Math.PI);
   const endP = interpolate(f, [END_AT - 4, END_AT + 8], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
 
+  const target = holes.find(([nr]) => nr === 11) ?? holes[0]; // "Wer holt Simmering?"
+  const holeList = [...holes].sort((x, y) => x[0] - y[0]).map(([nr]) => `${nr}.`).join(" ");
   const blocks = [
-    { from: 0, to: TOP_AT, label, lines: [`Cheapest ${item}`, "in *every* Bezirk."], accent: BRAND.green, de: `Das billigste ${itemDe} in jedem Bezirk.` },
+    challenge
+      ? { from: 0, to: TOP_AT, label: `KRÜGERL-CHALLENGE · STAND ${filled.length}/23`, lines: [`*${filled.length}/23* Bezirke`, "have a Krügerl price."], accent: BRAND.green, de: `Stand: ${filled.length}/23 Bezirke. Bis 30. November: alle 23.` }
+      : { from: 0, to: TOP_AT, label, lines: [`Cheapest ${item}`, "in *every* Bezirk."], accent: BRAND.green, de: `Das billigste ${itemDe} in jedem Bezirk.` },
     { from: TOP_AT, to: HOLES_AT, label: `#1 · ${bestName.toUpperCase()}`, lines: [`*${fmt(best)} €* in`, `${bestName}.`], accent: BRAND.green, de: `Das billigste: ${fmt(best)} € in ${bestName}.` },
-    { from: HOLES_AT, to: END_AT, label: `${holes.length} BEZIRKE · NO PRICE YET`, lines: ["*?* = nobody", "checked yet."], accent: BRAND.pink, de: "Noch keiner hat nachgeschaut. Du?" },
+    holes.length === 0
+      ? { from: HOLES_AT, to: END_AT, label: "23/23 · DANKE", lines: ["The map is", "*full*. Danke!"], accent: BRAND.green, de: "Alle 23 Bezirke. Danke an alle!" }
+      : challenge && target
+        ? { from: HOLES_AT, to: END_AT, label: `MISSING · ${holeList}`, lines: ["Who takes", `*${NAME[target[0]]}*?`], accent: BRAND.pink, de: `Wer holt ${NAME[target[0]]}? Kommentier deinen Bezirk.` }
+        : { from: HOLES_AT, to: END_AT, label: `${holes.length} BEZIRKE · NO PRICE YET`, lines: ["*?* = nobody", "checked yet."], accent: BRAND.pink, de: "Noch keiner hat nachgeschaut. Du?" },
   ];
 
   return (
@@ -139,7 +149,7 @@ export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item
           );
         })}
         <div style={{ position: "absolute", top: GY + 6 * (TILE + GAP) + 4, left: 80, right: 80, textAlign: "center", fontFamily: BRAND.mono, fontSize: 20, color: BRAND.muted }}>
-          lowest price per Bezirk, € · {total} places · HOW MUCH?! · {CHEAPEST.date_en}
+          lowest price per Bezirk, € · {total} places · HOW MUCH?! · {date ?? CHEAPEST.date_en}
         </div>
       </div>
 
@@ -158,9 +168,9 @@ export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item
           </div>
           <div style={{ position: "absolute", top: 960, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 58, color: BRAND.text }}>
-              Your Bezirk is a <Accented text="*?*" accent={BRAND.pink} glow /> Add one price.
+              {challenge ? <>Snap the menu. Comment <Accented text="*BEER*" accent={BRAND.yellow} glow /></> : <>Your Bezirk is a <Accented text="*?*" accent={BRAND.pink} glow /> Add one price.</>}
             </div>
-            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 28, color: BRAND.muted, marginTop: 8 }}>Dein Bezirk ist ein ? Trag einen Preis ein.</div>
+            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 28, color: BRAND.muted, marginTop: 8 }}>{challenge ? "Foto von der Karte, fertig. Kommentier BEER → Link per DM" : "Dein Bezirk ist ein ? Trag einen Preis ein."}</div>
           </div>
         </AbsoluteFill>
       )}
