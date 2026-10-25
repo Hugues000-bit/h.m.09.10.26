@@ -132,6 +132,15 @@ Plan complet dans le document du projet `claude/howmuch-defi-krugerl-novembre.md
 - Signaler les prix de plus de 6 mois dans les Bezirke à un seul lieu (2e, 3e et 4e : prix de mars et avril).
 - Donner chaque lundi à Hugues : le compte X/23, les Bezirke nouveaux, ceux qui manquent, le nombre de prix ajoutés pendant le défi et le nombre de contributeurs autres que l'admin.
 
+## Facebook (page reliée à Metricool, à partir de novembre 2026)
+
+- **Republication des posts Instagram et TikTok, avec environ 2 semaines de décalage**, 3 par semaine : mardi, jeudi et samedi à 18 h (le carrousel de présentation a ouvert le dimanche 1er novembre).
+- `providers: [{"network":"facebook"}]`, `facebookData.type = "REEL"` pour une vidéo, `"POST"` pour un carrousel d'images. Couverture avec `videoThumbnailUrl`.
+- Toujours la **version la plus récente** de la vidéo (accroche v3) ; refaire avec le template une vidéo publiée avec une ancienne accroche (`fb-*-vMMDD.mp4` dans `AAAA-MM/`).
+- Légende : pas de ManyChat ni de « link in bio » sur Facebook. Les liens sont cliquables : mettre directement la page produit avec `utm_source=facebook&utm_medium=social` (« 👉 https://www.howmuch.live/beer/vienna?v=draft_large&utm_source=facebook&utm_medium=social »). Première ligne qui ne donne pas le prix le moins cher, ligne en allemand, 3 hashtags.
+- L'alcool est permis sur Facebook (comme Instagram). Pendant le défi de novembre, ajouter une ligne Krügerl-Challenge aux posts bière.
+- Programmé le 25/10 pour novembre : carrousel app (1/11), Cappuccino (3/11), Krügerl Neubau (5/11), carte à trous (7/11), Burger (10/11), Krügerl Fünfhaus (12/11), Schnitzel (14/11), G'spritzter (17/11), Latte (19/11), Döner (21/11), Cheapest Krügerl (24/11). Ensuite : continuer avec les posts Instagram/TikTok publiés 2 semaines plus tôt.
+
 ## TikTok (compte howmuch.live, relié à Metricool)
 
 - **Aucun produit avec alcool sur TikTok** (contrainte de Hugues) : pas de bière, Spritzer, vin, cocktail. Seulement café, nourriture, boissons sans alcool, et la carte à trous.
