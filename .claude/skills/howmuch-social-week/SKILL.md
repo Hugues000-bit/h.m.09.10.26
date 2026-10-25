@@ -140,6 +140,8 @@ Plan complet dans le document du projet `claude/howmuch-defi-krugerl-novembre.md
 - Légende : pas de ManyChat ni de « link in bio » sur Facebook. Les liens sont cliquables : mettre directement la page produit avec `utm_source=facebook&utm_medium=social` (« 👉 https://www.howmuch.live/beer/vienna?v=draft_large&utm_source=facebook&utm_medium=social »). Première ligne qui ne donne pas le prix le moins cher, ligne en allemand, 3 hashtags.
 - L'alcool est permis sur Facebook (comme Instagram). Pendant le défi de novembre, ajouter une ligne Krügerl-Challenge aux posts bière.
 - Programmé le 25/10 pour novembre : carrousel app (1/11), Cappuccino (3/11), Krügerl Neubau (5/11), carte à trous (7/11), Burger (10/11), Krügerl Fünfhaus (12/11), Schnitzel (14/11), G'spritzter (17/11), Latte (19/11), Döner (21/11), Cheapest Krügerl (24/11). Ensuite : continuer avec les posts Instagram/TikTok publiés 2 semaines plus tôt.
+- Ajouté le 25/10 (mêmes contenus qu'Instagram/TikTok, sans décalage quand c'est lié au défi) : bilan d'octobre (lun. 2/11 18 h, brouillon), lancement du défi (mer. 4/11 18 h), avancement (lun. 9, 16, 23/11 18 h, brouillons), post commerçants (jeu. 26/11), quiz cappuccino (sam. 28/11, brouillon), résultat (lun. 30/11, brouillon). Chaque brouillon Instagram du défi a son jumeau Facebook : les mettre à jour ensemble.
+- Pas repris sur Facebook : « What does a day in Vienna cost? » (8/10, il affiche des prix « typiques », donc des moyennes), le post commerçants version café (doublon), la grille cappuccino (prix de 3,00 € non vérifié).
 
 ## TikTok (compte howmuch.live, relié à Metricool)
 
