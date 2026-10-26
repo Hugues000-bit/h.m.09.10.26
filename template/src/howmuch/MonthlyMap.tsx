@@ -11,7 +11,8 @@ import { MONTH } from "./monthly-data";
 const BEAT = 15;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const MAP_X = 80;
-const MAP_Y = 770;
+const MAP_Y = 760;
+const MAP_S = 0.89; // safe band: map spans x 80–899, y 760–1396
 
 type Moves = { label: string; up: number; down: number }[];
 const moves = MONTH.moves as unknown as Moves;
@@ -44,10 +45,10 @@ const Lines: React.FC<{ k: string; label: string; lines: string[]; accent: strin
   const lf = f - from;
   const kinds = ["slam", "snapLeft", "rise"] as const;
   return (
-    <div style={{ position: "absolute", top: 300, left: 80, right: 80, opacity: out, transform: `translateY(${(1 - out) * -30}px)` }}>
+    <div style={{ position: "absolute", top: 300, left: 80, right: 180, opacity: out, transform: `translateY(${(1 - out) * -30}px)` }}>
       <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 32, letterSpacing: 6, color: BRAND.green, marginBottom: 18 }}>{typed(label, lf, 0, 12)}</div>
       {lines.map((ln, i) => (
-        <div key={i} style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: size, lineHeight: 1.04, letterSpacing: -3, color: BRAND.text, whiteSpace: "nowrap", ...entrance(kinds[i % 3], lf, i * 5, fps) }}>
+        <div key={i} style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: Math.min(size, Math.floor(820 / (ln.replace(/\*/g, "").length * 0.53))), lineHeight: 1.04, letterSpacing: -3, color: BRAND.text, whiteSpace: "nowrap", ...entrance(kinds[i % 3], lf, i * 5, fps) }}>
           <Accented text={ln} accent={accent} glow />
         </div>
       ))}
@@ -87,7 +88,7 @@ export const MonthlyMap: React.FC<{ theme?: Theme }> = ({ theme = "dark" }) => {
       {Object.keys(T.s).filter((k) => k !== "hook").map((k) => <Sfx key={k} at={at(k)} src={k === "zero" ? "glitch_002" : k === "end" ? "confirmation_002" : "maximize_006"} volume={0.45} />)}
 
       {/* map */}
-      <div style={{ position: "absolute", left: MAP_X, top: MAP_Y, width: MAP_W, height: MAP_H, opacity: 1 - 0.88 * endP, transform: `scale(${1 - 0.06 * endP})`, transformOrigin: "50% 40%" }}>
+      <div style={{ position: "absolute", left: MAP_X, top: MAP_Y, width: MAP_W, height: MAP_H, opacity: 1 - 0.88 * endP, transform: `scale(${MAP_S * (1 - 0.06 * endP)})`, transformOrigin: "0 0" }}>
         <svg width={MAP_W} height={MAP_H} viewBox={`0 0 ${MAP_W} ${MAP_H}`} style={{ overflow: "visible" }}>
           {DISTRICTS.map((d) => {
             const p = per[d.nr]?.prices ?? 0;
@@ -156,15 +157,15 @@ export const MonthlyMap: React.FC<{ theme?: Theme }> = ({ theme = "dark" }) => {
       {f >= at("end") - 4 && (
         <AbsoluteFill>
           <Bloom color={a(BRAND.green, 0.85 * (BRAND.glow as number))} start={at("end")} top={720} size={900} />
-          <div style={{ position: "absolute", top: 520, width: "100%", textAlign: "center", ...entrance("slam", f - at("end"), 0, fps, "center") }}>
+          <div style={{ position: "absolute", top: 520, left: 80, width: 820, textAlign: "center", ...entrance("slam", f - at("end"), 0, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 112, letterSpacing: -3, color: BRAND.text }}>Add <Accented text="*yours*." accent={BRAND.green} glow /></div>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 44, color: BRAND.muted, marginTop: 6 }}>Trag deinen Preis ein.</div>
           </div>
-          <div style={{ position: "absolute", top: 760, width: "100%", textAlign: "center", ...entrance("rise", f - at("end"), 6, fps, "center") }}>
+          <div style={{ position: "absolute", top: 760, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - at("end"), 6, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 96, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live</div>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 32, color: BRAND.muted, marginTop: 10 }}>link in bio · Link in Bio</div>
           </div>
-          <div style={{ position: "absolute", top: 1010, width: "100%", textAlign: "center", ...entrance("rise", f - at("end"), 12, fps, "center") }}>
+          <div style={{ position: "absolute", top: 1010, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - at("end"), 12, fps, "center") }}>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 40, letterSpacing: 2, color: BRAND.yellow }}>NEXT UPDATE · {MONTH.next_en.toUpperCase()}</div>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 30, color: BRAND.muted, marginTop: 8 }}>Nächstes Update: {MONTH.next_de}</div>
           </div>

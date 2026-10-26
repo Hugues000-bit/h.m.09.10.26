@@ -29,10 +29,10 @@ const Block: React.FC<{ from: number; to: number; label: string; lines: string[]
   const lf = f - from;
   const kinds = ["slam", "snapLeft", "rise"] as const;
   return (
-    <div style={{ position: "absolute", top: 300, left: 80, right: 80, opacity: out }}>
+    <div style={{ position: "absolute", top: 260, left: 80, right: 180, opacity: out }}>
       <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 32, letterSpacing: 6, color: BRAND.green, marginBottom: 18 }}>{typed(label, lf, 0, 12)}</div>
       {lines.map((ln, i) => (
-        <div key={i} style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: size, lineHeight: 1.04, letterSpacing: -3, color: BRAND.text, whiteSpace: "nowrap", ...entrance(kinds[i % 3], lf, i * 5, fps) }}>
+        <div key={i} style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: Math.min(size, Math.floor(820 / (ln.replace(/\*/g, "").length * 0.53))), lineHeight: 1.04, letterSpacing: -3, color: BRAND.text, whiteSpace: "nowrap", ...entrance(kinds[i % 3], lf, i * 5, fps) }}>
           <Accented text={ln} accent={accent} glow />
         </div>
       ))}
@@ -75,7 +75,7 @@ export const ClaimCard: React.FC<ClaimProps> = ({ theme = "dark", venue, item, p
       <Block from={CLAIM_AT} to={END_AT} label="FREE · GRATIS" lines={["Claim it.", "Check it."]} accent={BRAND.green} de="Übernimm deinen Eintrag." />
 
       {/* the listing card */}
-      <div style={{ position: "absolute", left: 120, right: 120, top: 860, opacity: cardIn * (1 - endP), transform: `translateY(${(1 - cardIn) * 120}px) scale(${0.96 + 0.04 * cardIn})` }}>
+      <div style={{ position: "absolute", left: 80, right: 180, top: 680, opacity: cardIn * (1 - endP), transform: `translateY(${(1 - cardIn) * 120}px) scale(${0.96 + 0.04 * cardIn})` }}>
         <div style={{ background: BRAND.card, border: `2px solid ${claimed > 0.5 ? BRAND.green : BRAND.border}`, borderRadius: 28, padding: "40px 44px", boxShadow: claimed > 0.5 ? `0 0 40px ${g(BRAND.green, 0.35)}` : "0 20px 60px rgba(0,0,0,0.25)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
@@ -95,15 +95,15 @@ export const ClaimCard: React.FC<ClaimProps> = ({ theme = "dark", venue, item, p
             {claimed > 0.5 ? "✓ confirmed by the owner · vom Lokal bestätigt" : "added by a guest · von einem Gast"}
           </div>
           {f < CLAIM_AT + 30 && f >= CARD_AT + 20 && (
-            <div style={{ position: "absolute", right: -30, top: -40, fontFamily: BRAND.heading, fontWeight: 700, fontSize: 110, color: BRAND.yellow, textShadow: `0 0 ${10 + 14 * qPulse}px ${g(BRAND.yellow, 0.7)}`, transform: `rotate(12deg) scale(${spring({ frame: f - CARD_AT - 20, fps, config: { damping: 8 } })})` }}>?</div>
+            <div style={{ position: "absolute", right: 16, top: -40, fontFamily: BRAND.heading, fontWeight: 700, fontSize: 110, color: BRAND.yellow, textShadow: `0 0 ${10 + 14 * qPulse}px ${g(BRAND.yellow, 0.7)}`, transform: `rotate(12deg) scale(${spring({ frame: f - CARD_AT - 20, fps, config: { damping: 8 } })})` }}>?</div>
           )}
         </div>
         {/* checklist */}
-        <div style={{ marginTop: 44 }}>
+        <div style={{ marginTop: 30 }}>
           {checks.map(([en, de], i) => {
             const p = interpolate(f - CLAIM_AT - 8 - i * 6, [0, 10], [0, 1], clamp);
             return (
-              <div key={en} style={{ display: "flex", gap: 22, alignItems: "baseline", marginBottom: 22, opacity: p, transform: `translateX(${(1 - p) * -30}px)` }}>
+              <div key={en} style={{ display: "flex", gap: 22, alignItems: "baseline", marginBottom: 14, opacity: p, transform: `translateX(${(1 - p) * -30}px)` }}>
                 <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 44, color: BRAND.green }}>✓</div>
                 <div>
                   <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 44, color: BRAND.text }}>{en}</div>
@@ -118,15 +118,15 @@ export const ClaimCard: React.FC<ClaimProps> = ({ theme = "dark", venue, item, p
       {f >= END_AT - 4 && (
         <AbsoluteFill>
           <Bloom color={a(BRAND.green, 0.85 * (BRAND.glow as number))} start={END_AT} top={720} size={900} />
-          <div style={{ position: "absolute", top: 480, width: "100%", textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 104, letterSpacing: -3, color: BRAND.text }}>Claim it. <Accented text="*Free.*" accent={BRAND.green} glow /></div>
+          <div style={{ position: "absolute", top: 480, left: 80, width: 820, textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 94, letterSpacing: -3, color: BRAND.text }}>Claim it. <Accented text="*Free.*" accent={BRAND.green} glow /></div>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 44, color: BRAND.muted, marginTop: 6 }}>Gratis. Kostenlos. Für immer.</div>
           </div>
-          <div style={{ position: "absolute", top: 720, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 84, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live/business</div>
+          <div style={{ position: "absolute", top: 720, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 68, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live/business</div>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 32, color: BRAND.muted, marginTop: 10 }}>link in bio · Link in Bio</div>
           </div>
-          <div style={{ position: "absolute", top: 960, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
+          <div style={{ position: "absolute", top: 960, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 60, color: BRAND.text }}>Tag a {venue.en} <Accented text="*owner*" accent={BRAND.yellow} /></div>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 30, color: BRAND.muted, marginTop: 8 }}>Markier einen Lokalbesitzer</div>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 84, color: BRAND.yellow, marginTop: 8, transform: `translateY(${Math.sin((f / fps) * Math.PI * 4) * 12}px)` }}>↓</div>

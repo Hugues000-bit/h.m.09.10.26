@@ -35,10 +35,10 @@ const NAME: Record<number, string> = {
   9: "Alsergrund", 10: "Favoriten", 11: "Simmering", 12: "Meidling", 13: "Hietzing", 14: "Penzing", 15: "Rudolfsheim-Fünfhaus",
   16: "Ottakring", 17: "Hernals", 18: "Währing", 19: "Döbling", 20: "Brigittenau", 21: "Floridsdorf", 22: "Donaustadt", 23: "Liesing",
 };
-const TILE = 146;
+const TILE = 131; // safe band: grid spans x 80–896, y 600–1416
 const GAP = 6;
-const GX = (1080 - (6 * TILE + 5 * GAP)) / 2;
-const GY = 690;
+const GX = 80;
+const GY = 600;
 
 export type CheapestProps = {
   theme?: Theme;
@@ -101,10 +101,10 @@ export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item
         const out = interpolate(f, [b.to - 6, b.to], [1, 0], clamp);
         const lf = f - b.from;
         return (
-          <div key={bi} style={{ position: "absolute", top: 250, left: 80, right: 80, opacity: out }}>
+          <div key={bi} style={{ position: "absolute", top: 240, left: 80, right: 180, opacity: out }}>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 32, letterSpacing: 5, color: bi === 2 ? BRAND.pink : BRAND.green, marginBottom: 14 }}>{b.label}</div>
             {b.lines.map((ln, i) => (
-              <div key={i} style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 104, lineHeight: 1.04, letterSpacing: -3, color: BRAND.text, whiteSpace: "nowrap", ...(bi === 0 ? {} : entrance(i ? "snapLeft" : "slam", lf, i * 4, fps)), fontSize: Math.min(104, Math.floor(920 / (ln.replace(/\*/g, "").length * 0.53))) }}>
+              <div key={i} style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 104, lineHeight: 1.04, letterSpacing: -3, color: BRAND.text, whiteSpace: "nowrap", ...(bi === 0 ? {} : entrance(i ? "snapLeft" : "slam", lf, i * 4, fps)), fontSize: Math.min(92, Math.floor(820 / (ln.replace(/\*/g, "").length * 0.53))) }}>
                 <Accented text={ln} accent={b.accent} glow />
               </div>
             ))}
@@ -137,7 +137,7 @@ export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item
               <div style={{ position: "absolute", top: 10, left: 12, fontFamily: BRAND.mono, fontWeight: 700, fontSize: 20, color: hole ? (holeOn ? BRAND.pink : BRAND.muted) : BRAND.text, opacity: dim }}>
                 {String(nr).padStart(2, "0")}
               </div>
-              <div style={{ position: "absolute", top: 50, left: 0, right: 0, textAlign: "center", fontFamily: BRAND.mono, fontWeight: 700, fontSize: d ? 44 : 56, lineHeight: 1,
+              <div style={{ position: "absolute", top: 46, left: 0, right: 0, textAlign: "center", fontFamily: BRAND.mono, fontWeight: 700, fontSize: d ? 40 : 52, lineHeight: 1,
                 color: d ? (isBest ? BRAND.green : BRAND.text) : holeOn ? BRAND.pink : BRAND.muted, opacity: d ? Math.min(1, p) * dim : 1,
                 transform: d ? `scale(${0.6 + 0.4 * Math.min(1, p)})` : undefined }}>
                 {d ? fmt(d.min) : "?"}
@@ -156,18 +156,18 @@ export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item
       {f >= END_AT - 4 && (
         <AbsoluteFill>
           <Bloom color={a(BRAND.green, 0.85 * (BRAND.glow as number))} start={END_AT} top={720} size={900} />
-          <div style={{ position: "absolute", top: 470, width: "100%", textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
+          <div style={{ position: "absolute", top: 470, left: 80, width: 820, textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 104, letterSpacing: -3, color: BRAND.text }}>
               <Accented text="*Save* this. 📌" accent={BRAND.green} glow />
             </div>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 42, color: BRAND.muted, marginTop: 6 }}>Speichern für den nächsten {itemDe}.</div>
           </div>
-          <div style={{ position: "absolute", top: 700, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
+          <div style={{ position: "absolute", top: 700, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 44, color: BRAND.text }}>Which place? →</div>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 92, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live</div>
           </div>
-          <div style={{ position: "absolute", top: 960, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 58, color: BRAND.text }}>
+          <div style={{ position: "absolute", top: 960, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 48, color: BRAND.text }}>
               {challenge ? <>Snap the menu. Comment <Accented text="*BEER*" accent={BRAND.yellow} glow /></> : <>Your Bezirk is a <Accented text="*?*" accent={BRAND.pink} glow /> Add one price.</>}
             </div>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 28, color: BRAND.muted, marginTop: 8 }}>{challenge ? "Foto von der Karte, fertig. Kommentier BEER → Link per DM" : "Dein Bezirk ist ein ? Trag einen Preis ein."}</div>

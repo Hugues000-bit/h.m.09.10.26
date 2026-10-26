@@ -12,7 +12,8 @@ const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 export const GAP_FRAMES = 270; // v2 (22 Oct): full map on frame 0, 9 s
 
 const MAP_X = 80;
-const MAP_Y = 770;
+const MAP_Y = 760;
+const MAP_S = 0.89; // safe band: map spans x 80–899, y 760–1396
 const ZERO_AT = 4 * BEAT; // 60
 const LOW_AT = 7 * BEAT; // 105
 const FIRST_AT = 10 * BEAT; // 150
@@ -32,7 +33,7 @@ const TextBlock: React.FC<{ b: Block }> = ({ b }) => {
   const lf = f - b.from;
   const kinds = ["slam", "snapLeft", "rise"] as const;
   return (
-    <div style={{ position: "absolute", top: 300, left: 80, right: 80, opacity: out, transform: `translateY(${(1 - out) * -30}px)` }}>
+    <div style={{ position: "absolute", top: 300, left: 80, right: 180, opacity: out, transform: `translateY(${(1 - out) * -30}px)` }}>
       {b.label && (
         <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 32, letterSpacing: 6, color: BRAND.green, marginBottom: 18 }}>
           {b.from === 0 ? b.label : typed(b.label, lf, 0, 12)}
@@ -44,7 +45,7 @@ const TextBlock: React.FC<{ b: Block }> = ({ b }) => {
           style={{
             fontFamily: BRAND.heading,
             fontWeight: 700,
-            fontSize: b.size ?? 118,
+            fontSize: Math.min(b.size ?? 118, Math.floor(820 / (ln.replace(/\*/g, "").length * 0.53))),
             lineHeight: 1.04,
             letterSpacing: -3,
             color: BRAND.text,
@@ -115,7 +116,7 @@ export const GapMap: React.FC<{ theme?: Theme; mode?: "places" | "kruegerl"; dat
       ))}
 
       {/* map */}
-      <div style={{ position: "absolute", left: MAP_X, top: MAP_Y, width: MAP_W, height: MAP_H, opacity: 1 - 0.88 * endP, transform: `scale(${1 - 0.06 * endP})`, transformOrigin: "50% 40%" }}>
+      <div style={{ position: "absolute", left: MAP_X, top: MAP_Y, width: MAP_W, height: MAP_H, opacity: 1 - 0.88 * endP, transform: `scale(${MAP_S * (1 - 0.06 * endP)})`, transformOrigin: "0 0" }}>
         <svg width={MAP_W} height={MAP_H} viewBox={`0 0 ${MAP_W} ${MAP_H}`} style={{ overflow: "visible" }}>
           {DISTRICTS.map((d) => {
             const at = fillAt(d.nr);
@@ -185,17 +186,17 @@ export const GapMap: React.FC<{ theme?: Theme; mode?: "places" | "kruegerl"; dat
       {f >= END_AT - 4 && (
         <AbsoluteFill>
           <Bloom color={a(BRAND.green, 0.85 * (BRAND.glow as number))} start={END_AT} top={720} size={900} />
-          <div style={{ position: "absolute", top: 520, width: "100%", textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 112, letterSpacing: -3, color: BRAND.text }}>
+          <div style={{ position: "absolute", top: 520, left: 80, width: 820, textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 100, letterSpacing: -3, color: BRAND.text }}>
               {K ? <>Snap the <Accented text="*menu*." accent={BRAND.green} glow /></> : <>Add <Accented text="*one*" accent={BRAND.green} glow /> price.</>}
             </div>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 44, color: BRAND.muted, marginTop: 6 }}>{K ? "Foto von der Karte, fertig. 20 Sekunden." : "Trag einen Preis ein."}</div>
           </div>
-          <div style={{ position: "absolute", top: 760, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
+          <div style={{ position: "absolute", top: 760, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 96, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live</div>
             <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 32, color: BRAND.muted, marginTop: 10 }}>link in bio · Link in Bio</div>
           </div>
-          <div style={{ position: "absolute", top: 1010, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
+          <div style={{ position: "absolute", top: 1010, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 64, color: BRAND.text }}>
               Comment <Accented text={K ? "*BEER*" : "your *Bezirk*"} accent={BRAND.yellow} />
             </div>

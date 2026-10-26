@@ -55,10 +55,11 @@ export const COPY_FUENFHAUS: PriceVideoCopy = {
 
 export const COPY_WEISSER: PriceVideoCopy = {
   ...base,
+  hookStyle: "proof",
   ctaSub: "📩 Send this to your Spritzer partner",
   ctaDe: "Schick's deinem Spritzer-Partner",
-  clash: "for a G'spritzter in Vienna.",
-  clashDe: "für einen G'spritzten in Wien.",
+  clash: "It still exists in Vienna.",
+  clashDe: "Den G'spritzten gibt's noch.",
   theme: "light",
   hookLabel: "WIEN · WEISSER SPRITZER",
   hookLines: ["The *cheapest*", "G'spritzter in", "Vienna costs…"],
@@ -76,10 +77,11 @@ export const COPY_WEISSER: PriceVideoCopy = {
 
 export const COPY_DOENER: PriceVideoCopy = {
   ...base,
+  hookStyle: "proof",
   ctaSub: "📩 Send this to your 2 am Döner buddy",
   ctaDe: "Schick's deinem Döner-Buddy",
-  clash: "for a Döner in Vienna.",
-  clashDe: "für einen Döner in Wien.",
+  clash: "The cheapest Döner in Vienna.",
+  clashDe: "Der billigste Döner in Wien.",
   theme: "light",
   hookLabel: "WIEN · DÖNER IM BROT",
   hookLines: ["The *cheapest*", "Döner in", "Vienna costs…"],
@@ -117,10 +119,11 @@ export const COPY_CAPPUCCINO: PriceVideoCopy = {
 
 export const COPY_BURGER: PriceVideoCopy = {
   ...base,
+  hookStyle: "proof",
   ctaSub: "📩 Send this to your burger buddy",
   ctaDe: "Schick's deinem Burger-Buddy",
-  clash: "for a burger in Vienna.",
-  clashDe: "für einen Burger in Wien.",
+  clash: "The cheapest burger in Vienna.",
+  clashDe: "Der billigste Burger in Wien.",
   hookLabel: "WIEN · BURGER",
   hookLines: ["*11 €* difference.", "Same burger.", "Same city."],
   hookDe: "11 € Unterschied. Gleicher Burger.",
@@ -137,10 +140,11 @@ export const COPY_BURGER: PriceVideoCopy = {
 
 export const COPY_SCHNITZEL: PriceVideoCopy = {
   ...base,
+  hookStyle: "proof",
   ctaSub: "📩 Send this to your Schnitzel crew",
   ctaDe: "Schick's deiner Schnitzel-Crew",
-  clash: "for a Schnitzel in Vienna.",
-  clashDe: "für ein Schnitzel in Wien.",
+  clash: "The cheapest Schnitzel in Vienna.",
+  clashDe: "Das billigste Schnitzel in Wien.",
   hookLabel: "WIEN · SCHNITZEL + SALAT",
   hookLines: ["*29\u00a0€* difference.", "For a Schnitzel.", "In Vienna."],
   hookDe: "29 € Unterschied für ein Schnitzel.",

@@ -54,10 +54,10 @@ export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, questio
       <Sfx at={CHEAP_AT} src="powerUp2" volume={0.4} />
       <Sfx at={END_AT} src="confirmation_002" volume={0.55} />
 
-      <div style={{ position: "absolute", top: 250, left: 80, right: 80, opacity: 1 - endP }}>
+      <div style={{ position: "absolute", top: 250, left: 80, right: 180, opacity: 1 - endP }}>
         <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 32, letterSpacing: 5, color: BRAND.green, marginBottom: 14 }}>{label}</div>
         {question.map((ln, i) => (
-          <div key={i} style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: Math.min(100, Math.floor(920 / (ln.replace(/\*/g, "").length * 0.52))), lineHeight: 1.04, letterSpacing: -3, color: BRAND.text, whiteSpace: "nowrap" }}>
+          <div key={i} style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: Math.min(100, Math.floor(820 / (ln.replace(/\*/g, "").length * 0.52))), lineHeight: 1.04, letterSpacing: -3, color: BRAND.text, whiteSpace: "nowrap" }}>
             <Accented text={ln} accent={BRAND.pink} glow />
           </div>
         ))}
@@ -65,14 +65,14 @@ export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, questio
       </div>
 
       {/* answers */}
-      <div style={{ position: "absolute", top: 760, left: 80, right: 80, opacity: 1 - endP }}>
+      <div style={{ position: "absolute", top: 720, left: 80, right: 180, opacity: 1 - endP }}>
         {options.map((o, i) => {
           const right = i === answer;
           const on = revealed && right;
           const off = revealed && !right;
           return (
             <div key={i} style={{
-              display: "flex", alignItems: "center", gap: 36, height: 150, marginBottom: 24, padding: "0 40px", borderRadius: 20,
+              display: "flex", alignItems: "center", gap: 36, height: 140, marginBottom: 20, padding: "0 32px", borderRadius: 20,
               border: `${on ? 5 : 3}px solid ${on ? BRAND.green : BRAND.border}`,
               background: on ? a(BRAND.green, 0.14) : a(BRAND.card, 0.7),
               boxShadow: on ? `0 0 40px ${g(BRAND.green, 0.5)}` : "none",
@@ -119,16 +119,16 @@ export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, questio
       {f >= END_AT - 4 && (
         <AbsoluteFill>
           <Bloom color={a(BRAND.green, 0.85 * (BRAND.glow as number))} start={END_AT} top={720} size={900} />
-          <div style={{ position: "absolute", top: 520, width: "100%", textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 92, letterSpacing: -3, color: BRAND.text }}>
+          <div style={{ position: "absolute", top: 520, left: 80, width: 820, textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 70, letterSpacing: -3, color: BRAND.text }}>
               Where's the <Accented text={`*${cheapest.replace(" ", " ")}*`} accent={BRAND.green} glow /> one?
             </div>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 42, color: BRAND.muted, marginTop: 6 }}>Wo gibt's den {itemDe} um {cheapest}?</div>
           </div>
-          <div style={{ position: "absolute", top: 760, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
+          <div style={{ position: "absolute", top: 760, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 96, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live</div>
           </div>
-          <div style={{ position: "absolute", top: 960, width: "100%", textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
+          <div style={{ position: "absolute", top: 960, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 56, color: BRAND.text }}>
               You got it? <span style={{ color: BRAND.yellow }}>A, B or C</span> 👇
             </div>

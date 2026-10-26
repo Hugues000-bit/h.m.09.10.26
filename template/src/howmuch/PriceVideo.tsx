@@ -57,6 +57,7 @@ export type PriceVideoCopy = {
   // Optional German sub-lines (small, muted) under the English hero text
   hookDe?: string;
   clash?: string; // line under the two prices, e.g. "for a Krügerl in Neubau."
+  hookStyle?: "guess" | "proof"; // guess (default): priciest shown, guess the cheapest. proof: cheapest shown first, guess the priciest
   clashDe?: string;
   dataDe?: string;
   pctDe?: string;
@@ -493,8 +494,12 @@ const Clash: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string>; st
   const pMax = 1; // static: frame 0 must equal the loop-back frame
   const revealed = f >= REVEAL;
   const pMin = revealed ? spring({ frame: f - REVEAL, fps, config: { damping: 11, stiffness: 280 } }) : 0;
-  const big: React.CSSProperties = { fontFamily: BRAND.mono, fontWeight: 700, fontSize: 210, lineHeight: 1, letterSpacing: -6, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" };
+  const big: React.CSSProperties = { fontFamily: BRAND.mono, fontWeight: 700, fontSize: 186, lineHeight: 1, letterSpacing: -6, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" };
   const clash = copy.clash ? fillTokens(copy.clash, tokens) : "";
+  const proof = copy.hookStyle === "proof";
+  // proof-first: the cheap price is the receipt on frame 0, the pricey one is the guess
+  const shown = proof ? { price: tokens.min, label: "CHEAPEST · BILLIGSTE", color: BRAND.green } : { price: tokens.max, label: "PRICIEST · TEUERSTE", color: BRAND.pink };
+  const hidden = proof ? { price: tokens.max, label: "PRICIEST · TEUERSTE", ask: "PRICIEST? GUESS ↓ · RATE MAL", color: BRAND.pink } : { price: tokens.min, label: "CHEAPEST · BILLIGSTE", ask: "CHEAPEST? GUESS ↓ · RATE MAL", color: BRAND.green };
   const blink = Math.floor(f / 6) % 2 === 0;
   return (
     <AbsoluteFill style={still ? { backgroundColor: BRAND.bg } : undefined}>
@@ -504,26 +509,26 @@ const Clash: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string>; st
       <div style={{ position: "absolute", top: 330, left: 80, fontFamily: BRAND.mono, fontWeight: 700, fontSize: 34, letterSpacing: 6, color: BRAND.green }}>
         {copy.hookLabel}
       </div>
-      <div style={{ position: "absolute", top: 420, left: 80, right: 80 }}>
-        <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 30, letterSpacing: 4, color: BRAND.muted, marginBottom: 6 }}>PRICIEST · TEUERSTE</div>
-        <div style={{ ...big, color: BRAND.pink, textShadow: `0 0 40px ${g(BRAND.pink, 0.45)}`, transform: `scale(${1.12 - 0.12 * Math.min(1, pMax)})`, transformOrigin: "left center" }}>
-          {tokens.max}
+      <div style={{ position: "absolute", top: 420, left: 80, right: 180 }}>
+        <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 30, letterSpacing: 4, color: BRAND.muted, marginBottom: 6 }}>{shown.label}</div>
+        <div style={{ ...big, color: shown.color, textShadow: `0 0 40px ${g(shown.color, 0.45)}`, transform: `scale(${1.12 - 0.12 * Math.min(1, pMax)})`, transformOrigin: "left center" }}>
+          {shown.price}
         </div>
-        <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 30, letterSpacing: 4, color: revealed ? BRAND.green : BRAND.yellow, margin: "34px 0 6px" }}>
-          {revealed ? "CHEAPEST · BILLIGSTE" : "CHEAPEST? GUESS ↓ · RATE MAL"}
+        <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 30, letterSpacing: 4, color: revealed ? hidden.color : BRAND.yellow, margin: "34px 0 6px" }}>
+          {revealed ? hidden.label : hidden.ask}
         </div>
-        <div style={{ position: "relative", height: 210 }}>
+        <div style={{ position: "relative", height: 186 }}>
           {!revealed && (
             <div style={{ ...big, position: "absolute", color: BRAND.yellow, opacity: blink ? 1 : 0.55, textShadow: `0 0 30px ${g(BRAND.yellow, 0.4)}` }}>?,?? €</div>
           )}
           {revealed && (
             <div style={{ position: "absolute", transform: `scale(${1.25 - 0.25 * Math.min(1, pMin)})`, transformOrigin: "left center" }}>
-              <Glitch text={tokens.min} active={f < REVEAL + 6} seed="clash" intensity={16}
-                style={{ ...big, color: BRAND.green, textShadow: `0 0 40px ${g(BRAND.green, 0.5)}` }} />
+              <Glitch text={hidden.price} active={f < REVEAL + 6} seed="clash" intensity={16}
+                style={{ ...big, color: hidden.color, textShadow: `0 0 40px ${g(hidden.color, 0.5)}` }} />
             </div>
           )}
         </div>
-        <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 72, lineHeight: 1.08, letterSpacing: -2, color: BRAND.text, marginTop: 40, whiteSpace: "nowrap", }}>
+        <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: Math.min(72, Math.floor(820 / (clash.length * 0.5))), lineHeight: 1.08, letterSpacing: -2, color: BRAND.text, marginTop: 40, whiteSpace: "nowrap", }}>
           <Accented text={clash} accent={BRAND.green} glow />
         </div>
         <Sub text={copy.clashDe ? fillTokens(copy.clashDe, tokens) : copy.hookDe} style={{ marginTop: 14, fontSize: 44 }} />
@@ -843,8 +848,8 @@ const Punch: React.FC<{ points: PricePoint[]; copy: PriceVideoCopy; tokens: Reco
         style={{
           position: "absolute",
           top: solo ? 500 : 430,
-          left: 0,
-          right: 0,
+          left: 80,
+          right: 180,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
@@ -1008,7 +1013,7 @@ const EndCard: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> }
         style={{
           position: "absolute",
           top: 560,
-          width: "100%",
+          left: 80, width: 820,
           textAlign: "center",
           ...entrance("slam", f, 0, fps, "center"),
         }}
@@ -1032,7 +1037,7 @@ const EndCard: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> }
         style={{
           position: "absolute",
           top: 760,
-          width: "100%",
+          left: 80, width: 820,
           textAlign: "center",
           fontFamily: BRAND.mono,
           fontWeight: 500,
@@ -1058,8 +1063,8 @@ const EndCard: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> }
         }}
       />
 
-      <div style={{ position: "absolute", top: 960, width: "100%", textAlign: "center", ...entrance("rise", f, CTA_AT, fps, "center") }}>
-        <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 84, letterSpacing: -2, color: BRAND.text, whiteSpace: "nowrap" }}>
+      <div style={{ position: "absolute", top: 960, left: 80, width: 820, textAlign: "center", ...entrance("rise", f, CTA_AT, fps, "center") }}>
+        <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 70, letterSpacing: -2, color: BRAND.text, whiteSpace: "nowrap" }}>
           <Accented text={fillTokens(copy.ctaQuestion, { ...tokens, min: tokens.min.replace(" ", "\u00a0"), max: tokens.max.replace(" ", "\u00a0") })} accent={BRAND.yellow} />
         </div>
         <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 32, color: BRAND.muted, marginTop: 14 }}>
@@ -1084,7 +1089,7 @@ const EndCard: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> }
         style={{
           position: "absolute",
           top: 1420,
-          width: "100%",
+          left: 80, width: 820,
           textAlign: "center",
           fontFamily: BRAND.mono,
           fontWeight: 500,
