@@ -150,6 +150,7 @@ Plan complet dans le document du projet `claude/howmuch-defi-krugerl-novembre.md
 - Mêmes vidéos que les Reels quand le produit est sans alcool, sinon des vidéos dédiées (fichiers `tt-*`).
 - `providers: [{"network":"tiktok"}]`, et **`tiktokData.title` est obligatoire** (la question courte, par exemple « Schnitzel in Vienna: 10,90 € or 39,90 €? »). `isAigc: false`, `privacyOption: "PUBLIC_TO_EVERYONE"`.
 - Légende comme une recherche : le mot-clé au début (« schnitzel prices in vienna: … »), puis « where's the X one? → howmuch.live », une ligne en allemand et 5 hashtags au plus. Pas de « link in bio » (lien de profil limité sur TikTok) ni de mot-clé ManyChat (Instagram seulement).
+- **Carrousel photo TikTok : images en JPEG ou WebP uniquement** (TikTok refuse le PNG : « The 'image/png' type is not allowed »). Instagram et Facebook acceptent le PNG.
 - Pour les grandes fourchettes de prix (plus de 12 €), le template regroupe les prix par tranches de 1 à 2 € pour que les points restent lisibles.
 
 ## Bilan mensuel (composition `Monthly`, `MonthlyMap.tsx`)
