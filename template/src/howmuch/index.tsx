@@ -7,6 +7,8 @@ import { MonthlyMap, MONTHLY_FRAMES } from "./MonthlyMap";
 import { ClaimCard, CLAIM_FRAMES } from "./ClaimCard";
 import { CheapestMap, CHEAPEST_FRAMES } from "./CheapestMap";
 import { PriceQuiz, QUIZ_FRAMES } from "./PriceQuiz";
+import { ReceiptFact, RECEIPT_FRAMES } from "./ReceiptFact";
+import { TierList, TIER_FRAMES } from "./TierList";
 import { AustriaMonthly, AUSTRIA_FRAMES } from "./AustriaMonthly";
 import { COPY_NEUBAU, COPY_FUENFHAUS, COPY_WEISSER, COPY_DOENER, COPY_CAPPUCCINO, COPY_BURGER, COPY_SCHNITZEL, COPY_LATTE } from "./copy-week";
 
@@ -50,6 +52,26 @@ const Root: React.FC = () => (
     <Composition id="QuizSchnitzel" component={PriceQuiz} durationInFrames={QUIZ_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "light" as const, label: "QUIZ · WIEN · SCHNITZEL", question: ["The *priciest*", "Schnitzel in Vienna?"], questionDe: "Das teuerste Schnitzel in Wien?",
         options: ["24,90 €", "32,90 €", "39,90 €"], answer: 2, answerLine: "39,90 € for one Schnitzel.", answerDe: "39,90 € für ein Schnitzel.", cheapest: "10,90 €", n: 50, item: "Schnitzel", itemDe: "Schnitzel" }} />
+    {/* Surprising facts (receipt) + tier lists, 5 Nov 2026 data */}
+    <Composition id="ReceiptCappuccino" component={ReceiptFact} durationInFrames={RECEIPT_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, label: "WIEN · CAPPUCCINO", hook: ["Cheapest *and* priciest", "cappuccino in Vienna:", "same Bezirk?"], hookDe: "Billigster und teuerster Cappuccino: selber Bezirk?",
+        lines: [{ label: "CAPPUCCINO", sub: "cheapest in Vienna · billigster", price: "2,30 €", tone: "green" as const }, { label: "CAPPUCCINO", sub: "priciest in Vienna · teuerster", price: "7,50 €", tone: "pink" as const }],
+        stampTop: "SAME BEZIRK", stampMain: "INNERE STADT", totalLabel: "DIFFERENCE", total: "+226 %", punch: ["Same Bezirk.", "*3×* the price."], punchDe: "Gleicher Bezirk. Dreifacher Preis.",
+        cta: "Where's the *2,30\u00a0€* one?", ctaDe: "Wo gibt's den Cappuccino um 2,30 €?", ctaSub: "📩 Send this to your coffee buddy", footer: "latest price per place · 119 places · 5 Nov 2026" }} />
+    <Composition id="ReceiptHotChocolate" component={ReceiptFact} durationInFrames={RECEIPT_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "light" as const, label: "WIEN · HEISSE SCHOKOLADE", hook: ["Hot chocolate in Vienna:", "how much is *too* much?"], hookDe: "Heiße Schokolade: Wie viel ist zu viel?",
+        lines: [{ label: "HOT CHOCOLATE", sub: "cheapest in Vienna · billigste", price: "1,90 €", tone: "green" as const }, { label: "HOT CHOCOLATE", sub: "priciest in Vienna · teuerste", price: "8,50 €", tone: "pink" as const }],
+        stampTop: "SAME BEZIRK", stampMain: "INNERE STADT", totalLabel: "DIFFERENCE", total: "+347 %", punch: ["Same cup.", "*4,5×* the price."], punchDe: "Gleiche Tasse. 4,5-facher Preis.",
+        cta: "Where's the *1,90\u00a0€* one?", ctaDe: "Wo gibt's die heiße Schokolade um 1,90 €?", ctaSub: "📩 Send this to whoever is always cold", footer: "latest price per place · 29 places · 5 Nov 2026" }} />
+    <Composition id="ReceiptSchnitzel" component={ReceiptFact} durationInFrames={RECEIPT_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, label: "WIEN · SCHNITZEL MIT SALAT", hook: ["*1* Schnitzel or *3*?", "Same money."], hookDe: "1 Schnitzel oder 3? Gleiches Geld.",
+        lines: [{ label: "1 × SCHNITZEL", sub: "priciest in Vienna · teuerstes", price: "39,90 €", tone: "pink" as const }, { label: "3 × SCHNITZEL", sub: "cheapest in Vienna · billigstes", price: "32,70 €", tone: "green" as const }],
+        stampTop: "SAME MONEY", stampMain: "3 SCHNITZEL", totalLabel: "CHANGE · RÜCKGELD", total: "7,20 €", punch: ["Same money.", "*3* Schnitzel."], punchDe: "Gleiches Geld. 3 Schnitzel.",
+        cta: "Where's the *10,90\u00a0€* one?", ctaDe: "Wo gibt's das Schnitzel um 10,90 €?", ctaSub: "📩 Send this to your Schnitzel crew", footer: "with salad · latest price per place · 53 places · 5 Nov 2026" }} />
+    <Composition id="TierEspresso" component={TierList} durationInFrames={TIER_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, set: "ESPRESSO" as const, item: "espresso", itemDe: "Espresso", label: "WIEN · ESPRESSO", cut: [2.0, 2.5, 3.0] as [number, number, number], ctaSub: "📩 Send this to someone from a C Bezirk" }} />
+    <Composition id="TierKruegerl" component={TierList} durationInFrames={TIER_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "light" as const, set: "KRUEGERL" as const, item: "Krügerl", itemDe: "Krügerl", label: "WIEN · KRÜGERL 0,5 L", cut: [4.4, 4.5, 5.0] as [number, number, number], ctaSub: "📩 Send this to your Krügerl crew" }} />
     {/* November 2026 Krügerl challenge */}
     <Composition id="GapKruegerl" component={GapMap} durationInFrames={GAP_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, mode: "kruegerl" as const, date: "23 Oct 2026" }} />
