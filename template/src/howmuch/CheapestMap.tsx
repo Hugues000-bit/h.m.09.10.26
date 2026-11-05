@@ -10,11 +10,11 @@ import { CHEAPEST } from "./cheapest-data";
 
 const BEAT = 15;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-export const CHEAPEST_FRAMES = 270;
+export const CHEAPEST_FRAMES = 330; // v3 pace (5 Nov), 11 s
 const FILL_AT = 8;
-const TOP_AT = 4 * BEAT; // 60
-const HOLES_AT = 8 * BEAT; // 120
-const END_AT = 13 * BEAT; // 195
+const TOP_AT = 5 * BEAT; // 75
+const HOLES_AT = 10 * BEAT; // 150
+const END_AT = 16 * BEAT; // 240
 
 // [Bezirk, column, row] — approximate geography on a 6 x 6 grid
 const GRID: [number, number, number][] = [

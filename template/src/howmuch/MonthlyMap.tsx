@@ -24,13 +24,13 @@ const T = (() => {
   let t = 0;
   const s: Record<string, [number, number]> = {};
   const add = (k: string, beats: number) => { s[k] = [t, t + beats * BEAT]; t += beats * BEAT; };
-  add("hook", 4);
-  add("totals", 6);
-  add("top", 6);
-  if (moves.length) add("moves", 6);
-  if (owner > 0) add("owner", 4);
-  add("zero", 5);
-  add("end", 6);
+  add("hook", 5); // v2 pace (5 Nov)
+  add("totals", 8);
+  add("top", 8);
+  if (moves.length) add("moves", 8);
+  if (owner > 0) add("owner", 5);
+  add("zero", 7);
+  add("end", 7);
   return { s, total: t };
 })();
 export const MONTHLY_FRAMES = T.total;

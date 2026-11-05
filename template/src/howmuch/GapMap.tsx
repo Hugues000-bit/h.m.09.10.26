@@ -9,15 +9,15 @@ import { CHEAPEST } from "./cheapest-data";
 
 const BEAT = 15;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-export const GAP_FRAMES = 270; // v2 (22 Oct): full map on frame 0, 9 s
+export const GAP_FRAMES = 345; // v3 pace (5 Nov): full map on frame 0, 11,5 s
 
 const MAP_X = 80;
 const MAP_Y = 760;
 const MAP_S = 0.89; // safe band: map spans x 80–899, y 760–1396
-const ZERO_AT = 4 * BEAT; // 60
-const LOW_AT = 7 * BEAT; // 105
-const FIRST_AT = 10 * BEAT; // 150
-const END_AT = 13 * BEAT; // 195
+const ZERO_AT = 5 * BEAT; // 75
+const LOW_AT = 9 * BEAT; // 135
+const FIRST_AT = 13 * BEAT; // 195
+const END_AT = 17 * BEAT; // 255
 const LOW_MAX_PLACES = 5; // 1–5 places = "almost empty"
 const LOW_MAX_KRUEGERL = 2; // challenge: 1–2 Krügerl places = "barely there" (goal: 3 per Bezirk)
 // small central Bezirke: number only, nudged so they don't overlap

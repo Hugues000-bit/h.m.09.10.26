@@ -8,10 +8,10 @@ import { DISTRICTS } from "./gapmap-data";
 
 const BEAT = 15;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-export const CLAIM_FRAMES = 300;
-const CARD_AT = 4 * BEAT; // 60
-const CLAIM_AT = 10 * BEAT; // 150
-const END_AT = 15 * BEAT; // 225
+export const CLAIM_FRAMES = 375; // v3 pace (5 Nov), 12,5 s
+const CARD_AT = 5 * BEAT; // 75
+const CLAIM_AT = 13 * BEAT; // 195
+const END_AT = 19 * BEAT; // 285
 
 export type ClaimProps = {
   theme?: Theme;

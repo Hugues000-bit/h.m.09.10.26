@@ -7,11 +7,12 @@ import { BRAND, a, g, applyTheme, loadBrandFonts, Theme } from "./brand";
 import { Accented, Backdrop, Bloom, Glitch, Sfx, Sub, entrance } from "./PriceVideo";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-export const QUIZ_FRAMES = 270;
-const COUNT_AT = 40; // 3 · 2 · 1, 25 frames each
-const REVEAL = 115;
-const CHEAP_AT = 165;
-const END_AT = 205;
+export const QUIZ_FRAMES = 330; // v2 pace (5 Nov), 11 s
+const COUNT_AT = 60; // 3 · 2 · 1, TICK frames each
+const TICK = 30;
+const REVEAL = COUNT_AT + 3 * TICK; // 150
+const CHEAP_AT = 210;
+const END_AT = 260;
 
 export type QuizProps = {
   theme?: Theme;
@@ -38,8 +39,8 @@ export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, questio
   }, [h]);
 
   const revealed = f >= REVEAL;
-  const count = f >= COUNT_AT && f < REVEAL ? 3 - Math.floor((f - COUNT_AT) / 25) : null;
-  const countP = count ? spring({ frame: (f - COUNT_AT) % 25, fps, config: { damping: 10, stiffness: 300 } }) : 0;
+  const count = f >= COUNT_AT && f < REVEAL ? 3 - Math.floor((f - COUNT_AT) / TICK) : null;
+  const countP = count ? spring({ frame: (f - COUNT_AT) % TICK, fps, config: { damping: 10, stiffness: 300 } }) : 0;
   const pAns = revealed ? spring({ frame: f - REVEAL, fps, config: { damping: 10, stiffness: 260 } }) : 0;
   const cheapIn = f >= CHEAP_AT ? spring({ frame: f - CHEAP_AT, fps, config: { damping: 12, stiffness: 240 } }) : 0;
   const endP = interpolate(f, [END_AT - 4, END_AT + 8], [0, 1], clamp);
@@ -49,7 +50,7 @@ export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, questio
     <AbsoluteFill style={{ backgroundColor: BRAND.bg }}>
       <Backdrop />
       <Sfx at={1} src="impactPlate_heavy_001" volume={0.4} />
-      {[0, 1, 2].map((i) => <Sfx key={i} at={COUNT_AT + i * 25} src="tick_002" volume={0.55} />)}
+      {[0, 1, 2].map((i) => <Sfx key={i} at={COUNT_AT + i * TICK} src="tick_002" volume={0.55} />)}
       <Sfx at={REVEAL} src="glitch_002" volume={0.7} />
       <Sfx at={CHEAP_AT} src="powerUp2" volume={0.4} />
       <Sfx at={END_AT} src="confirmation_002" volume={0.55} />

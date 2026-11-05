@@ -82,13 +82,13 @@ const TONE = new Proxy({} as Record<Tone, string>, { get: (_, k: string) => BRAN
 
 // Scene lengths are chosen so every scene starts on a beat:
 // S1 0 · S2 75 (beat 5) · S3 180 (beat 12) · S4 240 (beat 16) · end 300
-const S1 = 72; // REVEAL at 30 + 1.2 s to read the cheapest price
+const S1 = 102; // v4 pace (5 Nov): REVEAL at 42 + 2 s to read
 const T1 = 12;
-const S2 = 80;
+const S2 = 100;
 const T2 = 12;
-const S3 = 62;
+const S3 = 88;
 const T3 = 10;
-const S4 = 60;
+const S4 = 75;
 const START = { s2: S1 - T1, s3: S1 - T1 + S2 - T2, s4: S1 - T1 + S2 - T2 + S3 - T3 };
 
 const fillTokens = (s: string, t: Record<string, string>) =>
@@ -485,7 +485,7 @@ const Hook: React.FC<{ copy: PriceVideoCopy }> = ({ copy }) => {
 // Scene 1 (v3, 19 Oct 2026) — viral-format rules: payoff before 1.7 s, a guess to comment, a frame-0 cover that teases.
 // Frame 0: the PRICIEST price (shock) + "?,?? €" for the cheapest. At REVEAL the cheapest drops in.
 // The same frame-0 layout comes back at the very end, so the video loops seamlessly (replays count).
-const REVEAL = 30; // 1 s
+const REVEAL = 42; // 1,4 s
 const Clash: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string>; still?: boolean }> = ({ copy, tokens, still }) => {
   const cf = useCurrentFrame();
   const f = still ? 0 : cf;
@@ -1119,7 +1119,7 @@ const LoopBack: React.FC<{ copy: PriceVideoCopy; tokens: Record<string, string> 
   );
 };
 
-export const PRICE_VIDEO_FRAMES = S1 + S2 + S3 + S4 - T1 - T2 - T3; // 240 (8 s)
+export const PRICE_VIDEO_FRAMES = S1 + S2 + S3 + S4 - T1 - T2 - T3; // 331 (11 s, v4 pace)
 
 export const PriceVideo: React.FC<PriceVideoProps> = ({ points, copy }) => {
   applyTheme(copy.theme ?? "dark");
