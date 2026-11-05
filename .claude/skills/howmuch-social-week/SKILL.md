@@ -179,7 +179,7 @@ Contenu : Bezirke actifs du mois (+prix, +lieux), top 5 avec barres, hausses et 
 
 ## Bilan Autriche (composition `AustriaMonthly`, `AustriaMonthly.tsx`, prêt le 5/11/2026)
 
-Remplace ou complète le `Monthly` de Vienne quand une autre ville bouge (Graz : relevés de Sophia). Premier usage prévu : **lun. 7 décembre 2026** (bilan de novembre). Environ 13,5 s, sombre, boucle parfaite.
+Remplace ou complète le `Monthly` de Vienne quand une autre ville bouge (Graz : relevés de Sophia). Premier usage prévu : **lun. 7 décembre 2026** (bilan de novembre). Environ 14 s (rythme du 5/11), sombre, boucle parfaite.
 Déroulé : image 0 = carte de l'Autriche, villes allumées + accroche ; la caméra plonge dans Vienne (lieux en points, verts = nouveaux ou prix ajoutés dans le mois) ; puis dans chaque autre ville avec **au moins 10 nouveaux prix** (« NEW · GRAZ » si tous ses lieux sont nouveaux) ; les villes plus petites passent dans un bloc « Also new · Auch neu » sans zoom ; fin « Is yours next? · howmuch.live · Next update ». Accroche automatique : « Not just Vienna anymore. » s'il y a au moins une autre ville zoomée, sinon « What changed on the map? ».
 1. Requête du mois (remplacer les dates) :
    ```sql

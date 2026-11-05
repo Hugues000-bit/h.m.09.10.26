@@ -42,7 +42,7 @@ const T = (() => {
   let t = 0;
   const s: { k: string; from: number; to: number; city?: City }[] = [];
   const add = (k: string, beats: number, city?: City) => { s.push({ k, from: t, to: t + beats * BEAT, city }); t += beats * BEAT; };
-  add("hook", 4);
+  add("hook", 5); // 1 s + 0,3 s per English word (pace rule of 5 Nov)
   zooms.forEach((c) => add("city", 6, c));
   if (minors.length) add("minor", 4);
   add("end", 7);
