@@ -124,7 +124,7 @@ export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, questio
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 70, letterSpacing: -3, color: BRAND.text }}>
               Where's the <Accented text={`*${cheapest.replace(" ", " ")}*`} accent={BRAND.green} glow /> one?
             </div>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 42, color: BRAND.muted, marginTop: 6 }}>Wo gibt's den {itemDe} um {cheapest}?</div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 42, color: BRAND.muted, marginTop: 6 }}>Wo gibt's {itemDe} um {cheapest}?</div>
           </div>
           <div style={{ position: "absolute", top: 760, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 96, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live</div>

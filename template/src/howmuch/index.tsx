@@ -38,6 +38,18 @@ const Root: React.FC = () => (
       defaultProps={{ theme: "light" as const, set: "CAPPUCCINO" as const, item: "cappuccino", itemDe: "Cappuccino", label: "WIEN · CAPPUCCINO" }} />
     {/* Monthly recap, all Austria (from Dec 2026) */}
     <Composition id="AustriaMonthly" component={AustriaMonthly} durationInFrames={AUSTRIA_FRAMES} fps={30} width={1080} height={1920} defaultProps={{ theme: "dark" as const }} />
+    {/* November 2026 maps (no alcohol, TikTok + Instagram) */}
+    <Composition id="CheapestSchnitzel" component={CheapestMap} durationInFrames={CHEAPEST_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, set: "SCHNITZEL" as const, item: "Schnitzel", itemDe: "Schnitzel", label: "WIEN · SCHNITZEL MIT SALAT" }} />
+    <Composition id="CheapestPizza" component={CheapestMap} durationInFrames={CHEAPEST_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "light" as const, set: "PIZZA" as const, item: "pizza", itemDe: "Pizza", label: "WIEN · PIZZA" }} />
+    <Composition id="CheapestEspresso" component={CheapestMap} durationInFrames={CHEAPEST_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, set: "ESPRESSO" as const, item: "espresso", itemDe: "Espresso", label: "WIEN · ESPRESSO" }} />
+    <Composition id="CheapestBurger" component={CheapestMap} durationInFrames={CHEAPEST_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "light" as const, set: "BURGER" as const, item: "burger", itemDe: "Burger", label: "WIEN · BURGER" }} />
+    <Composition id="QuizSchnitzel" component={PriceQuiz} durationInFrames={QUIZ_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "light" as const, label: "QUIZ · WIEN · SCHNITZEL", question: ["The *priciest*", "Schnitzel in Vienna?"], questionDe: "Das teuerste Schnitzel in Wien?",
+        options: ["24,90 €", "32,90 €", "39,90 €"], answer: 2, answerLine: "39,90 € for one Schnitzel.", answerDe: "39,90 € für ein Schnitzel.", cheapest: "10,90 €", n: 50, item: "Schnitzel", itemDe: "Schnitzel" }} />
     {/* November 2026 Krügerl challenge */}
     <Composition id="GapKruegerl" component={GapMap} durationInFrames={GAP_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, mode: "kruegerl" as const, date: "23 Oct 2026" }} />

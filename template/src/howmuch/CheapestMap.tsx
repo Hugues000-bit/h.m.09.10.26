@@ -137,7 +137,7 @@ export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item
               <div style={{ position: "absolute", top: 10, left: 12, fontFamily: BRAND.mono, fontWeight: 700, fontSize: 20, color: hole ? (holeOn ? BRAND.pink : BRAND.muted) : BRAND.text, opacity: dim }}>
                 {String(nr).padStart(2, "0")}
               </div>
-              <div style={{ position: "absolute", top: 46, left: 0, right: 0, textAlign: "center", fontFamily: BRAND.mono, fontWeight: 700, fontSize: d ? 40 : 52, lineHeight: 1,
+              <div style={{ position: "absolute", top: 46, left: 0, right: 0, textAlign: "center", fontFamily: BRAND.mono, fontWeight: 700, fontSize: d ? (fmt(d.min).length > 4 ? 34 : 40) : 52, lineHeight: 1,
                 color: d ? (isBest ? BRAND.green : BRAND.text) : holeOn ? BRAND.pink : BRAND.muted, opacity: d ? Math.min(1, p) * dim : 1,
                 transform: d ? `scale(${0.6 + 0.4 * Math.min(1, p)})` : undefined }}>
                 {d ? fmt(d.min) : "?"}
