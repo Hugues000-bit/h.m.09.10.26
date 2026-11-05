@@ -7,6 +7,7 @@ import { MonthlyMap, MONTHLY_FRAMES } from "./MonthlyMap";
 import { ClaimCard, CLAIM_FRAMES } from "./ClaimCard";
 import { CheapestMap, CHEAPEST_FRAMES } from "./CheapestMap";
 import { PriceQuiz, QUIZ_FRAMES } from "./PriceQuiz";
+import { AustriaMonthly, AUSTRIA_FRAMES } from "./AustriaMonthly";
 import { COPY_NEUBAU, COPY_FUENFHAUS, COPY_WEISSER, COPY_DOENER, COPY_CAPPUCCINO, COPY_BURGER, COPY_SCHNITZEL, COPY_LATTE } from "./copy-week";
 
 const V = [
@@ -35,6 +36,8 @@ const Root: React.FC = () => (
       defaultProps={{ theme: "dark" as const, set: "KRUEGERL" as const, item: "Krügerl", itemDe: "Krügerl", label: "WIEN · KRÜGERL 0,5 L" }} />
     <Composition id="CheapestCappuccino" component={CheapestMap} durationInFrames={CHEAPEST_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "light" as const, set: "CAPPUCCINO" as const, item: "cappuccino", itemDe: "Cappuccino", label: "WIEN · CAPPUCCINO" }} />
+    {/* Monthly recap, all Austria (from Dec 2026) */}
+    <Composition id="AustriaMonthly" component={AustriaMonthly} durationInFrames={AUSTRIA_FRAMES} fps={30} width={1080} height={1920} defaultProps={{ theme: "dark" as const }} />
     {/* November 2026 Krügerl challenge */}
     <Composition id="GapKruegerl" component={GapMap} durationInFrames={GAP_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, mode: "kruegerl" as const, date: "23 Oct 2026" }} />

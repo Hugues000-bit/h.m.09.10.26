@@ -15,7 +15,7 @@ Réponds à Hugues en français, direct et honnête.
 - **Template vidéo** : dépôt GitHub `Hugues000-bit/h.m.09.10.26`, dossier `template/` (Remotion 4.0.484, React 18). Ajouter le dépôt avec `add_repo` (accès push), cloner, `npm install` dans `template/`.
 - **Hébergement des médias** : même dépôt, dossier `AAAA-MM/`. Les liens publics sont `https://raw.githubusercontent.com/Hugues000-bit/h.m.09.10.26/main/<chemin>`. Toujours donner un **nouveau nom de fichier** à une version refaite (suffixe `-vMMDD`), sinon le cache renvoie l'ancienne.
 - **Programmation** : connecteur Metricool, marque `blogId 7319232` (Instagram howmuch.live), fuseau `Europe/Vienna`. Metricool copie les médias chez lui au moment de la programmation.
-- **Rendu** : `npx remotion render src/howmuch/index.tsx <Id> out.mp4 --codec=h264 --crf=18 --browser-executable=<chromium headless_shell>`. Dans l'espace cloud : `/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell`. Couvertures : `npx remotion still ... --frame=N` avec N = 0 pour `PriceVideo`, 0 pour `GapMap` / `GapKruegerl`, 55 pour `CheapestKruegerl` / `CheapestCappuccino` / `ChallengeKruegerl`, 0 pour `QuizCappuccino`, 120 pour `Monthly`, 240 pour `ClaimBar`/`ClaimCafe`.
+- **Rendu** : `npx remotion render src/howmuch/index.tsx <Id> out.mp4 --codec=h264 --crf=18 --browser-executable=<chromium headless_shell>`. Dans l'espace cloud : `/opt/pw-browsers/chromium_headless_shell-*/chrome-linux/headless_shell`. Couvertures : `npx remotion still ... --frame=N` avec N = 0 pour `PriceVideo`, 0 pour `GapMap` / `GapKruegerl`, 55 pour `CheapestKruegerl` / `CheapestCappuccino` / `ChallengeKruegerl`, 0 pour `QuizCappuccino`, 120 pour `Monthly`, 0 pour `AustriaMonthly`, 240 pour `ClaimBar`/`ClaimCafe`.
 
 ## Données : les règles
 
@@ -176,6 +176,26 @@ Contenu : Bezirke actifs du mois (+prix, +lieux), top 5 avec barres, hausses et 
    `place_prices.created_at` = date du prix (les imports sont antidatés), pas la date de saisie.
 3. Prix confirmés par les commerçants : `count(*) where submitted_as_owner and created_at` dans le mois. Hausses et baisses : comparer seulement le **même lieu + produit + variante** (`lag(price) over (partition by place_id, product, coalesce(variant,'') order by created_at)`). Jamais de moyenne de la ville : elle bouge selon les lieux ajoutés, pas selon les vrais prix.
 4. Écrire `template/data/monthly/AAAA-MM.json` (voir 2026-10.json), lancer `python3 -I scripts/monthly_data.py data/monthly/AAAA-MM.json`, rendre `Monthly` (couverture frame 120). Les blocs « hausses/baisses » et « confirmés par les commerçants » n'apparaissent que s'il y a des données.
+
+## Bilan Autriche (composition `AustriaMonthly`, `AustriaMonthly.tsx`, prêt le 5/11/2026)
+
+Remplace ou complète le `Monthly` de Vienne quand une autre ville bouge (Graz : relevés de Sophia). Premier usage prévu : **lun. 7 décembre 2026** (bilan de novembre). Environ 13,5 s, sombre, boucle parfaite.
+Déroulé : image 0 = carte de l'Autriche, villes allumées + accroche ; la caméra plonge dans Vienne (lieux en points, verts = nouveaux ou prix ajoutés dans le mois) ; puis dans chaque autre ville avec **au moins 10 nouveaux prix** (« NEW · GRAZ » si tous ses lieux sont nouveaux) ; les villes plus petites passent dans un bloc « Also new · Auch neu » sans zoom ; fin « Is yours next? · howmuch.live · Next update ». Accroche automatique : « Not just Vienna anymore. » s'il y a au moins une autre ville zoomée, sinon « What changed on the map? ».
+1. Requête du mois (remplacer les dates) :
+   ```sql
+   with r as (select round(p.lat::numeric,4) lat, round(p.lng::numeric,4) lng,
+    (p.created_at >= timestamptz 'AAAA-MM-01 00:00 Europe/Vienna' and p.created_at < timestamptz 'FIN 00:00 Europe/Vienna')::int np,
+    count(pp.id) filter (where pp.created_at >= timestamptz 'AAAA-MM-01 00:00 Europe/Vienna' and pp.created_at < timestamptz 'FIN 00:00 Europe/Vienna') pr
+   from places p join place_prices pp on pp.place_id=p.id and pp.status='active'
+   where p.status='active' and p.lat between 46.3 and 49.1 and p.lng between 9.4 and 17.2 group by p.id)
+   select count(*) n, string_agg(lat||','||lng||','||np||','||pr, ';') s from r
+   ```
+2. Coller `s` dans `points` de `template/data/austria/AAAA-MM.json` (modèle : `2026-11.json`, données partielles du 1er au 5/11), avec `month_*` et `next_*`.
+3. `python3 -I scripts/austria_data.py data/austria/AAAA-MM.json` : chaque lieu va à la ville la plus proche dans son rayon (liste `CITIES` du script : ajouter une ville au besoin). Le script affiche le total, les nouveaux prix et les nouveaux lieux par ville : les vérifier.
+4. Rendre `AustriaMonthly` (couverture = image 0), vérifier les images 0, ~100 (Vienne), chaque zoom de ville et la fin.
+- `--demo` ajoute de **faux** points autour de Graz et Linz pour tester la mise en page : la vidéo porte alors « DEMO · FAKE DATA ». Ne jamais publier, et relancer le script sans `--demo` avant de pousser.
+- Sources à l'écran : Natural Earth (contour, domaine public), data.wien.gv.at (CC BY 4.0). Aucun produit à l'écran : la vidéo passe aussi sur TikTok.
+- Règles inchangées : aucun lieu nommé, pas de moyenne, une ville ne zoome qu'avec de vraies données (pas de « Linz : +1 »).
 
 ## Réclamation de fiche (compositions `ClaimBar` / `ClaimCafe`, `ClaimCard.tsx`)
 
