@@ -80,7 +80,7 @@ export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item
     challenge
       ? { from: 0, to: TOP_AT, label: `KRÜGERL-CHALLENGE · STAND ${filled.length}/23`, lines: [`*${filled.length}/23* Bezirke`, "have a Krügerl price."], accent: BRAND.green, de: `Stand: ${filled.length}/23 Bezirke. Bis 30. November: alle 23.` }
       : { from: 0, to: TOP_AT, label, lines: [`Cheapest ${item}`, "in *every* Bezirk."], accent: BRAND.green, de: `Das billigste ${itemDe} in jedem Bezirk.` },
-    { from: TOP_AT, to: HOLES_AT, label: `#1 · ${bestName.toUpperCase()}`, lines: [`*${fmt(best)} €* in`, `${bestName}.`], accent: BRAND.green, de: `Das billigste: ${fmt(best)} € in ${bestName}.` },
+    { from: TOP_AT, to: HOLES_AT, label: `#1 · ${bestName.toUpperCase()}`, lines: [`*${fmt(best)} €* in`, `${bestName}.`], accent: BRAND.green, de: `Das billigste: ${fmt(best)} € in ${bestNrs.length === 1 ? bestName : `${bestNrs.length} Bezirken`}.` },
     holes.length === 0
       ? { from: HOLES_AT, to: END_AT, label: "23/23 · DANKE", lines: ["The map is", "*full*. Danke!"], accent: BRAND.green, de: "Alle 23 Bezirke. Danke an alle!" }
       : challenge && target
@@ -160,7 +160,7 @@ export const CheapestMap: React.FC<CheapestProps> = ({ theme = "dark", set, item
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 104, letterSpacing: -3, color: BRAND.text }}>
               <Accented text="*Save* this. 📌" accent={BRAND.green} glow />
             </div>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 42, color: BRAND.muted, marginTop: 6 }}>Speichern für den nächsten {itemDe}.</div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 42, color: BRAND.muted, marginTop: 6 }}>Speichern für später.</div>
           </div>
           <div style={{ position: "absolute", top: 700, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 44, color: BRAND.text }}>Which place? →</div>
