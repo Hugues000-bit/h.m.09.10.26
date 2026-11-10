@@ -1,0 +1,14 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "lines": [
+  {"id": "intro", "say": "One city. One cappuccino. Watch the price drop.", "show": "One city. One cappuccino. Watch the price drop."},
+  {"id": "w1", "say": "Seven euros fifty, in the first district.", "show": "7,50\u00a0€ in the 1st district."},
+  {"id": "w2", "say": "Five eighty, in the ninth.", "show": "5,80\u00a0€ in the 9th."},
+  {"id": "w3", "say": "Four ninety, in the seventeenth.", "show": "4,90\u00a0€ in the 17th."},
+  {"id": "w4", "say": "Four ten, in the fifteenth.", "show": "4,10\u00a0€ in the 15th."},
+  {"id": "w5", "say": "Three forty, in the sixth.", "show": "3,40\u00a0€ in the 6th."},
+  {"id": "w6", "say": "And two thirty. Back in the first district.", "show": "And 2,30\u00a0€ Back in the 1st district."},
+  {"id": "end", "say": "Where exactly? It's on the map.", "show": "Where exactly? It's on the map."}
+ ]
+}

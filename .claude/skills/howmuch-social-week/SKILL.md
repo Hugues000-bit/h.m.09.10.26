@@ -206,3 +206,34 @@ Déroulé : image 0 = carte de l'Autriche, villes allumées + accroche ; la cam�
 
 Carte générique « Your bar / Your café » (jamais un vrai commerce). Lien : `howmuch.live/business` (on cherche son lieu, on le réclame gratuitement : infos, confirmation des prix avec badge, vues). Instagram : version bar ; TikTok : version café (pas d'alcool). À reprendre environ une fois par mois, en changeant le Bezirk et le produit dans les props.
 Légende Instagram : « Bar owners in Vienna: your prices are probably already on the map », ce qu'on gagne (✓ infos, ✓ prix confirmés avec badge, ✓ vues), « → howmuch.live/business or DM us CLAIM », « Know a bar owner? Tag them 👇 », puis l'allemand. Ne jamais dire combien de fiches sont déjà réclamées tant que le chiffre est très bas.
+
+## Formats longs à forte rétention (décidés le 10/11/2026)
+
+Six formats retenus avec Hugues. Objectif : 20 à 35 s, un changement visuel toutes les 3 à 5 s, voix + sous-titres mot à mot. Test : formats 1 et 2 pendant deux semaines face aux formats actuels (comparer vues, part de vidéo regardée, commentaires).
+
+| # | Format | Composition | Fichier | État |
+|---|---|---|---|---|
+| 1 | « Plus ou moins ? » : 5 manches, score en commentaire | `HigherLower1` | `HigherLower.tsx` | prêt (33 s, voix) |
+| 2 | Plongée sur la carte : du plus cher au moins cher, compteur qui descend | `DiveCappuccino` | `MapDive.tsx` + `ViennaMap.tsx` | prêt (27 s, voix) |
+| 3 | Même dîner, deux tickets (Schnitzel + Krügerl) | `DinnerSchnitzel` | `DinnerReceipts.tsx` | prêt (12 s), Instagram/Facebook seulement |
+| 4 | Une rue, tous les prix | (props de `MapDive`) | `MapDive.tsx` | gabarit prêt, attend 8 à 10 prix par rue |
+| 5 | L'app en vrai (explique HOW MUCH?!) | à faire | | attend un enregistrement d'écran de 15 s |
+| 6 | La carte qui se remplit | `MapFill` | `MapFill.tsx` | prêt (15 s), prévu pour le résultat du défi (30/11) |
+
+**Voix et sous-titres** (`Voice.tsx`, `scripts/voice.py`) : les phrases sont dans `template/data/voice/<jeu>.json` (`say` = ce que la voix lit, chiffres en toutes lettres ; `show` = le sous-titre). `PIPER_VOICES=<dossier des modèles> python3 scripts/voice.py higherlower mapdive` écrit les sons dans `public/howmuch/voice/<jeu>/` et les durées dans `voice-data.ts`. La durée de la vidéo suit la voix (`calculateMetadata`). Voix actuelle : synthèse piper `en-us-ryan-medium` (modèles hors dépôt, `pip install piper-tts`, modèles sur la release GitHub rhasspy/piper). Sans `voice` dans les props, la vidéo tourne en muet sur des durées fixes. Toujours rediriger la sortie du script vers un fichier ou la laisser entière : un `| head` l'arrête avant l'écriture des durées.
+
+**Carte avec caméra** (`ViennaMap.tsx`, `places-data.ts`) : un point par lieu ayant un prix actif, dans l'ordre du premier prix. Mise à jour :
+```sql
+with pl as (select p.id, p.lat, p.lng, (select min(created_at)::date from place_prices x where x.place_id=p.id and x.status='active') d
+  from places p where p.status='active' and p.city ilike 'vienna%' and p.lat between 48.1 and 48.35 and p.lng between 16.15 and 16.6),
+ok as (select * from pl where d is not null)
+select (select string_agg(round((lng-16.18)*25000)::int||','||round((48.325-lat)*37515)::int, ';' order by d, id) from ok) pts,
+ (select json_agg(t order by m) from (select to_char(d,'YYYY-MM') m, count(*) n from ok group by 1) t) months, (select count(*) from ok) n
+```
+Coller dans `template/data/places/AAAA-MM-JJ.json` (modèle : `2026-11-10.json`, ni noms ni prix), puis `python3 scripts/places_data.py data/places/AAAA-MM-JJ.json`.
+
+**Règles propres à ces formats**
+- « Plus ou moins ? » : uniquement des extrêmes vérifiés le jour même (prix le plus bas / le plus haut, dernier prix par lieu), jamais de moyenne ; sans alcool pour passer aussi sur TikTok ; alterner les bonnes réponses ; une seule demande à la fin (le score en commentaire).
+- Plongée : points de passage = vrais lieux (lat, lng, prix, Bezirk), du plus cher au moins cher ; le dernier arrêt est une zone « ? » décalée, jamais le point exact ; seul le Bezirk est écrit.
+- Deux tickets : même commande dans le même lieu des deux côtés ; Bezirk seulement.
+- Vérifier les images : 0 (couverture), une question, une révélation, un arrêt de carte avec un nom de Bezirk long (15.), la fin.

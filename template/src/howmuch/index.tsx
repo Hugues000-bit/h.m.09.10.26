@@ -11,6 +11,10 @@ import { ReceiptFact, RECEIPT_FRAMES } from "./ReceiptFact";
 import { TierList, TIER_FRAMES } from "./TierList";
 import { AppIntro, INTRO_FRAMES } from "./AppIntro";
 import { Series } from "remotion";
+import { HigherLower, hlSchedule } from "./HigherLower";
+import { MapDive, diveSchedule } from "./MapDive";
+import { MapFill, FILL_FRAMES } from "./MapFill";
+import { DinnerReceipts, DINNER_FRAMES } from "./DinnerReceipts";
 import { AustriaMonthly, AUSTRIA_FRAMES } from "./AustriaMonthly";
 import { COPY_NEUBAU, COPY_FUENFHAUS, COPY_WEISSER, COPY_DOENER, COPY_CAPPUCCINO, COPY_BURGER, COPY_SCHNITZEL, COPY_LATTE } from "./copy-week";
 
@@ -108,6 +112,34 @@ const Root: React.FC = () => (
     <Composition id="QuizCappuccino" component={PriceQuiz} durationInFrames={QUIZ_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "light" as const, label: "QUIZ · WIEN · CAPPUCCINO", question: ["The *priciest*", "cappuccino in Vienna?"], questionDe: "Der teuerste Cappuccino in Wien?",
         options: ["4,50 €", "6,00 €", "7,50 €"], answer: 2, answerLine: "7,50 € for one cappuccino.", answerDe: "7,50 € für einen Cappuccino.", cheapest: "3,40 €", n: 111, item: "cappuccino", itemDe: "Cappuccino" }} />
+    {/* Long formats (10 Nov 2026): game, map dive, two bills, map filling up */}
+    <Composition id="HigherLower1" component={HigherLower} fps={30} width={1080} height={1920} durationInFrames={hlSchedule(5, "higherlower").total}
+      calculateMetadata={({ props }) => ({ durationInFrames: hlSchedule(props.rounds.length, props.voice).total })}
+      defaultProps={{ theme: "dark" as const, voice: "higherlower" as string | undefined, footer: "Lowest / highest price found on howmuch.live · latest price per place · Vienna · 10 Nov 2026",
+        rounds: [
+          { kind: "cheapest" as const, item: "espresso", itemDe: "Der billigste Espresso", note: "119 places", ref: 2, real: 1.8 },
+          { kind: "priciest" as const, item: "hot chocolate", itemDe: "Die teuerste heiße Schokolade", note: "29 places", ref: 6, real: 8.5 },
+          { kind: "cheapest" as const, item: "Schnitzel", itemDe: "Das billigste Schnitzel", note: "53 places", ref: 12, real: 10.9 },
+          { kind: "priciest" as const, item: "cappuccino", itemDe: "Der teuerste Cappuccino", note: "120 places", ref: 7, real: 7.5 },
+          { kind: "priciest" as const, item: "Schnitzel", itemDe: "Das teuerste Schnitzel", note: "53 places", ref: 35, real: 39.9 },
+        ] }} />
+    <Composition id="DiveCappuccino" component={MapDive} fps={30} width={1080} height={1920} durationInFrames={diveSchedule(6, "mapdive").total}
+      calculateMetadata={({ props }) => ({ durationInFrames: diveSchedule(props.waypoints.length, props.voice).total })}
+      defaultProps={{ theme: "dark" as const, voice: "mapdive" as string | undefined, label: "WIEN · CAPPUCCINO", hook: ["One city.", "One *cappuccino*.", "Watch the price drop."], hookDe: "Eine Stadt. Ein Cappuccino. Der Preis fällt.",
+        waypoints: [
+          { lat: 48.2039, lng: 16.3698, price: 7.5, bezirk: 1 }, { lat: 48.2234, lng: 16.3518, price: 5.8, bezirk: 9 }, { lat: 48.2241, lng: 16.3134, price: 4.9, bezirk: 17 },
+          { lat: 48.1993, lng: 16.3189, price: 4.1, bezirk: 15 }, { lat: 48.19, lng: 16.3428, price: 3.4, bezirk: 6 }, { lat: 48.2136, lng: 16.362, price: 2.3, bezirk: 1 },
+        ],
+        end: ["Where *exactly*?", "It's on the map."], endDe: "Wo genau? Steht auf der Karte.", footer: "Real cappuccino prices · latest price per place · 120 places · 10 Nov 2026 · HOW MUCH?!" }} />
+    <Composition id="DinnerSchnitzel" component={DinnerReceipts} durationInFrames={DINNER_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, label: "WIEN · SCHNITZEL + KRÜGERL", hook: ["Same dinner.", "*Two* bills."], hookDe: "Gleiches Abendessen. Zwei Rechnungen.",
+        left: { tag: "6. BEZIRK", tagSub: "MARIAHILF", lines: [{ label: "1 × SCHNITZEL", sub: "mit Salat", price: "10,90" }, { label: "1 × KRÜGERL", sub: "0,5 l", price: "5,10" }], total: "16,00 €" },
+        right: { tag: "1. BEZIRK", tagSub: "INNERE STADT", lines: [{ label: "1 × SCHNITZEL", sub: "mit Salat", price: "35,70" }, { label: "1 × KRÜGERL", sub: "0,5 l", price: "6,90" }], total: "42,60 €" },
+        stampTop: "SAME ORDER · SELBE BESTELLUNG", stampMain: "+26,60 €", punch: ["Same dinner.", "*26,60 €* apart."], punchDe: "Gleiches Essen. 26,60 € Unterschied.",
+        cta: "Where's the *16 €* dinner?", ctaDe: "Wo gibt's das Abendessen um 16 €?", ctaSub: "📩 Send this to whoever pays next time", footer: "Schnitzel with salad + Krügerl 0,5 l at the same place · 30 places · 10 Nov 2026" }} />
+    <Composition id="MapFill" component={MapFill} durationInFrames={FILL_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, label: "WIEN · THE MAP SO FAR", hook: ["Every dot:", "a *real* price."], hookDe: "Jeder Punkt: ein echter Preis.", counterLabel: "places with a real price", counterDe: "Lokale mit echtem Preis",
+        end: ["Is *your* street", "on the map?"], endDe: "Ist deine Straße schon dabei?", ctaSub: "Add the price you paid · Trag deinen Preis ein" }} />
   </>
 );
 registerRoot(Root);

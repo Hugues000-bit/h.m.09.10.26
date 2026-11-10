@@ -1,0 +1,66 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "lines": [
+  {
+   "id": "intro",
+   "say": "Higher, or lower?",
+   "show": "Higher or lower?"
+  },
+  {
+   "id": "q1",
+   "say": "The cheapest espresso. Two euros?",
+   "show": "The cheapest espresso. 2 €?"
+  },
+  {
+   "id": "a1",
+   "say": "Lower. One euro eighty.",
+   "show": "Lower. 1,80 €"
+  },
+  {
+   "id": "q2",
+   "say": "The priciest hot chocolate. Six euros?",
+   "show": "The priciest hot chocolate. 6 €?"
+  },
+  {
+   "id": "a2",
+   "say": "Higher. Eight euros fifty.",
+   "show": "Higher. 8,50 €"
+  },
+  {
+   "id": "q3",
+   "say": "The cheapest schnitzel. Twelve euros?",
+   "show": "The cheapest Schnitzel. 12 €?"
+  },
+  {
+   "id": "a3",
+   "say": "Lower. Ten ninety.",
+   "show": "Lower. 10,90 €"
+  },
+  {
+   "id": "q4",
+   "say": "The priciest cappuccino. Seven euros?",
+   "show": "The priciest cappuccino. 7 €?"
+  },
+  {
+   "id": "a4",
+   "say": "Higher. Seven fifty.",
+   "show": "Higher. 7,50 €"
+  },
+  {
+   "id": "q5",
+   "say": "Last one. The priciest schnitzel. Thirty-five euros?",
+   "show": "Last one. The priciest Schnitzel. 35 €?"
+  },
+  {
+   "id": "a5",
+   "say": "Higher. Thirty-nine ninety.",
+   "show": "Higher. 39,90 €"
+  },
+  {
+   "id": "outro",
+   "say": "So, how many did you get? Tell me your score.",
+   "show": "So, how many did you get? Tell me your score."
+  }
+ ]
+}
