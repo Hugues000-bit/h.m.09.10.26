@@ -237,3 +237,15 @@ Coller dans `template/data/places/AAAA-MM-JJ.json` (modèle : `2026-11-10.json`,
 - Plongée : points de passage = vrais lieux (lat, lng, prix, Bezirk), du plus cher au moins cher ; le dernier arrêt est une zone « ? » décalée, jamais le point exact ; seul le Bezirk est écrit.
 - Deux tickets : même commande dans le même lieu des deux côtés ; Bezirk seulement.
 - Vérifier les images : 0 (couverture), une question, une révélation, un arrêt de carte avec un nom de Bezirk long (15.), la fin.
+
+**Programmé le 11/11** (accord de Hugues ; voix de synthèse, donc `isAiGenerated` / `isAigc` à `true`) : « Plus ou moins ? » Instagram sam. 14/11 12 h 30 et TikTok dim. 15/11 19 h (posts en plus, hors créneaux habituels) ; plongée cappuccino TikTok mar. 24/11 19 h et Instagram mer. 25/11 12 h 30 (mot-clé COFFEE). Revérifier 7,50 € et 2,30 € la veille. Créneaux encore libres : TikTok jeu. 26/11, Instagram ven. 27/11 (épisodes 2 à faire).
+
+**Idées proposées le 11/11 pour attiser la curiosité et amener du monde sur le site** (chiffres vérifiés ce jour-là, à revérifier avant usage) :
+- « À 100 pas » : deux lieux à moins de 150 m, même produit, gros écart (Schnitzel 20,40 / 39,90 € à 142 m dans le 1er ; cappuccino 4,30 / 7,50 € à 87 m ; burger 10,70 / 15,80 € à 40 m ; latte 4,20 / 6,20 € à 29 m). Moteur `MapDive`.
+- « Encore sous 5 € ? » : un compte, pas une moyenne (28 lieux sur 118 pour un Krügerl, 12 sur 28 pour un Döner, 97 sur 120 pour un cappuccino).
+- Produit identique partout : canette d'energy drink 250 ml, 3,20 à 7,00 € (41 lieux) ; frites 3,50 à 10 € (46 lieux).
+- « Ton Bezirk en 10 secondes » : une vidéo par Bezirk (prix les plus bas par produit).
+- « Arnaque ou correct ? » : un prix, le public vote, puis son rang parmi les lieux comparés.
+- La journée la moins chère / la plus chère (somme de vrais prix extrêmes, ticket de caisse).
+- Jeu « Plus ou moins » jouable sur le site (prompt Lovable à écrire) : la vidéo devient la bande-annonce.
+- Réponses en vidéo aux commentaires (quand il y en aura assez). Historique des prix : pas faisable (une dizaine de prix suivis dans le temps seulement).
