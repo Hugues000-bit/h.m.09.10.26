@@ -9,16 +9,16 @@ import { Accented, Backdrop, Sfx, Sub } from "./PriceVideo";
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 export const INTRO_FRAMES = 60;
 
-export type AppIntroProps = { theme?: Theme; label: string; hook: string[]; hookDe: string; accent?: "green" | "pink"; chip: string };
+export type AppIntroProps = { theme?: Theme; label: string; hook: string[]; hookDe: string; accent?: "green" | "pink"; chip: string; image?: string };
 
-export const AppIntro: React.FC<AppIntroProps> = ({ theme = "dark", label, hook, hookDe, accent = "green", chip }) => {
+export const AppIntro: React.FC<AppIntroProps> = ({ theme = "dark", label, hook, hookDe, accent = "green", chip, image = "howmuch/app-map-coffee.png" }) => {
   applyTheme(theme);
   const f = useCurrentFrame();
   const [h] = useState(() => delayRender("fonts"));
   useEffect(() => {
     loadBrandFonts().then(() => continueRender(h)).catch(() => continueRender(h));
   }, [h]);
-  const zoom = interpolate(f, [0, INTRO_FRAMES], [1.0, 1.18], clamp);
+  const zoom = interpolate(f, [0, INTRO_FRAMES], [1.0, 1.12], clamp);
   const out = interpolate(f, [INTRO_FRAMES - 8, INTRO_FRAMES - 1], [1, 0], clamp);
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bg }}>
@@ -33,12 +33,12 @@ export const AppIntro: React.FC<AppIntroProps> = ({ theme = "dark", label, hook,
         ))}
         <Sub text={hookDe} style={{ marginTop: 10, fontSize: 36 }} />
       </div>
-      <div style={{ position: "absolute", top: 700, left: 80, width: 820, height: 700, borderRadius: 28, overflow: "hidden", border: `3px solid ${BRAND.border}`, boxShadow: "0 30px 80px rgba(0,0,0,0.35)", opacity: out, transform: `scale(${0.97 + 0.03 * out})` }}>
-        <Img src={staticFile("howmuch/app-map.png")} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom})`, transformOrigin: "55% 50%" }} />
+      <div style={{ position: "absolute", top: 700, left: 80, width: 820, height: 600, borderRadius: 28, overflow: "hidden", border: `3px solid ${BRAND.border}`, boxShadow: "0 30px 80px rgba(0,0,0,0.35)", opacity: out, transform: `scale(${0.97 + 0.03 * out})` }}>
+        <Img src={staticFile(image)} style={{ width: "100%", height: "100%", objectFit: "cover", transform: `scale(${zoom})`, transformOrigin: "55% 50%" }} />
         <div style={{ position: "absolute", left: 20, top: 20, background: "rgba(10,10,10,0.82)", color: "#fff", fontFamily: BRAND.mono, fontWeight: 700, fontSize: 26, letterSpacing: 2, padding: "10px 16px", borderRadius: 12 }}>
           <span style={{ color: "#19E57F" }}>●</span> {chip}
         </div>
-        <div style={{ position: "absolute", right: 12, bottom: 8, fontFamily: BRAND.mono, fontSize: 16, color: "rgba(40,40,40,0.8)" }}>© OpenStreetMap contributors</div>
+        <div style={{ position: "absolute", right: 12, bottom: 8, fontFamily: BRAND.mono, fontSize: 15, color: "rgba(40,40,40,0.9)", background: "rgba(255,255,255,0.75)", padding: "2px 8px", borderRadius: 6 }}>© OpenStreetMap contributors © CARTO</div>
       </div>
       <div style={{ position: "absolute", top: 170, left: 80, right: 80, display: "flex", justifyContent: "space-between", fontFamily: BRAND.mono, fontSize: 28, letterSpacing: 2 }}>
         <span style={{ color: BRAND.green, fontWeight: 700 }}>HOW MUCH?!</span>

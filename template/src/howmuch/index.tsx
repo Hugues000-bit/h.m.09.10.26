@@ -93,7 +93,7 @@ const Root: React.FC = () => (
       component={() => (
         <Series>
           <Series.Sequence durationInFrames={INTRO_FRAMES}>
-            <AppIntro theme="dark" label="WIEN · ESPRESSO · TIER LIST" hook={["Every Bezirk,", "ranked by its", "cheapest *espresso*."]} hookDe="Jeder Bezirk, nach seinem billigsten Espresso." chip="REAL PRICES · WIEN" />
+            <AppIntro theme="dark" label="WIEN · ESPRESSO · TIER LIST" hook={["Every Bezirk,", "ranked by its", "cheapest *espresso*."]} hookDe="Jeder Bezirk, nach seinem billigsten Espresso." chip="☕ COFFEE · REAL PRICES" />
           </Series.Sequence>
           <Series.Sequence durationInFrames={TIER_FRAMES}>
             <TierList theme="dark" set="ESPRESSO" item="espresso" itemDe="Espresso" label="WIEN · ESPRESSO" cut={[2.0, 2.5, 3.0]} ctaSub="📩 Send this to someone from a C Bezirk" />
