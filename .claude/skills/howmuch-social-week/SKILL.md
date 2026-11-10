@@ -238,7 +238,9 @@ Coller dans `template/data/places/AAAA-MM-JJ.json` (modèle : `2026-11-10.json`,
 - Deux tickets : même commande dans le même lieu des deux côtés ; Bezirk seulement.
 - Vérifier les images : 0 (couverture), une question, une révélation, un arrêt de carte avec un nom de Bezirk long (15.), la fin.
 
-**Programmé le 11/11** (accord de Hugues ; voix de synthèse, donc `isAiGenerated` / `isAigc` à `true`) : « Plus ou moins ? » Instagram sam. 14/11 12 h 30 et TikTok dim. 15/11 19 h (posts en plus, hors créneaux habituels) ; plongée cappuccino TikTok mar. 24/11 19 h et Instagram mer. 25/11 12 h 30 (mot-clé COFFEE). Revérifier 7,50 € et 2,30 € la veille. Créneaux encore libres : TikTok jeu. 26/11, Instagram ven. 27/11 (épisodes 2 à faire).
+**Programmé le 11/11** (accord de Hugues ; voix de synthèse, donc `isAiGenerated` / `isAigc` à `true`) : « Plus ou moins ? » Instagram sam. 14/11 12 h 30 et TikTok dim. 15/11 19 h (posts en plus, hors créneaux habituels) ; plongée cappuccino TikTok mar. 24/11 19 h et Instagram mer. 25/11 12 h 30 (mot-clé COFFEE). Revérifier 7,50 € et 2,30 € la veille. Créneaux encore libres : TikTok jeu. 26/11, Instagram ven. 27/11 (épisodes 2 à faire). Facebook, en brouillon avec 2 semaines de décalage (chiffres et vidéo à remettre à jour avant) : « Plus ou moins ? » mar. 1/12 18 h, plongée cappuccino jeu. 10/12 18 h.
+
+**Cap donné par Hugues le 11/11** : peu de contenus mais de qualité, et chacun doit soit renvoyer vers howmuch.live, soit rendre curieux, soit lancer un défi qui se joue sur le site. Avant de construire une vidéo, écrire en une phrase ce qui manque au spectateur à la fin et qu'il ne trouve que sur le site.
 
 **Idées proposées le 11/11 pour attiser la curiosité et amener du monde sur le site** (chiffres vérifiés ce jour-là, à revérifier avant usage) :
 - « À 100 pas » : deux lieux à moins de 150 m, même produit, gros écart (Schnitzel 20,40 / 39,90 € à 142 m dans le 1er ; cappuccino 4,30 / 7,50 € à 87 m ; burger 10,70 / 15,80 € à 40 m ; latte 4,20 / 6,20 € à 29 m). Moteur `MapDive`.
