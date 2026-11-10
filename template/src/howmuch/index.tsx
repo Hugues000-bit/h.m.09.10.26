@@ -9,6 +9,8 @@ import { CheapestMap, CHEAPEST_FRAMES } from "./CheapestMap";
 import { PriceQuiz, QUIZ_FRAMES } from "./PriceQuiz";
 import { ReceiptFact, RECEIPT_FRAMES } from "./ReceiptFact";
 import { TierList, TIER_FRAMES } from "./TierList";
+import { AppIntro, INTRO_FRAMES } from "./AppIntro";
+import { Series } from "remotion";
 import { AustriaMonthly, AUSTRIA_FRAMES } from "./AustriaMonthly";
 import { COPY_NEUBAU, COPY_FUENFHAUS, COPY_WEISSER, COPY_DOENER, COPY_CAPPUCCINO, COPY_BURGER, COPY_SCHNITZEL, COPY_LATTE } from "./copy-week";
 
@@ -86,6 +88,18 @@ const Root: React.FC = () => (
     <Composition id="QuizSchnitzelDe" component={PriceQuiz} durationInFrames={QUIZ_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "light" as const, lang: "de" as const, label: "QUIZ · WIEN · SCHNITZEL", question: ["Das *teuerste*", "Schnitzel in Wien?"], questionDe: "The priciest Schnitzel in Vienna?",
         options: ["24,90 €", "32,90 €", "39,90 €"], answer: 2, answerLine: "39,90 € für ein Schnitzel.", answerDe: "39,90 € for one Schnitzel.", cheapest: "10,90 €", n: 53, item: "Schnitzel", itemDe: "Schnitzel" }} />
+    {/* Real app map as a 2 s opener, then the tier list (test, 10 Nov 2026) */}
+    <Composition id="TierEspressoIntro" durationInFrames={INTRO_FRAMES + TIER_FRAMES} fps={30} width={1080} height={1920}
+      component={() => (
+        <Series>
+          <Series.Sequence durationInFrames={INTRO_FRAMES}>
+            <AppIntro theme="dark" label="WIEN · ESPRESSO · TIER LIST" hook={["Every Bezirk,", "ranked by its", "cheapest *espresso*."]} hookDe="Jeder Bezirk, nach seinem billigsten Espresso." chip="REAL PRICES · WIEN" />
+          </Series.Sequence>
+          <Series.Sequence durationInFrames={TIER_FRAMES}>
+            <TierList theme="dark" set="ESPRESSO" item="espresso" itemDe="Espresso" label="WIEN · ESPRESSO" cut={[2.0, 2.5, 3.0]} ctaSub="📩 Send this to someone from a C Bezirk" />
+          </Series.Sequence>
+        </Series>
+      )} />
     {/* November 2026 Krügerl challenge */}
     <Composition id="GapKruegerl" component={GapMap} durationInFrames={GAP_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, mode: "kruegerl" as const, date: "23 Oct 2026" }} />
