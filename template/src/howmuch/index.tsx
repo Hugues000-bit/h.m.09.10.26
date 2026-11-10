@@ -72,6 +72,20 @@ const Root: React.FC = () => (
       defaultProps={{ theme: "dark" as const, set: "ESPRESSO" as const, item: "espresso", itemDe: "Espresso", label: "WIEN · ESPRESSO", cut: [2.0, 2.5, 3.0] as [number, number, number], ctaSub: "📩 Send this to someone from a C Bezirk" }} />
     <Composition id="TierKruegerl" component={TierList} durationInFrames={TIER_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "light" as const, set: "KRUEGERL" as const, item: "Krügerl", itemDe: "Krügerl", label: "WIEN · KRÜGERL 0,5 L", cut: [4.4, 4.5, 5.0] as [number, number, number], ctaSub: "📩 Send this to your Krügerl crew" }} />
+    {/* German-first test for TikTok (17-21 Nov 2026): German big, English small */}
+    <Composition id="ReceiptHotChocolateDe" component={ReceiptFact} durationInFrames={RECEIPT_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "light" as const, label: "WIEN · HEISSE SCHOKOLADE", hook: ["Heiße Schokolade in Wien:", "wie viel ist *zu* viel?"], hookDe: "Hot chocolate in Vienna: how much is too much?",
+        lines: [{ label: "HEISSE SCHOKO", sub: "billigste in Wien · cheapest", price: "1,90 €", tone: "green" as const }, { label: "HEISSE SCHOKO", sub: "teuerste in Wien · priciest", price: "8,50 €", tone: "pink" as const }],
+        stampTop: "GLEICHER BEZIRK", stampMain: "INNERE STADT", totalLabel: "UNTERSCHIED", total: "+347 %", punch: ["Gleiche Tasse.", "*4,5×* der Preis."], punchDe: "Same cup. 4,5× the price.",
+        cta: "Wo gibt's die um *1,90\u00a0€*?", ctaDe: "Where's the 1,90 € one?", ctaSub: "📩 Schick das wem, dem immer kalt ist", footer: "letzter Preis pro Lokal · 29 Lokale · 10. Nov. 2026" }} />
+    <Composition id="ReceiptSchnitzelDe" component={ReceiptFact} durationInFrames={RECEIPT_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, label: "WIEN · SCHNITZEL MIT SALAT", hook: ["*1* Schnitzel oder *3*?", "Gleiches Geld."], hookDe: "1 Schnitzel or 3? Same money.",
+        lines: [{ label: "1 × SCHNITZEL", sub: "teuerstes in Wien · priciest", price: "39,90 €", tone: "pink" as const }, { label: "3 × SCHNITZEL", sub: "billigstes in Wien · cheapest", price: "32,70 €", tone: "green" as const }],
+        stampTop: "GLEICHES GELD", stampMain: "3 SCHNITZEL", totalLabel: "RÜCKGELD · CHANGE", total: "7,20 €", punch: ["Gleiches Geld.", "*3* Schnitzel."], punchDe: "Same money. 3 Schnitzel.",
+        cta: "Wo gibt's das um *10,90\u00a0€*?", ctaDe: "Where's the 10,90 € one?", ctaSub: "📩 Schick das deiner Schnitzel-Runde", footer: "mit Salat · letzter Preis pro Lokal · 53 Lokale · 10. Nov. 2026" }} />
+    <Composition id="QuizSchnitzelDe" component={PriceQuiz} durationInFrames={QUIZ_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "light" as const, lang: "de" as const, label: "QUIZ · WIEN · SCHNITZEL", question: ["Das *teuerste*", "Schnitzel in Wien?"], questionDe: "The priciest Schnitzel in Vienna?",
+        options: ["24,90 €", "32,90 €", "39,90 €"], answer: 2, answerLine: "39,90 € für ein Schnitzel.", answerDe: "39,90 € for one Schnitzel.", cheapest: "10,90 €", n: 53, item: "Schnitzel", itemDe: "Schnitzel" }} />
     {/* November 2026 Krügerl challenge */}
     <Composition id="GapKruegerl" component={GapMap} durationInFrames={GAP_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, mode: "kruegerl" as const, date: "23 Oct 2026" }} />

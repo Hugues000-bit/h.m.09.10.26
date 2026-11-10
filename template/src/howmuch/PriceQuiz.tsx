@@ -27,9 +27,11 @@ export type QuizProps = {
   n: number; // places compared
   item: string; // "cappuccino"
   itemDe: string;
+  lang?: "en" | "de"; // which language is big (default English)
 };
 
-export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, question, questionDe, options, answer, answerLine, answerDe, cheapest, n, item, itemDe }) => {
+export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, question, questionDe, options, answer, answerLine, answerDe, cheapest, n, item, itemDe, lang = "en" }) => {
+  const de = lang === "de";
   applyTheme(theme);
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -93,8 +95,8 @@ export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, questio
         <div style={{ marginTop: 16, height: 120, textAlign: "center" }}>
           {!revealed && count === null && (
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 48, color: BRAND.text }}>
-              Comment your answer <span style={{ color: BRAND.yellow }}>↓</span>
-              <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 28, color: BRAND.muted, marginTop: 6 }}>Kommentier deine Antwort</div>
+              {de ? "Kommentier deine Antwort" : "Comment your answer"} <span style={{ color: BRAND.yellow }}>↓</span>
+              <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 28, color: BRAND.muted, marginTop: 6 }}>{de ? "Comment your answer" : "Kommentier deine Antwort"}</div>
             </div>
           )}
           {count !== null && (
@@ -109,9 +111,9 @@ export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, questio
           {f >= CHEAP_AT && (
             <div style={{ transform: `scale(${0.8 + 0.2 * Math.min(1, cheapIn)})`, opacity: Math.min(1, cheapIn) }}>
               <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 56, color: BRAND.text }}>
-                Cheapest? <Accented text={`*${cheapest.replace(" ", " ")}*`} accent={BRAND.green} glow />
+                {de ? "Billigstes?" : "Cheapest?"} <Accented text={`*${cheapest.replace(" ", " ")}*`} accent={BRAND.green} glow />
               </div>
-              <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 28, color: BRAND.muted, marginTop: 6 }}>Der billigste: {cheapest} · {n} places</div>
+              <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 28, color: BRAND.muted, marginTop: 6 }}>{de ? `Cheapest: ${cheapest} · ${n} Lokale` : `Der billigste: ${cheapest} · ${n} places`}</div>
             </div>
           )}
         </div>
@@ -122,24 +124,24 @@ export const PriceQuiz: React.FC<QuizProps> = ({ theme = "light", label, questio
           <Bloom color={a(BRAND.green, 0.85 * (BRAND.glow as number))} start={END_AT} top={720} size={900} />
           <div style={{ position: "absolute", top: 520, left: 80, width: 820, textAlign: "center", ...entrance("slam", f - END_AT, 0, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 70, letterSpacing: -3, color: BRAND.text }}>
-              Where's the <Accented text={`*${cheapest.replace(" ", " ")}*`} accent={BRAND.green} glow /> one?
+              {de ? `Wo gibt's ${itemDe} um ` : "Where's the "}<Accented text={`*${cheapest.replace(" ", "\u00a0")}*`} accent={BRAND.green} glow />{de ? "?" : " one?"}
             </div>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 42, color: BRAND.muted, marginTop: 6 }}>Wo gibt's {itemDe} um {cheapest}?</div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 42, color: BRAND.muted, marginTop: 6 }}>{de ? `Where's the ${cheapest} one?` : `Wo gibt's ${itemDe} um ${cheapest}?`}</div>
           </div>
           <div style={{ position: "absolute", top: 760, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 6, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 96, letterSpacing: -2, color: BRAND.green, textShadow: `0 0 26px ${g(BRAND.green, 0.5)}` }}>howmuch.live</div>
           </div>
           <div style={{ position: "absolute", top: 960, left: 80, width: 820, textAlign: "center", ...entrance("rise", f - END_AT, 12, fps, "center") }}>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 56, color: BRAND.text }}>
-              You got it? <span style={{ color: BRAND.yellow }}>A, B or C</span> 👇
+              {de ? "Richtig geraten?" : "You got it?"} <span style={{ color: BRAND.yellow }}>{de ? "A, B oder C" : "A, B or C"}</span> 👇
             </div>
-            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 28, color: BRAND.muted, marginTop: 8 }}>Richtig geraten? Kommentier's.</div>
+            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 28, color: BRAND.muted, marginTop: 8 }}>{de ? "Got it right? Comment it." : "Richtig geraten? Kommentier's."}</div>
           </div>
         </AbsoluteFill>
       )}
 
       <div style={{ position: "absolute", top: 1560, left: 80, right: 80, textAlign: "center", fontFamily: BRAND.mono, fontSize: 20, color: BRAND.muted, opacity: 1 - endP }}>
-        latest {item} price per place · {n} places in Vienna · HOW MUCH?! community
+        {de ? `letzter Preis pro Lokal · ${n} Lokale in Wien · HOW MUCH?! Community` : `latest ${item} price per place · ${n} places in Vienna · HOW MUCH?! community`}
       </div>
       <div style={{ position: "absolute", top: 0, left: 0, height: 8, width: `${(f / (QUIZ_FRAMES - 1)) * 100}%`, background: BRAND.green }} />
       <div style={{ position: "absolute", top: 160, left: 80, right: 80, display: "flex", justifyContent: "space-between", fontFamily: BRAND.mono, fontSize: 28, letterSpacing: 2, opacity: 1 - endP }}>
