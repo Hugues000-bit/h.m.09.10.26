@@ -15,6 +15,7 @@ import { HigherLower, hlSchedule } from "./HigherLower";
 import { MapDive, diveSchedule } from "./MapDive";
 import { MapFill, FILL_FRAMES } from "./MapFill";
 import { DinnerReceipts, DINNER_FRAMES } from "./DinnerReceipts";
+import { UnderX, UNDER_FRAMES } from "./UnderX";
 import { AustriaMonthly, AUSTRIA_FRAMES } from "./AustriaMonthly";
 import { COPY_NEUBAU, COPY_FUENFHAUS, COPY_WEISSER, COPY_DOENER, COPY_CAPPUCCINO, COPY_BURGER, COPY_SCHNITZEL, COPY_LATTE } from "./copy-week";
 
@@ -140,6 +141,14 @@ const Root: React.FC = () => (
     <Composition id="MapFill" component={MapFill} durationInFrames={FILL_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, label: "WIEN · THE MAP SO FAR", hook: ["Every dot:", "a *real* price."], hookDe: "Jeder Punkt: ein echter Preis.", counterLabel: "places with a real price", counterDe: "Lokale mit echtem Preis",
         end: ["Is *your* street", "on the map?"], endDe: "Ist deine Straße schon dabei?", ctaSub: "Add the price you paid · Trag deinen Preis ein" }} />
+    {/* "Still under X €?" — one dot per place, counted against a limit (11 Nov 2026) */}
+    <Composition id="UnderDoener" component={UnderX} durationInFrames={UNDER_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, label: "WIEN · DÖNER", hook: ["A Döner for", "under *5 €*.", "Does it still exist?"], hookDe: "Döner unter 5 €. Gibt's den noch?", limit: 5,
+        prices: [3.9, 4.3, 4.5, 4.5, 4.5, 4.5, 4.5, 5, 5, 5, 5, 5, 5.2, 5.5, 5.9, 5.9, 5.9, 5.9, 5.99, 6, 6.5, 6.5, 6.5, 6.5, 6.9, 7.5, 7.9, 8.5],
+        where: ["All in 3 Bezirke:", "*15.* · *16.* · *20.*"], resultDe: "Nur 7 von 28 Lokalen. Alle im 15., 16. und 20. Bezirk.",
+        twist: ["Last checked", "in *spring*.", "Still true?"], twistDe: "Zuletzt im Frühjahr geprüft. Stimmt's noch?",
+        end: ["Which *7*?", "They're on the map."], endDe: "Welche 7? Steht auf der Karte.", ctaSub: "Price changed? Fix it · Preis geändert? Korrigier ihn",
+        footer: "Döner sandwich · latest price per place · 28 places · prices added Mar–Nov 2026 · HOW MUCH?!" }} />
   </>
 );
 registerRoot(Root);
