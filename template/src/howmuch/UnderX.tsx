@@ -14,7 +14,7 @@ const RESULT = 192;
 const TWIST = 300;
 const END_AT = 380;
 const AXIS_Y = 1090;
-const D = 28;
+const CHART_H = 340;
 
 export type UnderProps = {
   theme?: Theme;
@@ -47,14 +47,21 @@ export const UnderX: React.FC<UnderProps> = ({ theme = "dark", label, hook, hook
   const hi = Math.ceil(sorted[sorted.length - 1] * 2) / 2 + 0.25;
   const X = (p: number) => 80 + ((p - lo) / (hi - lo)) * 820;
   // dot plot: exact x, stacked on the first free level
-  const levels: number[][] = [];
-  const dots = sorted.map((p) => {
-    const x = X(p);
-    let lv = 0;
-    while (levels[lv] && levels[lv].some((q) => Math.abs(q - x) < D + 1)) lv++;
-    (levels[lv] = levels[lv] ?? []).push(x);
-    return { p, x, y: AXIS_Y - 26 - lv * (D + 4) };
-  });
+  // the dot size shrinks until the tallest stack fits the chart
+  const place = (d: number) => {
+    const levels: number[][] = [];
+    const out = sorted.map((p) => {
+      const x = X(p);
+      let lv = 0;
+      while (levels[lv] && levels[lv].some((q) => Math.abs(q - x) < d + 1)) lv++;
+      (levels[lv] = levels[lv] ?? []).push(x);
+      return { p, x, y: AXIS_Y - d / 2 - 10 - lv * (d + 4) };
+    });
+    return { out, tall: levels.length * (d + 4) };
+  };
+  let D = 28;
+  while (D > 12 && place(D).tall > CHART_H) D -= 2;
+  const dots = place(D).out;
   const under = sorted.filter((p) => p < limit).length;
   const exact = sorted.filter((p) => p === limit).length;
   const over = sorted.length - under - exact;
@@ -82,7 +89,10 @@ export const UnderX: React.FC<UnderProps> = ({ theme = "dark", label, hook, hook
   return (
     <AbsoluteFill style={{ backgroundColor: BRAND.bg }}>
       <Backdrop />
-      {dots.map((d, i) => <Sfx key={i} at={Math.round(hitFrame(d.x))} src={d.p < limit ? "pluck_002" : "tick_001"} volume={d.p < limit ? 0.45 : 0.25} />)}
+      {/* one sound per frame at most, however many dots light up */}
+      {Array.from(new Map(dots.map((d) => [Math.round(hitFrame(d.x)), d.p < limit] as [number, boolean])).entries()).map(([fr, green]) => (
+        <Sfx key={fr} at={fr} src={green ? "pluck_002" : "tick_001"} volume={green ? 0.45 : 0.22} />
+      ))}
       <Sfx at={RESULT} src="impactPlate_heavy_001" volume={0.55} />
       <Sfx at={TWIST} src="glitch_002" volume={0.5} />
       <Sfx at={END_AT} src="confirmation_002" volume={0.55} />

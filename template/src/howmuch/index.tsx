@@ -149,6 +149,13 @@ const Root: React.FC = () => (
         twist: ["Last checked", "in *spring*.", "Still true?"], twistDe: "Zuletzt im Frühjahr geprüft. Stimmt's noch?",
         end: ["Which *7*?", "They're on the map."], endDe: "Welche 7? Steht auf der Karte.", ctaSub: "Price changed? Fix it · Preis geändert? Korrigier ihn",
         footer: "Döner sandwich · latest price per place · 28 places · prices added Mar–Nov 2026 · HOW MUCH?!" }} />
+    <Composition id="UnderEspresso" component={UnderX} durationInFrames={UNDER_FRAMES} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, label: "WIEN · ESPRESSO", hook: ["An espresso for", "under *2,50\u00a0€*.", "Does it still exist?"], hookDe: "Espresso unter 2,50 €. Gibt's den noch?", limit: 2.5,
+        prices: [1.8,1.9,1.9,2,2,2.3,2.3,2.3,2.4,2.5,2.5,2.5,2.6,2.6,2.6,2.7,2.8,2.8,2.8,2.8,2.8,2.8,2.8,2.8,2.8,2.8,2.8,2.8,2.8,2.9,2.9,2.9,2.9,2.9,2.9,2.9,2.9,2.9,2.9,2.9,2.9,2.9,2.9,2.9,2.9,3,3,3,3,3,3,3,3,3,3,3,3.1,3.1,3.1,3.1,3.1,3.1,3.1,3.1,3.15,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.2,3.3,3.3,3.3,3.3,3.3,3.3,3.4,3.4,3.4,3.4,3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.5,3.6,3.6,3.7,3.7,3.8,3.8,3.8,3.9,3.9,3.9,4.2,4.2,4.3,4.4,4.5,4.5,4.7],
+        where: ["In 5 Bezirke:", "*1.* · *6.* · *7.* · *8.* · *16.*"], resultDe: "Nur 9 von 119 Lokalen, in 5 Bezirken.",
+        twist: ["Only *4* checked", "in the last 3 months.", "Still true?"], twistDe: "Nur 4 in den letzten 3 Monaten geprüft.",
+        end: ["Which *9*?", "They're on the map."], endDe: "Welche 9? Steht auf der Karte.", ctaSub: "Price changed? Fix it · Preis geändert? Korrigier ihn",
+        footer: "Espresso · latest price per place · 119 places · prices added Jul 2025–Nov 2026 · HOW MUCH?!" }} />
   </>
 );
 registerRoot(Root);
