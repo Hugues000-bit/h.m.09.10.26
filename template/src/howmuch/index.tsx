@@ -13,6 +13,7 @@ import { AppIntro, INTRO_FRAMES } from "./AppIntro";
 import { Series } from "remotion";
 import { HigherLower, hlSchedule } from "./HigherLower";
 import { withVoice } from "./Voice";
+import { AppExplainer, explainerSchedule } from "./AppExplainer";
 import { MapDive, diveSchedule } from "./MapDive";
 import { MapFill, FILL_FRAMES } from "./MapFill";
 import { DinnerReceipts, DINNER_FRAMES } from "./DinnerReceipts";
@@ -172,6 +173,9 @@ const Root: React.FC = () => (
         twist: ["Only *4* checked", "in the last 3 months.", "Still true?"], twistDe: "Nur 4 in den letzten 3 Monaten geprüft.",
         end: ["Which *9*?", "They're on the map."], endDe: "Welche 9? Steht auf der Karte.", ctaSub: "Price changed? Fix it · Preis geändert? Korrigier ihn",
         footer: "Espresso · latest price per place · 119 places · prices added Jul 2025–Nov 2026 · HOW MUCH?!" }} />
+    {/* "What is HOW MUCH?!" explainer built on real crops of the app (11 Nov 2026) */}
+    <Composition id="AppExplainer" component={AppExplainer} durationInFrames={explainerSchedule().total} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, prices: "1.600+", ctaSub: "No app to install · Kein Download nötig" }} />
   </>
 );
 registerRoot(Root);

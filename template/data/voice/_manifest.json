@@ -339,5 +339,35 @@
    "frames": 32,
    "at": 268
   }
+ },
+ "app-explainer": {
+  "l1": {
+   "show": "This map shows what things really cost in Vienna.",
+   "frames": 71
+  },
+  "l2": {
+   "show": "Every dot is a real price, added by people in Vienna.",
+   "frames": 81
+  },
+  "l3": {
+   "show": "Green is cheap. Red is expensive.",
+   "frames": 71
+  },
+  "l4": {
+   "show": "Pick what you want: coffee, schnitzel, kebab, pizza.",
+   "frames": 103
+  },
+  "l5": {
+   "show": "A price is missing or wrong? Add it yourself.",
+   "frames": 84
+  },
+  "l6": {
+   "show": "Over 1.600 prices so far. Free, right in your browser.",
+   "frames": 120
+  },
+  "end": {
+   "show": "howmuch.live",
+   "frames": 39
+  }
  }
 }

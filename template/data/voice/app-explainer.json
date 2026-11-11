@@ -1,0 +1,13 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "lines": [
+  {"id": "l1", "say": "This map shows what things really cost in Vienna."},
+  {"id": "l2", "say": "Every dot is a real price, added by people in Vienna."},
+  {"id": "l3", "say": "Green is cheap. Red is expensive."},
+  {"id": "l4", "say": "Pick what you want: coffee, schnitzel, kebab, pizza."},
+  {"id": "l5", "say": "A price is missing, or wrong? Add it yourself.", "show": "A price is missing or wrong? Add it yourself."},
+  {"id": "l6", "say": "Over sixteen hundred prices so far. Free, right in your browser.", "show": "Over 1.600 prices so far. Free, right in your browser."},
+  {"id": "end", "say": "How much, dot live.", "show": "howmuch.live"}
+ ]
+}
