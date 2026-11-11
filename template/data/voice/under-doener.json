@@ -1,0 +1,27 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 480,
+ "lines": [
+  {
+   "id": "hook",
+   "at": 6,
+   "say": "A doner kebab for under five euros. Does it still exist?"
+  },
+  {
+   "id": "result",
+   "at": 196,
+   "say": "Only seven of twenty-eight places. All in three districts."
+  },
+  {
+   "id": "twist",
+   "at": 308,
+   "say": "Last checked in spring. Still true?"
+  },
+  {
+   "id": "end",
+   "at": 392,
+   "say": "Which seven? They're on the map."
+  }
+ ]
+}

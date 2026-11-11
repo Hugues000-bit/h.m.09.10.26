@@ -5,6 +5,7 @@ import React from "react";
 import { Audio, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { BRAND, a } from "./brand";
 import { VOICE } from "./voice-data";
+import { SfxGain } from "./sfx-gain";
 
 export type Cue = { id: string; at: number };
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
@@ -102,4 +103,22 @@ export const Captions: React.FC<{
       </div>
     </div>
   );
+};
+
+// Voice lines that carry their own start frame ("at" in data/voice/<set>.json).
+export const cuesOf = (set: string): Cue[] =>
+  Object.entries(VOICE[set] ?? {})
+    .filter(([, v]) => typeof v.at === "number")
+    .map(([id, v]) => ({ id, at: v.at as number }));
+
+// Adds a voice-over to any existing format without touching it: the lines are placed on the format's own beats
+// and the sound effects are turned down. The text already on screen plays the role of the captions.
+export const withVoice = <P extends object>(Component: React.ComponentType<P>, set: string, gain = 0.5): React.FC<P> => {
+  const Voiced: React.FC<P> = (props) => (
+    <SfxGain.Provider value={gain}>
+      <Component {...props} />
+      <VoiceOver set={set} cues={cuesOf(set)} />
+    </SfxGain.Provider>
+  );
+  return Voiced;
 };

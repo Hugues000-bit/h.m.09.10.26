@@ -82,5 +82,110 @@
    "show": "Where exactly? It's on the map.",
    "frames": 51
   }
+ },
+ "under-doener": {
+  "hook": {
+   "show": "A doner kebab for under five euros. Does it still exist?",
+   "frames": 106,
+   "at": 6
+  },
+  "result": {
+   "show": "Only seven of twenty-eight places. All in three districts.",
+   "frames": 109,
+   "at": 196
+  },
+  "twist": {
+   "show": "Last checked in spring. Still true?",
+   "frames": 63,
+   "at": 308
+  },
+  "end": {
+   "show": "Which seven? They're on the map.",
+   "frames": 45,
+   "at": 392
+  }
+ },
+ "under-espresso": {
+  "hook": {
+   "show": "An espresso for under two euros fifty. Does it still exist?",
+   "frames": 95,
+   "at": 6
+  },
+  "result": {
+   "show": "Only nine of a hundred and nineteen places. In five districts.",
+   "frames": 115,
+   "at": 196
+  },
+  "twist": {
+   "show": "Only four were checked in the last three months.",
+   "frames": 65,
+   "at": 314
+  },
+  "end": {
+   "show": "Which nine? They're on the map.",
+   "frames": 45,
+   "at": 400
+  }
+ },
+ "tier-espresso-intro": {
+  "hook": {
+   "show": "Every district of Vienna, ranked by its cheapest espresso.",
+   "frames": 90,
+   "at": 4
+  },
+  "mid": {
+   "show": "Starting with the priciest.",
+   "frames": 38,
+   "at": 112
+  },
+  "s": {
+   "show": "S tier: one eighty, in the first.",
+   "frames": 59,
+   "at": 222
+  },
+  "end": {
+   "show": "Thirteen have no price yet. Is yours right?",
+   "frames": 76,
+   "at": 294
+  }
+ },
+ "tier-kruegerl": {
+  "hook": {
+   "show": "Every district of Vienna, ranked by its cheapest half litre of beer.",
+   "frames": 104,
+   "at": 4
+  },
+  "s": {
+   "show": "S tier: four thirty, in the first.",
+   "frames": 60,
+   "at": 162
+  },
+  "end": {
+   "show": "Twelve have no price yet. Is yours right?",
+   "frames": 72,
+   "at": 232
+  }
+ },
+ "cheapest-schnitzel": {
+  "hook": {
+   "show": "The cheapest schnitzel in every district of Vienna.",
+   "frames": 75,
+   "at": 4
+  },
+  "top": {
+   "show": "Number one: ten ninety, in two districts.",
+   "frames": 73,
+   "at": 88
+  },
+  "holes": {
+   "show": "In fourteen districts, nobody has checked yet.",
+   "frames": 73,
+   "at": 168
+  },
+  "end": {
+   "show": "Save this, and add your price.",
+   "frames": 53,
+   "at": 250
+  }
  }
 }

@@ -1,0 +1,27 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 390,
+ "lines": [
+  {
+   "id": "hook",
+   "at": 4,
+   "say": "Every district of Vienna, ranked by its cheapest espresso."
+  },
+  {
+   "id": "mid",
+   "at": 112,
+   "say": "Starting with the priciest."
+  },
+  {
+   "id": "s",
+   "at": 222,
+   "say": "S tier: one eighty, in the first."
+  },
+  {
+   "id": "end",
+   "at": 294,
+   "say": "Thirteen have no price yet. Is yours right?"
+  }
+ ]
+}

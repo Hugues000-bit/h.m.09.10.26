@@ -1,0 +1,22 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 330,
+ "lines": [
+  {
+   "id": "hook",
+   "at": 4,
+   "say": "Every district of Vienna, ranked by its cheapest half litre of beer."
+  },
+  {
+   "id": "s",
+   "at": 162,
+   "say": "S tier: four thirty, in the first."
+  },
+  {
+   "id": "end",
+   "at": 232,
+   "say": "Twelve have no price yet. Is yours right?"
+  }
+ ]
+}

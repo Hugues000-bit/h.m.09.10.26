@@ -9,7 +9,8 @@
 // - counters ease out hard, grow while counting, and use tabular figures so digits never jitter
 // - ambient glow blooms behind hero elements (peak opacity <= 0.45)
 // - sound effects (CC0, Kenney) on every hit
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
+import { SfxGain } from "./sfx-gain";
 import {
   AbsoluteFill,
   Audio,
@@ -97,11 +98,14 @@ const fillTokens = (s: string, t: Record<string, string>) =>
 export const typed = (text: string, f: number, start: number, end: number) =>
   text.slice(0, Math.floor(interpolate(f, [start, end], [0, text.length], clamp)));
 
-export const Sfx: React.FC<{ at: number; src: string; volume?: number }> = ({ at, src, volume = 0.5 }) => (
-  <Sequence from={Math.max(0, Math.round(at))} durationInFrames={45} layout="none">
-    <Audio src={staticFile(`howmuch/sfx/${src}.wav`)} volume={volume} />
-  </Sequence>
-);
+export const Sfx: React.FC<{ at: number; src: string; volume?: number }> = ({ at, src, volume = 0.5 }) => {
+  const gain = useContext(SfxGain);
+  return (
+    <Sequence from={Math.max(0, Math.round(at))} durationInFrames={45} layout="none">
+      <Audio src={staticFile(`howmuch/sfx/${src}.wav`)} volume={volume * gain} />
+    </Sequence>
+  );
+};
 
 type Entrance = "slam" | "snapLeft" | "snapRight" | "rise" | "pop";
 

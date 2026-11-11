@@ -1,0 +1,27 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 480,
+ "lines": [
+  {
+   "id": "hook",
+   "at": 6,
+   "say": "An espresso for under two euros fifty. Does it still exist?"
+  },
+  {
+   "id": "result",
+   "at": 196,
+   "say": "Only nine of a hundred and nineteen places. In five districts."
+  },
+  {
+   "id": "twist",
+   "at": 314,
+   "say": "Only four were checked in the last three months."
+  },
+  {
+   "id": "end",
+   "at": 400,
+   "say": "Which nine? They're on the map."
+  }
+ ]
+}

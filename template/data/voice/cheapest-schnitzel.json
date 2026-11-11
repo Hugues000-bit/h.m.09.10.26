@@ -1,0 +1,27 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 330,
+ "lines": [
+  {
+   "id": "hook",
+   "at": 4,
+   "say": "The cheapest schnitzel in every district of Vienna."
+  },
+  {
+   "id": "top",
+   "at": 88,
+   "say": "Number one: ten ninety, in two districts."
+  },
+  {
+   "id": "holes",
+   "at": 168,
+   "say": "In fourteen districts, nobody has checked yet."
+  },
+  {
+   "id": "end",
+   "at": 250,
+   "say": "Save this, and add your price."
+  }
+ ]
+}
