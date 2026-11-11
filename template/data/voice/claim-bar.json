@@ -1,0 +1,27 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 375,
+ "lines": [
+  {
+   "id": "a",
+   "at": 4,
+   "say": "Bar owners: your bar is already on the map."
+  },
+  {
+   "id": "b",
+   "at": 92,
+   "say": "The prices were added by your guests."
+  },
+  {
+   "id": "c",
+   "at": 197,
+   "say": "Claim your listing. It's free."
+  },
+  {
+   "id": "end",
+   "at": 290,
+   "say": "Check your prices on how much dot live."
+  }
+ ]
+}

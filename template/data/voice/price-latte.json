@@ -1,0 +1,32 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 331,
+ "lines": [
+  {
+   "id": "h1",
+   "at": 2,
+   "say": "Seven seventy for a latte."
+  },
+  {
+   "id": "h2",
+   "at": 50,
+   "say": "Or two thirty."
+  },
+  {
+   "id": "s2",
+   "at": 96,
+   "say": "Same latte. Triple the price."
+  },
+  {
+   "id": "s3",
+   "at": 182,
+   "say": "Same latte, same city."
+  },
+  {
+   "id": "s4",
+   "at": 258,
+   "say": "Where's the cheap one?"
+  }
+ ]
+}

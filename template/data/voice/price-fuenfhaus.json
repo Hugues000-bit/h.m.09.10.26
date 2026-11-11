@@ -1,0 +1,32 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 331,
+ "lines": [
+  {
+   "id": "h1",
+   "at": 2,
+   "say": "Six euros twenty."
+  },
+  {
+   "id": "h2",
+   "at": 44,
+   "say": "Or four fifty. Same beer, same district."
+  },
+  {
+   "id": "s2",
+   "at": 132,
+   "say": "One street over, different price."
+  },
+  {
+   "id": "s3",
+   "at": 196,
+   "say": "Thirty-eight percent more."
+  },
+  {
+   "id": "s4",
+   "at": 258,
+   "say": "Where's the cheap one?"
+  }
+ ]
+}

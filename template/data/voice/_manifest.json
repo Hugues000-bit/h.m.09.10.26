@@ -187,5 +187,157 @@
    "frames": 53,
    "at": 250
   }
+ },
+ "price-fuenfhaus": {
+  "h1": {
+   "show": "Six euros twenty.",
+   "frames": 32,
+   "at": 2
+  },
+  "h2": {
+   "show": "Or four fifty. Same beer, same district.",
+   "frames": 83,
+   "at": 44
+  },
+  "s2": {
+   "show": "One street over, different price.",
+   "frames": 58,
+   "at": 132
+  },
+  "s3": {
+   "show": "Thirty-eight percent more.",
+   "frames": 36,
+   "at": 196
+  },
+  "s4": {
+   "show": "Where's the cheap one?",
+   "frames": 25,
+   "at": 258
+  }
+ },
+ "price-schnitzel": {
+  "h1": {
+   "show": "Ten ninety for a schnitzel.",
+   "frames": 42,
+   "at": 2
+  },
+  "h2": {
+   "show": "Or thirty-nine ninety.",
+   "frames": 38,
+   "at": 48
+  },
+  "s2": {
+   "show": "Same city. Wild prices.",
+   "frames": 58,
+   "at": 100
+  },
+  "s3": {
+   "show": "Twenty-nine euros apart.",
+   "frames": 38,
+   "at": 182
+  },
+  "s4": {
+   "show": "Where's the cheap one?",
+   "frames": 26,
+   "at": 258
+  }
+ },
+ "price-latte": {
+  "h1": {
+   "show": "Seven seventy for a latte.",
+   "frames": 44,
+   "at": 2
+  },
+  "h2": {
+   "show": "Or two thirty.",
+   "frames": 23,
+   "at": 50
+  },
+  "s2": {
+   "show": "Same latte. Triple the price.",
+   "frames": 56,
+   "at": 96
+  },
+  "s3": {
+   "show": "Same latte, same city.",
+   "frames": 52,
+   "at": 182
+  },
+  "s4": {
+   "show": "Where's the cheap one?",
+   "frames": 23,
+   "at": 258
+  }
+ },
+ "receipt-chocolat": {
+  "a": {
+   "show": "Hot chocolate in Vienna. One ninety,",
+   "frames": 62,
+   "at": 2
+  },
+  "b": {
+   "show": "or eight fifty.",
+   "frames": 24,
+   "at": 74
+  },
+  "stamp": {
+   "show": "Both in the first district.",
+   "frames": 38,
+   "at": 108
+  },
+  "punch": {
+   "show": "Same cup, over four times the price.",
+   "frames": 71,
+   "at": 197
+  },
+  "end": {
+   "show": "Where's the cheap one?",
+   "frames": 26,
+   "at": 276
+  }
+ },
+ "claim-bar": {
+  "a": {
+   "show": "Bar owners: your bar is already on the map.",
+   "frames": 67,
+   "at": 4
+  },
+  "b": {
+   "show": "The prices were added by your guests.",
+   "frames": 59,
+   "at": 92
+  },
+  "c": {
+   "show": "Claim your listing. It's free.",
+   "frames": 54,
+   "at": 197
+  },
+  "end": {
+   "show": "Check your prices on how much dot live.",
+   "frames": 51,
+   "at": 290
+  }
+ },
+ "quiz-cappuccino": {
+  "q": {
+   "show": "Quiz: the priciest cappuccino in Vienna?",
+   "frames": 73,
+   "at": 2
+  },
+  "r": {
+   "show": "C. Seven fifty.",
+   "frames": 37,
+   "at": 152
+  },
+  "cheap": {
+   "show": "The cheapest? Two thirty.",
+   "frames": 45,
+   "at": 212
+  },
+  "end": {
+   "show": "Where? It's on the map.",
+   "frames": 32,
+   "at": 268
+  }
  }
 }

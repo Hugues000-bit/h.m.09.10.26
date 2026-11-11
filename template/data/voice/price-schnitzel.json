@@ -1,0 +1,32 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 331,
+ "lines": [
+  {
+   "id": "h1",
+   "at": 2,
+   "say": "Ten ninety for a schnitzel."
+  },
+  {
+   "id": "h2",
+   "at": 48,
+   "say": "Or thirty-nine ninety."
+  },
+  {
+   "id": "s2",
+   "at": 100,
+   "say": "Same city. Wild prices."
+  },
+  {
+   "id": "s3",
+   "at": 182,
+   "say": "Twenty-nine euros apart."
+  },
+  {
+   "id": "s4",
+   "at": 258,
+   "say": "Where's the cheap one?"
+  }
+ ]
+}

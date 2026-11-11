@@ -1,0 +1,32 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 330,
+ "lines": [
+  {
+   "id": "a",
+   "at": 2,
+   "say": "Hot chocolate in Vienna. One ninety,"
+  },
+  {
+   "id": "b",
+   "at": 74,
+   "say": "or eight fifty."
+  },
+  {
+   "id": "stamp",
+   "at": 108,
+   "say": "Both in the first district."
+  },
+  {
+   "id": "punch",
+   "at": 197,
+   "say": "Same cup, over four times the price."
+  },
+  {
+   "id": "end",
+   "at": 276,
+   "say": "Where's the cheap one?"
+  }
+ ]
+}

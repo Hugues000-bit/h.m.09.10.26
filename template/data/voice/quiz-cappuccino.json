@@ -1,0 +1,27 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "frames": 330,
+ "lines": [
+  {
+   "id": "q",
+   "at": 2,
+   "say": "Quiz: the priciest cappuccino in Vienna?"
+  },
+  {
+   "id": "r",
+   "at": 152,
+   "say": "C. Seven fifty."
+  },
+  {
+   "id": "cheap",
+   "at": 212,
+   "say": "The cheapest? Two thirty."
+  },
+  {
+   "id": "end",
+   "at": 268,
+   "say": "Where? It's on the map."
+  }
+ ]
+}

@@ -20,18 +20,26 @@ import { UnderX, UNDER_FRAMES } from "./UnderX";
 import { AustriaMonthly, AUSTRIA_FRAMES } from "./AustriaMonthly";
 import { COPY_NEUBAU, COPY_FUENFHAUS, COPY_WEISSER, COPY_DOENER, COPY_CAPPUCCINO, COPY_BURGER, COPY_SCHNITZEL, COPY_LATTE } from "./copy-week";
 
-const V = [
+const V: { id: string; points: typeof WEEK.NEUBAU; copy: typeof COPY_NEUBAU; voice?: string }[] = [
   { id: "Neubau", points: WEEK.NEUBAU, copy: COPY_NEUBAU },
-  { id: "Fuenfhaus", points: WEEK.FUENFHAUS, copy: COPY_FUENFHAUS },
+  { id: "Fuenfhaus", points: WEEK.FUENFHAUS, copy: COPY_FUENFHAUS, voice: "price-fuenfhaus" },
   { id: "Weisser", points: WEEK.WEISSER, copy: COPY_WEISSER },
   { id: "Doener", points: WEEK.KEBAB, copy: COPY_DOENER },
   { id: "Cappuccino", points: WEEK.CAPPUCCINO, copy: COPY_CAPPUCCINO },
   { id: "Burger", points: WEEK.BURGER, copy: COPY_BURGER },
-  { id: "Schnitzel", points: WEEK.SCHNITZEL, copy: COPY_SCHNITZEL },
-  { id: "Latte", points: WEEK.LATTE, copy: COPY_LATTE },
+  { id: "Schnitzel", points: WEEK.SCHNITZEL, copy: COPY_SCHNITZEL, voice: "price-schnitzel" },
+  { id: "Latte", points: WEEK.LATTE, copy: COPY_LATTE, voice: "price-latte" },
 ];
 
 // Voiced versions (11 Nov 2026): same format + voice lines from data/voice/<set>.json (scripts/voice.py)
+const PRICE_VOICED: Record<string, typeof PriceVideo> = {
+  "price-fuenfhaus": withVoice(PriceVideo, "price-fuenfhaus") as typeof PriceVideo,
+  "price-schnitzel": withVoice(PriceVideo, "price-schnitzel") as typeof PriceVideo,
+  "price-latte": withVoice(PriceVideo, "price-latte") as typeof PriceVideo,
+};
+const ReceiptHotChocolateV = withVoice(ReceiptFact, "receipt-chocolat");
+const ClaimBarV = withVoice(ClaimCard, "claim-bar");
+const QuizCappuccinoV = withVoice(PriceQuiz, "quiz-cappuccino");
 const UnderDoenerV = withVoice(UnderX, "under-doener");
 const UnderEspressoV = withVoice(UnderX, "under-espresso");
 const TierKruegerlV = withVoice(TierList, "tier-kruegerl");
@@ -50,11 +58,11 @@ const TierEspressoIntroV = withVoice(() => (
 const Root: React.FC = () => (
   <>
     {V.map((v) => (
-      <Composition key={v.id} id={v.id} component={PriceVideo} durationInFrames={PRICE_VIDEO_FRAMES} fps={30} width={1080} height={1920} defaultProps={{ points: v.points, copy: v.copy }} />
+      <Composition key={v.id} id={v.id} component={v.voice ? PRICE_VOICED[v.voice] : PriceVideo} durationInFrames={PRICE_VIDEO_FRAMES} fps={30} width={1080} height={1920} defaultProps={{ points: v.points, copy: v.copy }} />
     ))}
     <Composition id="GapMap" component={GapMap} durationInFrames={GAP_FRAMES} fps={30} width={1080} height={1920} defaultProps={{ theme: "light" as const }} />
     <Composition id="Monthly" component={MonthlyMap} durationInFrames={MONTHLY_FRAMES} fps={30} width={1080} height={1920} defaultProps={{ theme: "dark" as const }} />
-    <Composition id="ClaimBar" component={ClaimCard} durationInFrames={CLAIM_FRAMES} fps={30} width={1080} height={1920}
+    <Composition id="ClaimBar" component={ClaimBarV} durationInFrames={CLAIM_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, venue: { en: "bar", de: "Lokal" }, item: "Krügerl 0,5 l", price: "4,90 €", bezirk: "Neubau · 1070" }} />
     <Composition id="ClaimCafe" component={ClaimCard} durationInFrames={CLAIM_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "light" as const, venue: { en: "café", de: "Café" }, item: "Cappuccino", price: "4,20 €", bezirk: "Alsergrund · 1090" }} />
@@ -82,7 +90,7 @@ const Root: React.FC = () => (
         lines: [{ label: "CAPPUCCINO", sub: "cheapest in Vienna · billigster", price: "2,30 €", tone: "green" as const }, { label: "CAPPUCCINO", sub: "priciest in Vienna · teuerster", price: "7,50 €", tone: "pink" as const }],
         stampTop: "SAME BEZIRK", stampMain: "INNERE STADT", totalLabel: "DIFFERENCE", total: "+226 %", punch: ["Same Bezirk.", "*3×* the price."], punchDe: "Gleicher Bezirk. Dreifacher Preis.",
         cta: "Where's the *2,30\u00a0€* one?", ctaDe: "Wo gibt's den Cappuccino um 2,30 €?", ctaSub: "📩 Send this to your coffee buddy", footer: "latest price per place · 119 places · 5 Nov 2026" }} />
-    <Composition id="ReceiptHotChocolate" component={ReceiptFact} durationInFrames={RECEIPT_FRAMES} fps={30} width={1080} height={1920}
+    <Composition id="ReceiptHotChocolate" component={ReceiptHotChocolateV} durationInFrames={RECEIPT_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "light" as const, label: "WIEN · HEISSE SCHOKOLADE", hook: ["Hot chocolate in Vienna:", "how much is *too* much?"], hookDe: "Heiße Schokolade: Wie viel ist zu viel?",
         lines: [{ label: "HOT CHOCOLATE", sub: "cheapest in Vienna · billigste", price: "1,90 €", tone: "green" as const }, { label: "HOT CHOCOLATE", sub: "priciest in Vienna · teuerste", price: "8,50 €", tone: "pink" as const }],
         stampTop: "SAME BEZIRK", stampMain: "INNERE STADT", totalLabel: "DIFFERENCE", total: "+347 %", punch: ["Same cup.", "*4,5×* the price."], punchDe: "Gleiche Tasse. 4,5-facher Preis.",
@@ -118,9 +126,9 @@ const Root: React.FC = () => (
       defaultProps={{ theme: "dark" as const, mode: "kruegerl" as const, date: "23 Oct 2026" }} />
     <Composition id="ChallengeKruegerl" component={CheapestMap} durationInFrames={CHEAPEST_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, set: "KRUEGERL" as const, item: "Krügerl", itemDe: "Krügerl", label: "WIEN · KRÜGERL 0,5 L", challenge: true }} />
-    <Composition id="QuizCappuccino" component={PriceQuiz} durationInFrames={QUIZ_FRAMES} fps={30} width={1080} height={1920}
+    <Composition id="QuizCappuccino" component={QuizCappuccinoV} durationInFrames={QUIZ_FRAMES} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "light" as const, label: "QUIZ · WIEN · CAPPUCCINO", question: ["The *priciest*", "cappuccino in Vienna?"], questionDe: "Der teuerste Cappuccino in Wien?",
-        options: ["4,50 €", "6,00 €", "7,50 €"], answer: 2, answerLine: "7,50 € for one cappuccino.", answerDe: "7,50 € für einen Cappuccino.", cheapest: "3,40 €", n: 111, item: "cappuccino", itemDe: "Cappuccino" }} />
+        options: ["4,50 €", "6,00 €", "7,50 €"], answer: 2, answerLine: "7,50 € for one cappuccino.", answerDe: "7,50 € für einen Cappuccino.", cheapest: "2,30 €", n: 120, item: "cappuccino", itemDe: "Cappuccino" }} />
     {/* Long formats (10 Nov 2026): game, map dive, two bills, map filling up */}
     <Composition id="HigherLower1" component={HigherLower} fps={30} width={1080} height={1920} durationInFrames={hlSchedule(5, "higherlower").total}
       calculateMetadata={({ props }) => ({ durationInFrames: hlSchedule(props.rounds.length, props.voice).total })}
