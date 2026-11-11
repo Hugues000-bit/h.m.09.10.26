@@ -261,3 +261,13 @@ Coller dans `template/data/places/AAAA-MM-JJ.json` (modèle : `2026-11-10.json`,
 - Dans Metricool : `isAiGenerated: true` (Instagram) et `isAigc: true` (TikTok) sur les posts avec voix de synthèse.
 - Exceptions : les trois TikTok du test en allemand (17 au 21/11) restent sans voix pour ne pas fausser la comparaison ; les brouillons reçoivent la voix quand on met leurs chiffres à jour.
 - Faits le 11/11 (fichiers `-voix-v1111`) : classement espresso (TikTok 12/11), classement Krügerl (Instagram 13/11), grille Schnitzel (TikTok 14/11, Instagram 20/11), « encore sous 5 € » Döner et « encore sous 2,50 € » espresso (pas encore programmés). Restent à faire : Reels de prix Facebook (12, 14 et 19/11), fait chocolat chaud (Instagram 18/11), grille Krügerl (Facebook 24/11), post commerçants (26/11), quiz (28/11).
+
+**Compteurs évolutifs « encore sous X € » (accord de Hugues, 11/11)** : seuils fixes dans `template/data/under/history.json` (Döner 5 €, espresso 2,50 €, cappuccino 4 €, Schnitzel 15 €, Krügerl 5 € pour Instagram/Facebook). Un relevé daté (comptes seulement) à chaque vidéo publiée et à chaque bilan mensuel ; la vidéo suivante affiche le relevé précédent avec la prop `before` de `UnderX` (« ↺ 11 Nov: 7/28 »). La veille de 8 h 42 recalcule les compteurs chaque matin et signale ceux qui bougent, en séparant « nouveaux lieux » et « prix qui ont changé » ; elle ne modifie rien. Un compteur qui bouge = un post « flash » à proposer à Hugues ; sinon un point par mois. Programmés : Döner TikTok jeu. 26/11 19 h, espresso Instagram ven. 27/11 12 h 30. Requête d'un compteur :
+```sql
+with latest as (select distinct on (pp.place_id) pp.price pr, pp.created_at::date d, coalesce(substring(p.address from '\m1(0[1-9]|1\d|2[0-3])0\M'),'?') bz
+  from place_prices pp join places p on p.id=pp.place_id
+  where pp.status='active' and p.status='active' and p.city ilike 'vienna%' and pp.product='kebab' and coalesce(pp.variant,'')='sandwich'
+  order by pp.place_id, pp.created_at desc)
+select count(*) n, count(*) filter (where pr<5) under, count(*) filter (where pr=5) exact, count(*) filter (where pr<5 and d>=current_date-90) fresh90,
+  string_agg(distinct bz, ',') filter (where pr<5) bezirke, string_agg(pr::float::text, ',' order by pr) prices from latest
+```

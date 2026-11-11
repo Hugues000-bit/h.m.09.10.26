@@ -1,0 +1,18 @@
+{
+ "about": "Compteurs « encore sous X € » : nombre de lieux dont le dernier prix actif est strictement sous le seuil. Seuils fixes, ne pas les changer. Un relevé par vidéo publiée et par bilan mensuel. Uniquement des comptes : ni noms de lieux ni prix par lieu.",
+ "counters": [
+  {"key": "doener-5", "product": "kebab", "variant": "sandwich", "limit": 5, "label": "Döner sous 5 €", "tiktok": true},
+  {"key": "espresso-2-50", "product": "coffee", "variant": "espresso", "limit": 2.5, "label": "Espresso sous 2,50 €", "tiktok": true},
+  {"key": "cappuccino-4", "product": "coffee", "variant": "cappuccino", "limit": 4, "label": "Cappuccino sous 4 €", "tiktok": true},
+  {"key": "schnitzel-15", "product": "schnitzel", "variant": "with_salad", "limit": 15, "label": "Schnitzel sous 15 €", "tiktok": true},
+  {"key": "kruegerl-5", "product": "beer", "variant": "draft_large", "limit": 5, "label": "Krügerl sous 5 €", "tiktok": false}
+ ],
+ "snapshots": [
+  {"date": "2026-11-11",
+   "doener-5": {"n": 28, "under": 7, "exact": 5, "fresh90": 0, "bezirke": [15, 16, 20]},
+   "espresso-2-50": {"n": 119, "under": 9, "exact": 3, "fresh90": 4, "bezirke": [1, 6, 7, 8, 16]},
+   "cappuccino-4": {"n": 120, "under": 25, "exact": 1, "fresh90": 7, "bezirke": [1, 3, 6, 7, 8, 9, 15, 16]},
+   "schnitzel-15": {"n": 53, "under": 7, "exact": 1, "fresh90": 2, "bezirke": [1, 6, 7, 9, 17]},
+   "kruegerl-5": {"n": 118, "under": 28, "exact": 0, "fresh90": 5, "bezirke": [1, 6, 7, 8, 9, 15, 16, 17]}}
+ ]
+}

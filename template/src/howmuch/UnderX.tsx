@@ -31,9 +31,10 @@ export type UnderProps = {
   endDe: string;
   ctaSub: string;
   footer: string;
+  before?: { label: string; under: number; n: number }; // previous reading (data/under/history.json), e.g. { label: "11 Nov", under: 7, n: 28 }
 };
 
-export const UnderX: React.FC<UnderProps> = ({ theme = "dark", label, hook, hookDe, limit, prices, where, resultDe, twist, twistDe, end, endDe, ctaSub, footer }) => {
+export const UnderX: React.FC<UnderProps> = ({ theme = "dark", label, hook, hookDe, limit, prices, where, resultDe, twist, twistDe, end, endDe, ctaSub, footer, before }) => {
   applyTheme(theme);
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -142,6 +143,11 @@ export const UnderX: React.FC<UnderProps> = ({ theme = "dark", label, hook, hook
             <div style={{ color: BRAND.green }}>● under {euro(limit)} · unter {euro(limit)}</div>
             <div style={{ color: BRAND.yellow, opacity: nExact ? 1 : 0.35 }}>● {nExact} × exactly {euro(limit)}</div>
             <div style={{ color: BRAND.pink, opacity: nOver ? 1 : 0.35 }}>● {nOver} × over · darüber</div>
+            {before && f >= RESULT && (
+              <div style={{ color: BRAND.text }}>
+                ↺ {before.label}: {before.under}/{before.n}
+              </div>
+            )}
           </div>
         </div>
       </div>
