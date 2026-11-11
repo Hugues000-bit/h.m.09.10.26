@@ -369,5 +369,31 @@
    "show": "howmuch.live",
    "frames": 39
   }
+ },
+ "why-map": {
+  "v1": {
+   "show": "Same city. Same cappuccino.",
+   "frames": 59
+  },
+  "v2": {
+   "show": "2,30 € or 7,50 €",
+   "frames": 50
+  },
+  "v3": {
+   "show": "And nobody tells you which café is which.",
+   "frames": 62
+  },
+  "v4": {
+   "show": "So we put every price on a map.",
+   "frames": 49
+  },
+  "v5": {
+   "show": "263 places so far, added by people in Vienna.",
+   "frames": 110
+  },
+  "end": {
+   "show": "Is your café on it?",
+   "frames": 31
+  }
  }
 }

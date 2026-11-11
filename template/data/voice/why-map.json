@@ -1,0 +1,12 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "lines": [
+  {"id": "v1", "say": "Same city. Same cappuccino."},
+  {"id": "v2", "say": "Two thirty, or seven fifty.", "show": "2,30 € or 7,50 €"},
+  {"id": "v3", "say": "And nobody tells you which café is which."},
+  {"id": "v4", "say": "So we put every price on a map."},
+  {"id": "v5", "say": "Two hundred sixty-three places so far, added by people in Vienna.", "show": "263 places so far, added by people in Vienna."},
+  {"id": "end", "say": "Is your café on it?"}
+ ]
+}
