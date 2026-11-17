@@ -1,0 +1,13 @@
+{
+ "voice": "de-thorsten-low",
+ "speed": 1.0,
+ "lines": [
+  {"id": "b1", "say": "Dein Café oder deine Bar ist wahrscheinlich schon auf dieser Karte."},
+  {"id": "b2", "say": "Deine Gäste haben die Preise eingetragen. Sind sie noch aktuell?"},
+  {"id": "b3", "say": "Übernimm deinen Eintrag, gratis. Korrigiere deine Daten, bestätige deine Preise, hol dir das Abzeichen."},
+  {"id": "b4", "say": "Bald kommt Pro. Sieh, wie deine Preise rundherum abschneiden, und bring deine Häppi Auer auf die Karte.", "show": "Bald kommt Pro. Sieh, wie deine Preise rundherum abschneiden, und bring deine Happy Hour auf die Karte."},
+  {"id": "b5", "say": "Und das Ranking? Ist nie käuflich."},
+  {"id": "b6", "say": "Die Pro-Beta gibt es nur auf Einladung, und während der Beta gratis. Frag jetzt deinen Zugang an."},
+  {"id": "end", "say": "Hau matsch, Punkt laiv, Slash Business.", "show": "howmuch.live/business"}
+ ]
+}

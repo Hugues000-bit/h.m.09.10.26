@@ -1,0 +1,13 @@
+{
+ "voice": "de-thorsten-low",
+ "speed": 1.0,
+ "lines": [
+  {"id": "m1", "say": "Was kostet ein Kaputschino in Wien?", "show": "Was kostet ein Cappuccino in Wien?"},
+  {"id": "m2", "say": "Zwei Euro dreißig. Oder sieben Euro fünfzig. Gleiche Stadt.", "show": "2,30 € oder 7,50 €. Gleiche Stadt."},
+  {"id": "m3", "say": "Und das merkst du erst nach dem Bestellen."},
+  {"id": "m4", "say": "Also kommt jeder Preis auf eine Karte."},
+  {"id": "m5", "say": "Echte Preise, eingetragen von echten Leuten in Wien."},
+  {"id": "m6", "say": "Finde das Günstigste. Oder trag deinen Preis ein."},
+  {"id": "end", "say": "Hau matsch, Punkt laiv.", "show": "howmuch.live"}
+ ]
+}

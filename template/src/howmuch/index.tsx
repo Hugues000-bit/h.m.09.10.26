@@ -188,6 +188,11 @@ const Root: React.FC = () => (
     {/* Motion-design film for venue owners: claim your page + Pro beta (17 Nov 2026) */}
     <Composition id="MotionBusiness" component={MotionBusiness} durationInFrames={businessSchedule().total} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, places: "260+" }} />
+    {/* The same two films, all in German: text on screen + German voice (17 Nov 2026) */}
+    <Composition id="MotionIntroDe" component={MotionIntro} durationInFrames={motionSchedule("de").total} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, low: 2.3, high: 7.5, places: "260+", prices: "1600+", item: "Cappuccino", lang: "de" as const }} />
+    <Composition id="MotionBusinessDe" component={MotionBusiness} durationInFrames={businessSchedule("de").total} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, places: "260+", lang: "de" as const }} />
   </>
 );
 registerRoot(Root);

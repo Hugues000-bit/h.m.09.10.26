@@ -2,6 +2,7 @@
 // Pure motion (no screenshots): kinetic type synced to the voice, a swinging price tag, a seesaw of two real prices,
 // a receipt, the real dots of the map, counters, three steps, logo reveal. Scenes change with a circle wipe.
 // Prices: lowest and highest latest cappuccino price found on howmuch.live (no venue named, no average).
+// lang="de" gives the all-German version (German text on screen + German voice set motion-intro-de).
 import React, { useEffect, useState } from "react";
 import { AbsoluteFill, Easing, continueRender, delayRender, interpolate, random, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { BRAND, a, g, euro, applyTheme, loadBrandFonts, Theme } from "./brand";
@@ -12,12 +13,14 @@ import { MapShade, ViennaMap } from "./ViennaMap";
 import { DOTS } from "./places-data";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const SET = "motion-intro";
+export type Lang = "en" | "de";
+const setOf = (lang: Lang) => (lang === "de" ? "motion-intro-de" : "motion-intro");
 const IDS = ["m1", "m2", "m3", "m4", "m5", "m6"];
 const MIN = [70, 84, 66, 78, 84, 90];
 const WIPE = 12;
 
-export const motionSchedule = () => {
+export const motionSchedule = (lang: Lang = "en") => {
+  const SET = setOf(lang);
   const start: number[] = [];
   let t = 0;
   IDS.forEach((id, i) => {
@@ -27,9 +30,56 @@ export const motionSchedule = () => {
   return { start, endAt: t, total: t + Math.max(105, voiceFrames(SET, "end") + 70) };
 };
 
-export type MotionProps = { theme?: Theme; low: number; high: number; places: string; prices: string; item: string };
+export type MotionProps = { theme?: Theme; low: number; high: number; places: string; prices: string; item: string; lang?: Lang };
 
-// One word at a time, timed over the voice line; *word* = accent.
+// Every word on screen, per language. English is the default (with German small underneath);
+// the German version is German only. [text, size] for each kinetic headline.
+const TEXT = (lang: Lang, item: string, lo: string, hi: string) =>
+  lang === "de"
+    ? {
+        k: [
+          [`Was kostet|ein *${item}*|in Wien?`, 112],
+          [`*${lo}* oder|~${hi}~.|Gleiche Stadt.`, 108],
+          [`Das merkst du|erst *nach*|dem Bestellen.`, 104],
+          [`Also kommt|jeder Preis|auf *eine Karte*.`, 100],
+          [`*Echte* Preise.|Eingetragen|von *echten* Leuten.`, 92],
+          [`Finde das|*Günstigste*.|Oder trag deinen|Preis *ein*.`, 92],
+        ] as [string, number][],
+        stamp: "AUTSCH!",
+        counters: ["Lokale", "Preise"],
+        steps: [
+          ["Günstig finden", "auf der Karte"],
+          ["Vergleichen", "Lokal für Lokal"],
+          ["Preis eintragen", "was du gezahlt hast"],
+        ],
+        tagline: "Echte Preise. Echte Leute.",
+        taglineSub: "Von Wien, für Wien.",
+        endSub: "Gratis · direkt im Browser",
+        footer: `Niedrigster und höchster ${item}-Preis auf howmuch.live · letzter Preis pro Lokal · Wien · Nov. 2026`,
+      }
+    : {
+        k: [
+          [`How much is|a *${item}*|in Vienna?`, 112],
+          [`*${lo}* or|~${hi}~.|Same city.`, 118],
+          [`And you find out|*after* you order.`, 104],
+          [`So we put|every price|on *one map*.`, 108],
+          [`*Real* prices.|Added by *real*|people in Vienna.`, 100],
+          [`Find the *cheap one*.|Or add the price|you *just paid*.`, 96],
+        ] as [string, number][],
+        stamp: "SURPRISE!",
+        counters: ["places · Lokale", "prices · Preise"],
+        steps: [
+          ["Find the cheap one", "Finde das Günstige"],
+          ["Compare", "Vergleiche"],
+          ["Add what you paid", "Trag deinen Preis ein"],
+        ],
+        tagline: "Real prices. Real people.",
+        taglineSub: "Echte Preise. Echte Leute.",
+        endSub: "Free · in your browser · Gratis im Browser",
+        footer: `Lowest and highest ${item} price found on howmuch.live · latest price per place · Vienna · Nov 2026`,
+      };
+
+// One word at a time, timed over the voice line; *word* = accent, ~word~ = pink. A span can cover several words (*one map*).
 export const Kinetic: React.FC<{ text: string; rel: number; frames: number; size: number; accent: string; top: number; align?: "left" | "center" }> = ({ text, rel, frames, size, accent, top, align = "left" }) => {
   const { fps } = useVideoConfig();
   const lines = text.split("|");
@@ -42,6 +92,13 @@ export const Kinetic: React.FC<{ text: string; rel: number; frames: number; size
     acc += weight(w);
     return v;
   });
+  // which words sit inside a *…* or ~…~ span
+  let open = "";
+  const mark = all.map((w) => {
+    const m = open || (w.startsWith("*") ? "*" : w.startsWith("~") ? "~" : "");
+    open = m && /[*~][.,?!:]*$/.test(w) ? "" : m;
+    return m;
+  });
   let k = 0;
   return (
     <div style={{ position: "absolute", top, left: 80, width: 820, textAlign: align }}>
@@ -50,8 +107,8 @@ export const Kinetic: React.FC<{ text: string; rel: number; frames: number; size
           {l.trim().split(" ").map((w, wi) => {
             const i = k++;
             const p = spring({ frame: rel - at[i], fps, config: { damping: 13, stiffness: 260, mass: 0.6 } });
-            const acc2 = /^\*.*\*[.,?!]?$/.test(w);
-            const pink = /^~.*~[.,?!]?$/.test(w);
+            const acc2 = mark[i] === "*";
+            const pink = mark[i] === "~";
             const clean = w.replace(/[*~]/g, "");
             return (
               <span key={wi} style={{ display: "inline-block", marginRight: size * 0.24, fontFamily: BRAND.heading, fontWeight: 700, fontSize: size, letterSpacing: -size * 0.035,
@@ -95,7 +152,7 @@ const Cup: React.FC<{ draw: number; size?: number }> = ({ draw, size = 260 }) =>
   );
 };
 
-export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, places, prices, item }) => {
+export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, places, prices, item, lang = "en" }) => {
   applyTheme(theme);
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -104,7 +161,9 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
     loadBrandFonts().then(() => continueRender(h)).catch(() => continueRender(h));
   }, [h]);
 
-  const S = motionSchedule();
+  const SET = setOf(lang);
+  const S = motionSchedule(lang);
+  const T = TEXT(lang, item, euro(low).replace(" ", "\u00a0"), euro(high).replace(" ", "\u00a0"));
   const G = BRAND.green as string;
   const P = BRAND.pink as string;
   const Y = BRAND.yellow as string;
@@ -114,7 +173,7 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
 
   const scene = (i: number, rel: number): React.ReactNode => {
     const v = vf(IDS[i]);
-    const kin = (text: string, size: number, top = 300, accent = G) => <Kinetic text={text} rel={rel - 6} frames={v} size={size} accent={accent} top={top} />;
+    const kin = (top = 300, accent = G) => <Kinetic text={T.k[i][0]} rel={rel - 6} frames={v} size={T.k[i][1]} accent={accent} top={top} />;
     if (i === 0) {
       // the question: a cup draws itself, a tag swings in with scrambling digits
       const swing = spring({ frame: rel - 18, fps, config: { damping: 6, stiffness: 70, mass: 0.9 } });
@@ -122,7 +181,7 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
       const scramble = Array.from({ length: 4 }, (_, k) => Math.floor(random(`d${k}-${Math.floor(rel / 2)}`) * 10));
       return (
         <>
-          {kin(`How much is|a *${item}*|in Vienna?`, 112)}
+          {kin()}
           <div style={{ position: "absolute", top: 1020, left: 140 }}>
             <Cup draw={interpolate(rel, [4, 40], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) })} />
           </div>
@@ -140,7 +199,7 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
       const inR = spring({ frame: rel - 24, fps, config: { damping: 11, stiffness: 200 } });
       return (
         <>
-          {kin(`*${euro(low).replace(" ", " ")}* or|~${euro(high).replace(" ", " ")}~.|Same city.`, 118, 300, G)}
+          {kin(300, G)}
           <div style={{ position: "absolute", top: 1010, left: 120, width: 840, height: 360 }}>
             <div style={{ position: "absolute", left: 0, right: 0, top: 210, height: 14, borderRadius: 14, background: BRAND.text as string, transform: `rotate(${tilt}deg)`, transformOrigin: "50% 50%" }}>
               <div style={{ position: "absolute", left: 10, bottom: 14, transform: `translateY(${(1 - inL) * -600}px) rotate(${-tilt}deg)` }}>
@@ -163,7 +222,7 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
       const stamp = spring({ frame: rel - 38, fps, config: { damping: 9, stiffness: 260, mass: 0.7 } });
       return (
         <>
-          {kin(`And you find out|*after* you order.`, 104, 300, P)}
+          {kin(300, P)}
           <div style={{ position: "absolute", top: 640, left: 290, width: 500, height: 640 * print, overflow: "hidden" }}>
             <div style={{ width: 500, height: 640, background: "#F6F1E6", padding: "40px 40px", boxSizing: "border-box", fontFamily: BRAND.mono, color: "#1C1A17", boxShadow: "0 30px 80px rgba(0,0,0,0.5)" }}>
               <div style={{ fontSize: 30, fontWeight: 700, textAlign: "center", letterSpacing: 4 }}>RECHNUNG</div>
@@ -176,7 +235,7 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
           </div>
           {rel >= 38 && (
             <div style={{ position: "absolute", top: 1060, left: 270, width: 540, textAlign: "center", transform: `rotate(-9deg) scale(${2 - Math.min(1, stamp)})`, opacity: Math.min(1, stamp * 1.5) }}>
-              <span style={{ display: "inline-block", border: `8px solid ${P}`, borderRadius: 18, padding: "6px 26px", fontFamily: BRAND.heading, fontWeight: 700, fontSize: 92, color: P, background: a(BRAND.bg as string, 0.85) }}>SURPRISE!</span>
+              <span style={{ display: "inline-block", border: `8px solid ${P}`, borderRadius: 18, padding: "6px 26px", fontFamily: BRAND.heading, fontWeight: 700, fontSize: 92, color: P, background: a(BRAND.bg as string, 0.85) }}>{T.stamp}</span>
             </div>
           )}
         </>
@@ -191,7 +250,7 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
           <ViennaMap cam={{ x: 440, y: 450, s: 2.0 + 0.2 * interpolate(rel, [0, 90], [0, 1], clamp) }} focus={[540, 1080]} dotColor={G}
             dot={(k) => (rel < shown(k) ? 0 : 1 + 1.2 * Math.max(0, 1 - (rel - shown(k)) / 7))} />
           <MapShade top={760} bottom={520} />
-          {kin(`So we put|every price|on *one map*.`, 108)}
+          {kin()}
         </>
       );
     }
@@ -200,10 +259,10 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
       const c1 = interpolate(rel, [6, 46], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) });
       return (
         <>
-          {kin(`*Real* prices.|Added by *real*|people in Vienna.`, 100)}
+          {kin()}
           {[
-            { v: places, l: "places · Lokale", top: 760, col: G },
-            { v: prices, l: "prices · Preise", top: 1000, col: Y },
+            { v: places, l: T.counters[0], top: 760, col: G },
+            { v: prices, l: T.counters[1], top: 1000, col: Y },
           ].map((c, k) => {
             const n = parseInt(c.v.replace(/\D/g, ""), 10);
             const shownN = Math.round(n * interpolate(rel, [6 + k * 8, 46 + k * 8], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) }));
@@ -232,13 +291,13 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
     }
     // i === 5: three steps
     const steps = [
-      { icon: "pin", t: "Find the cheap one", d: "Finde das Günstige", col: G },
-      { icon: "eq", t: "Compare", d: "Vergleiche", col: Y },
-      { icon: "plus", t: "Add what you paid", d: "Trag deinen Preis ein", col: P },
+      { icon: "pin", t: T.steps[0][0], d: T.steps[0][1], col: G },
+      { icon: "eq", t: T.steps[1][0], d: T.steps[1][1], col: Y },
+      { icon: "plus", t: T.steps[2][0], d: T.steps[2][1], col: P },
     ];
     return (
       <>
-        {kin(`Find the *cheap one*.|Or add the price|you *just paid*.`, 96)}
+        {kin()}
         {steps.map((s, k) => {
           const p = spring({ frame: rel - 10 - k * 16, fps, config: { damping: 11, stiffness: 220, mass: 0.6 } });
           return (
@@ -302,12 +361,12 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
             <Glitch text="HOW MUCH?!" active={endRel >= 4 && endRel < 14} seed="mi" style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 136, letterSpacing: -5, color: G, textShadow: `0 0 40px ${g(G, 0.6)}` }} />
           </div>
           <div style={{ position: "absolute", top: 800, left: 80, width: 920 - 80, textAlign: "center", opacity: interpolate(endRel, [14, 24], [0, 1], clamp), transform: `translateY(${interpolate(endRel, [14, 24], [30, 0], clamp)}px)` }}>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 60, color: BRAND.text, letterSpacing: -1.5 }}>Real prices. Real people.</div>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 38, color: BRAND.muted, marginTop: 10 }}>Echte Preise. Echte Leute.</div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 60, color: BRAND.text, letterSpacing: -1.5 }}>{T.tagline}</div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 38, color: BRAND.muted, marginTop: 10 }}>{T.taglineSub}</div>
           </div>
           <div style={{ position: "absolute", top: 1010, left: 80, width: 920 - 80, textAlign: "center", opacity: interpolate(endRel, [22, 32], [0, 1], clamp) }}>
             <span style={{ display: "inline-block", border: `4px solid ${G}`, borderRadius: 24, padding: "14px 40px", fontFamily: BRAND.heading, fontWeight: 700, fontSize: 84, color: G, letterSpacing: -2 }}>howmuch.live</span>
-            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 30, color: BRAND.muted, marginTop: 22 }}>Free · in your browser · Gratis im Browser</div>
+            <div style={{ fontFamily: BRAND.mono, fontWeight: 500, fontSize: 30, color: BRAND.muted, marginTop: 22 }}>{T.endSub}</div>
           </div>
         </AbsoluteFill>
       )}
@@ -317,7 +376,7 @@ export const MotionIntro: React.FC<MotionProps> = ({ theme = "dark", low, high, 
         <span style={{ color: BRAND.muted, fontWeight: 500 }}>howmuch.live</span>
       </div>
       <div style={{ position: "absolute", top: 1404, left: 80, right: 180, fontFamily: BRAND.mono, fontSize: 20, lineHeight: 1.35, color: BRAND.muted, opacity: inEnd ? 0 : 1 }}>
-        Lowest and highest {item} price found on howmuch.live · latest price per place · Vienna · Nov 2026
+        {T.footer}
       </div>
       <div style={{ position: "absolute", top: 0, left: 0, height: 8, width: `${(f / (S.total - 1)) * 100}%`, background: BRAND.green }} />
       <AbsoluteFill style={{ backgroundColor: BRAND.bg, opacity: loop, pointerEvents: "none" }} />

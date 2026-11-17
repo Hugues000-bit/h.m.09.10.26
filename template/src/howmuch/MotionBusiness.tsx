@@ -2,22 +2,24 @@
 // Goal: claim your page (free, forever) and request access to the Pro beta (invite-only, free during the beta).
 // Features named here are the ones listed on howmuch.live/business (Nov 2026). No price, no view count, no venue named:
 // everything shown is illustrative ("?,?? €", "Your café").
+// lang="de" gives the all-German version (German text on screen + German voice set motion-business-de).
 import React, { useEffect, useState } from "react";
 import { AbsoluteFill, Easing, continueRender, delayRender, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { BRAND, a, g, applyTheme, loadBrandFonts, Theme } from "./brand";
 import { Backdrop, Bloom, Glitch, Sfx } from "./PriceVideo";
 import { Cue, VoiceOver, voiceFrames } from "./Voice";
 import { VOICE } from "./voice-data";
-import { Kinetic, Tag } from "./MotionIntro";
+import { Kinetic, Lang, Tag } from "./MotionIntro";
 import { ViennaMap } from "./ViennaMap";
 
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const SET = "motion-business";
+const setOf = (lang: Lang) => (lang === "de" ? "motion-business-de" : "motion-business");
 const IDS = ["b1", "b2", "b3", "b4", "b5", "b6"];
 const MIN = [84, 84, 120, 140, 66, 126];
 const WIPE = 12;
 
-export const businessSchedule = () => {
+export const businessSchedule = (lang: Lang = "en") => {
+  const SET = setOf(lang);
   const start: number[] = [];
   let t = 0;
   IDS.forEach((id, i) => {
@@ -27,7 +29,73 @@ export const businessSchedule = () => {
   return { start, endAt: t, total: t + Math.max(110, voiceFrames(SET, "end") + 66) };
 };
 
-export type BusinessProps = { theme?: Theme; places: string };
+export type BusinessProps = { theme?: Theme; places: string; lang?: Lang };
+
+// Every word on screen, per language. English keeps a small German line under each headline ("sub");
+// the German version is German only. k = [kinetic headline, size].
+const TEXT = (lang: Lang, places: string) =>
+  lang === "de"
+    ? {
+        k: [
+          [`Dein *Café*|oder deine *Bar*|ist schon|auf der Karte.`, 96],
+          [`Deine *Gäste*|haben Preise|eingetragen.|~Noch aktuell?~`, 96],
+          [`Übernimm|deinen *Eintrag*.|*Gratis.* Für immer.`, 96],
+          [`Bald: *Pro*.`, 120],
+          [`Das Ranking?|*Nie käuflich.*`, 108],
+          [`Pro-Beta:|nur mit|*Einladung*.`, 108],
+        ] as [string, number][],
+        sub: [null, null, null, null, null, null] as (string | null)[],
+        venue: "Dein Café",
+        claim: "Eintrag übernehmen",
+        claimed: "✓ Übernommen",
+        items: ["Name & Adresse korrigieren", "Preise bestätigen", "Abzeichen „Vom Lokal bestätigt“", "Deine Aufrufe sehen"],
+        cards: [
+          ["Deine Preise im Vergleich", "mit deinem Grätzl"],
+          ["Was sich rundherum tut", "in deiner Nähe"],
+          ["Deine Happy Hour auf der Karte", "für alle sichtbar"],
+        ],
+        pass: "Auf Einladung · Gratis in der Beta",
+        request: "Zugang anfragen →",
+        endTag: "FÜR LOKALE",
+        endMain: "Eintrag übernehmen",
+        endSub: "Pro-Beta-Zugang anfragen",
+        header: "HOW MUCH?! · FÜR LOKALE",
+        footer: `${places} Lokale in Wien mit Preisen von Gästen · Illustration, keine echten Preise · HOW MUCH?!`,
+      }
+    : {
+        k: [
+          [`Your *café* or *bar*|is already|on the map.`, 104],
+          [`Your *guests*|added the prices.|~Still right?~`, 100],
+          [`Claim your page.|*Free.* Forever.`, 108],
+          [`Soon: *Pro*.`, 120],
+          [`The ranking?|*Never for sale.*`, 108],
+          [`Pro beta:|*invite only*.`, 108],
+        ] as [string, number][],
+        sub: [
+          "Dein Lokal ist schon auf der Karte.",
+          "Deine Gäste haben die Preise eingetragen.",
+          "Eintrag übernehmen. Gratis, für immer.",
+          "Bald: Pro.",
+          "Das Ranking ist nie käuflich.",
+          "Pro-Beta nur auf Einladung. Gratis in der Beta.",
+        ] as (string | null)[],
+        venue: "Your café",
+        claim: "Claim this page",
+        claimed: "✓ Claimed · Übernommen",
+        items: ["Fix your name & address", "Confirm your prices", "“Confirmed by the venue” badge", "See your views"],
+        cards: [
+          ["Your prices vs your neighbourhood", "Deine Preise im Vergleich"],
+          ["What's new around you", "Was sich rundherum tut"],
+          ["Your happy hour on the map", "Deine Angebote auf der Karte"],
+        ],
+        pass: "Invite only · Free during the beta",
+        request: "Request access →",
+        endTag: "FOR VENUES · FÜR LOKALE",
+        endMain: "Claim your page · Request Pro access",
+        endSub: "Eintrag übernehmen · Pro-Zugang anfragen",
+        header: "HOW MUCH?! · FOR VENUES",
+        footer: `${places} places in Vienna with prices added by guests · illustrations, not real prices · HOW MUCH?!`,
+      };
 
 const Storefront: React.FC<{ draw: number; w?: number }> = ({ draw, w = 420 }) => {
   const L = 1600;
@@ -65,7 +133,7 @@ const Check: React.FC<{ p: number; col: string }> = ({ p, col }) => (
   </svg>
 );
 
-export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places }) => {
+export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places, lang = "en" }) => {
   applyTheme(theme);
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
@@ -74,7 +142,9 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
     loadBrandFonts().then(() => continueRender(h)).catch(() => continueRender(h));
   }, [h]);
 
-  const S = businessSchedule();
+  const SET = setOf(lang);
+  const S = businessSchedule(lang);
+  const T = TEXT(lang, places);
   const G = BRAND.green as string;
   const P = BRAND.pink as string;
   const Y = BRAND.yellow as string;
@@ -84,14 +154,14 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
   const loop = interpolate(f, [S.total - 9, S.total - 1], [0, 1], clamp);
   const sp = (fr: number, cfg = { damping: 11, stiffness: 220, mass: 0.6 }) => spring({ frame: fr, fps, config: cfg });
 
-  const DE: React.FC<{ text: string; rel: number; top: number }> = ({ text, rel, top }) => (
+  const DE: React.FC<{ text: string | null; rel: number; top: number }> = ({ text, rel, top }) => text === null ? null : (
     <div style={{ position: "absolute", top, left: 80, width: 820, fontFamily: BRAND.heading, fontWeight: 500, fontSize: 36, color: BRAND.muted, whiteSpace: "nowrap",
       opacity: interpolate(rel, [18, 30], [0, 1], clamp) }}>{text}</div>
   );
 
   const scene = (i: number, rel: number): React.ReactNode => {
     const v = vf(IDS[i]);
-    const kin = (text: string, size: number, top = 290, accent = G) => <Kinetic text={text} rel={rel - 6} frames={v} size={size} accent={accent} top={top} />;
+    const kin = (top = 290, accent = G) => <Kinetic text={T.k[i][0]} rel={rel - 6} frames={v} size={T.k[i][1]} accent={accent} top={top} />;
     if (i === 0) {
       const pinIn = sp(rel - 34, { damping: 8, stiffness: 180, mass: 0.8 });
       return (
@@ -100,8 +170,8 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
             <ViennaMap cam={{ x: 470, y: 440, s: 3.2 + 0.4 * interpolate(rel, [0, 90], [0, 1], clamp) }} focus={[540, 1060]} dotColor={G} numbers={false} />
           </AbsoluteFill>
           <AbsoluteFill style={{ background: `radial-gradient(circle at 50% 60%, ${a(BRAND.bg as string, 0.2)} 0%, ${a(BRAND.bg as string, 0.92)} 62%)` }} />
-          {kin(`Your *café* or *bar*|is already|on the map.`, 104)}
-          <DE text="Dein Lokal ist schon auf der Karte." rel={rel} top={640} />
+          {kin()}
+          <DE text={T.sub[0]} rel={rel} top={640} />
           <div style={{ position: "absolute", top: 880, left: 330 }}>
             <Storefront draw={interpolate(rel, [4, 44], [0, 1], { ...clamp, easing: Easing.out(Easing.cubic) })} />
           </div>
@@ -121,8 +191,8 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
       const q = sp(rel - 48, { damping: 8, stiffness: 240, mass: 0.7 });
       return (
         <>
-          {kin(`Your *guests*|added the prices.|~Still right?~`, 100)}
-          <DE text="Deine Gäste haben die Preise eingetragen." rel={rel} top={630} />
+          {kin()}
+          <DE text={T.sub[1]} rel={rel} top={630} />
           <div style={{ position: "absolute", top: 900, left: 390, opacity: 0.9 }}>
             <Storefront draw={1} w={300} />
           </div>
@@ -147,27 +217,27 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
       );
     }
     if (i === 2) {
-      const items = ["Fix your name & address", "Confirm your prices", "“Confirmed by the venue” badge", "See your views"];
+      const items = T.items;
       const tap = 22;
       const claimed = rel >= tap + 6;
       const ripple = interpolate(rel, [tap, tap + 16], [0, 1], clamp);
       const cardIn = sp(rel - 2);
       return (
         <>
-          {kin(`Claim your page.|*Free.* Forever.`, 108)}
-          <DE text="Eintrag übernehmen. Gratis, für immer." rel={rel} top={560} />
+          {kin()}
+          <DE text={T.sub[2]} rel={rel} top={560} />
           <div style={{ position: "absolute", top: 660, left: 80, width: 820, borderRadius: 30, background: a(BRAND.card as string, 0.95), border: `3px solid ${claimed ? G : BRAND.border}`,
             padding: 34, boxSizing: "border-box", opacity: Math.min(1, cardIn * 1.5), transform: `translateY(${(1 - Math.min(1, cardIn)) * 120}px)`, boxShadow: claimed ? `0 0 50px ${g(G, 0.3)}` : "0 30px 80px rgba(0,0,0,0.5)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 22 }}>
               <div style={{ width: 92, height: 92, borderRadius: 22, background: a(G, 0.15), display: "flex", alignItems: "center", justifyContent: "center" }}><Pin col={G} size={54} /></div>
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 52, color: BRAND.text, letterSpacing: -1 }}>Your café</div>
+                <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 52, color: BRAND.text, letterSpacing: -1 }}>{T.venue}</div>
                 <div style={{ height: 18, width: 300, borderRadius: 9, background: a(BRAND.muted as string, 0.35), marginTop: 10 }} />
               </div>
             </div>
             <div style={{ position: "relative", marginTop: 26, height: 96, borderRadius: 20, background: claimed ? G : "transparent", border: `4px solid ${G}`, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden",
               transform: `scale(${rel >= tap && rel < tap + 6 ? 0.95 : 1})` }}>
-              <span style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 46, color: claimed ? (BRAND.bg as string) : G }}>{claimed ? "✓ Claimed · Übernommen" : "Claim this page"}</span>
+              <span style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 46, color: claimed ? (BRAND.bg as string) : G }}>{claimed ? T.claimed : T.claim}</span>
               {rel >= tap && <div style={{ position: "absolute", left: 410 - 400 * ripple, top: 48 - 400 * ripple, width: 800 * ripple, height: 800 * ripple, borderRadius: "50%", background: a("#FFFFFF", 0.35 * (1 - ripple)) }} />}
             </div>
             <div style={{ marginTop: 22 }}>
@@ -188,15 +258,15 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
     if (i === 3) {
       // Pro teaser: three cards (rank, around you, your offer on the map)
       const cards = [
-        { t: "Your prices vs your neighbourhood", d: "Deine Preise im Vergleich", col: Y },
-        { t: "What's new around you", d: "Was sich rundherum tut", col: C },
-        { t: "Your happy hour on the map", d: "Deine Angebote auf der Karte", col: P },
+        { t: T.cards[0][0], d: T.cards[0][1], col: Y },
+        { t: T.cards[1][0], d: T.cards[1][1], col: C },
+        { t: T.cards[2][0], d: T.cards[2][1], col: P },
       ];
       const cycle = Math.floor(rel / 4);
       return (
         <>
-          {kin(`Soon: *Pro*.`, 120)}
-          <DE text="Bald: Pro." rel={rel} top={430} />
+          {kin()}
+          <DE text={T.sub[3]} rel={rel} top={430} />
           {cards.map((c, k) => {
             const p = sp(rel - 12 - k * 22);
             const top = 540 + k * 280;
@@ -230,7 +300,7 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
                   )}
                 </div>
                 <div>
-                  <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 44, lineHeight: 1.1, color: BRAND.text, letterSpacing: -1 }}>{c.t}</div>
+                  <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 44, lineHeight: 1.1, color: BRAND.text, letterSpacing: -1, ...({ textWrap: "balance" } as React.CSSProperties) }}>{c.t}</div>
                   <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 30, color: BRAND.muted, marginTop: 8 }}>{c.d}</div>
                 </div>
               </div>
@@ -245,8 +315,8 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
       const listIn = sp(rel - 2);
       return (
         <>
-          {kin(`The ranking?|*Never for sale.*`, 108)}
-          <DE text="Das Ranking ist nie käuflich." rel={rel} top={560} />
+          {kin()}
+          <DE text={T.sub[4]} rel={rel} top={560} />
           <div style={{ position: "absolute", top: 700, left: 180, width: 720, opacity: Math.min(1, listIn * 1.5) }}>
             {[1, 2, 3, 4].map((n, k) => (
               <div key={k} style={{ display: "flex", alignItems: "center", gap: 20, height: 100, marginBottom: 14, borderRadius: 20, background: a(BRAND.card as string, 0.95), border: `2px solid ${BRAND.border}`, padding: "0 24px" }}>
@@ -272,15 +342,15 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
     const btn = 1 + 0.05 * Math.sin(((rel - 40) / 22) * Math.PI * 2);
     return (
       <>
-        {kin(`Pro beta:|*invite only*.`, 108)}
-        <DE text="Pro-Beta nur auf Einladung. Gratis in der Beta." rel={rel} top={560} />
+        {kin()}
+        <DE text={T.sub[5]} rel={rel} top={560} />
         <div style={{ position: "absolute", top: 680, left: 110, width: 760, height: 430, perspective: 1600 }}>
           <div style={{ width: 760, height: 430, borderRadius: 34, transform: `rotateY(${flip}deg) rotateZ(-3deg)`, background: `linear-gradient(135deg, ${a(G, 0.95)} 0%, ${a(C, 0.9)} 100%)`,
             boxShadow: `0 0 70px ${g(G, 0.45)}`, padding: 40, boxSizing: "border-box", position: "relative", overflow: "hidden" }}>
             <div style={{ position: "absolute", right: -60, top: -60, width: 260, height: 260, borderRadius: "50%", border: `22px solid ${a("#FFFFFF", 0.18)}` }} />
             <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 30, letterSpacing: 6, color: a("#0A0A0A", 0.75) }}>HOW MUCH?! · PRO</div>
             <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 104, letterSpacing: -3, color: "#0A0A0A", marginTop: 34, lineHeight: 1 }}>BETA PASS</div>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 38, color: a("#0A0A0A", 0.8), marginTop: 16 }}>Invite only · Free during the beta</div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 38, color: a("#0A0A0A", 0.8), marginTop: 16 }}>{T.pass}</div>
             <div style={{ position: "absolute", left: 40, right: 40, bottom: 36, borderTop: `4px dashed ${a("#0A0A0A", 0.35)}`, paddingTop: 16, fontFamily: BRAND.mono, fontWeight: 700, fontSize: 26, color: a("#0A0A0A", 0.7), letterSpacing: 3 }}>
               WIEN · 2026 · NO. ___
             </div>
@@ -288,7 +358,7 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
         </div>
         <div style={{ position: "absolute", top: 1170, left: 0, width: 1080, display: "flex", justifyContent: "center", opacity: interpolate(rel, [34, 44], [0, 1], clamp) }}>
           <div style={{ border: `4px solid ${G}`, borderRadius: 26, padding: "18px 44px", fontFamily: BRAND.heading, fontWeight: 700, fontSize: 52, color: G, transform: `scale(${rel > 40 ? btn : 1})`, boxShadow: `0 0 30px ${g(G, 0.35)}` }}>
-            Request access →
+            {T.request}
           </div>
         </div>
       </>
@@ -330,24 +400,24 @@ export const MotionBusiness: React.FC<BusinessProps> = ({ theme = "dark", places
           <Bloom color={a(G, 0.85 * (BRAND.glow as number))} start={S.endAt} top={700} size={1000} />
           <div style={{ position: "absolute", top: 470, left: 0, width: 1080, textAlign: "center", transform: `scale(${0.6 + 0.4 * Math.min(1.1, logo)})`, opacity: Math.min(1, logo * 1.5) }}>
             <Glitch text="HOW MUCH?!" active={endRel >= 4 && endRel < 14} seed="mb" style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 120, letterSpacing: -4, color: G, textShadow: `0 0 40px ${g(G, 0.6)}` }} />
-            <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 34, letterSpacing: 8, color: BRAND.text, marginTop: 6 }}>FOR VENUES · FÜR LOKALE</div>
+            <div style={{ fontFamily: BRAND.mono, fontWeight: 700, fontSize: 34, letterSpacing: 8, color: BRAND.text, marginTop: 6 }}>{T.endTag}</div>
           </div>
           <div style={{ position: "absolute", top: 760, left: 80, width: 920 - 80, textAlign: "center", opacity: interpolate(endRel, [14, 24], [0, 1], clamp), transform: `translateY(${interpolate(endRel, [14, 24], [30, 0], clamp)}px)` }}>
             <span style={{ display: "inline-block", border: `4px solid ${G}`, borderRadius: 24, padding: "14px 34px", fontFamily: BRAND.heading, fontWeight: 700, fontSize: 64, color: G, letterSpacing: -1.5 }}>howmuch.live/business</span>
           </div>
           <div style={{ position: "absolute", top: 930, left: 80, width: 920 - 80, textAlign: "center", opacity: interpolate(endRel, [22, 32], [0, 1], clamp) }}>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 46, color: BRAND.text }}>Claim your page · Request Pro access</div>
-            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 34, color: BRAND.muted, marginTop: 10 }}>Eintrag übernehmen · Pro-Zugang anfragen</div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 700, fontSize: 46, color: BRAND.text }}>{T.endMain}</div>
+            <div style={{ fontFamily: BRAND.heading, fontWeight: 500, fontSize: 34, color: BRAND.muted, marginTop: 10 }}>{T.endSub}</div>
           </div>
         </AbsoluteFill>
       )}
 
       <div style={{ position: "absolute", top: 170, left: 80, right: 80, display: "flex", justifyContent: "space-between", fontFamily: BRAND.mono, fontSize: 28, letterSpacing: 2, opacity: inEnd ? 0 : 1 }}>
-        <span style={{ color: BRAND.green, fontWeight: 700 }}>HOW MUCH?! · FOR VENUES</span>
+        <span style={{ color: BRAND.green, fontWeight: 700 }}>{T.header}</span>
         <span style={{ color: BRAND.muted, fontWeight: 500 }}>howmuch.live</span>
       </div>
       <div style={{ position: "absolute", top: 1404, left: 80, right: 180, fontFamily: BRAND.mono, fontSize: 20, lineHeight: 1.35, color: BRAND.muted, opacity: inEnd ? 0 : 1 }}>
-        {places} places in Vienna with prices added by guests · illustrations, not real prices · HOW MUCH?!
+        {T.footer}
       </div>
       <div style={{ position: "absolute", top: 0, left: 0, height: 8, width: `${(f / (S.total - 1)) * 100}%`, background: BRAND.green }} />
       <AbsoluteFill style={{ backgroundColor: BRAND.bg, opacity: loop, pointerEvents: "none" }} />

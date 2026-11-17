@@ -455,5 +455,65 @@
    "show": "howmuch.live/business",
    "frames": 73
   }
+ },
+ "motion-intro-de": {
+  "m1": {
+   "show": "Was kostet ein Cappuccino in Wien?",
+   "frames": 51
+  },
+  "m2": {
+   "show": "2,30 € oder 7,50 €. Gleiche Stadt.",
+   "frames": 118
+  },
+  "m3": {
+   "show": "Und das merkst du erst nach dem Bestellen.",
+   "frames": 52
+  },
+  "m4": {
+   "show": "Also kommt jeder Preis auf eine Karte.",
+   "frames": 52
+  },
+  "m5": {
+   "show": "Echte Preise, eingetragen von echten Leuten in Wien.",
+   "frames": 86
+  },
+  "m6": {
+   "show": "Finde das Günstigste. Oder trag deinen Preis ein.",
+   "frames": 90
+  },
+  "end": {
+   "show": "howmuch.live",
+   "frames": 36
+  }
+ },
+ "motion-business-de": {
+  "b1": {
+   "show": "Dein Café oder deine Bar ist wahrscheinlich schon auf dieser Karte.",
+   "frames": 89
+  },
+  "b2": {
+   "show": "Deine Gäste haben die Preise eingetragen. Sind sie noch aktuell?",
+   "frames": 94
+  },
+  "b3": {
+   "show": "Übernimm deinen Eintrag, gratis. Korrigiere deine Daten, bestätige deine Preise, hol dir das Abzeichen.",
+   "frames": 167
+  },
+  "b4": {
+   "show": "Bald kommt Pro. Sieh, wie deine Preise rundherum abschneiden, und bring deine Happy Hour auf die Karte.",
+   "frames": 162
+  },
+  "b5": {
+   "show": "Und das Ranking? Ist nie käuflich.",
+   "frames": 62
+  },
+  "b6": {
+   "show": "Die Pro-Beta gibt es nur auf Einladung, und während der Beta gratis. Frag jetzt deinen Zugang an.",
+   "frames": 161
+  },
+  "end": {
+   "show": "howmuch.live/business",
+   "frames": 67
+  }
  }
 }
