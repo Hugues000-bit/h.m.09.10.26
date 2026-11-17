@@ -1,0 +1,13 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "lines": [
+  {"id": "m1", "say": "How much is a cappuccino in Vienna?"},
+  {"id": "m2", "say": "Two thirty. Or seven fifty. Same city.", "show": "2,30 € or 7,50 €. Same city."},
+  {"id": "m3", "say": "And you only find out after you order."},
+  {"id": "m4", "say": "So we put every price on one map."},
+  {"id": "m5", "say": "Real prices, added by real people in Vienna."},
+  {"id": "m6", "say": "Find the cheap one. Or add the price you just paid."},
+  {"id": "end", "say": "How much, dot live.", "show": "howmuch.live"}
+ ]
+}

@@ -15,6 +15,7 @@ import { HigherLower, hlSchedule } from "./HigherLower";
 import { withVoice } from "./Voice";
 import { AppExplainer, explainerSchedule } from "./AppExplainer";
 import { WhyMap, whySchedule } from "./WhyMap";
+import { MotionIntro, motionSchedule } from "./MotionIntro";
 import { MapDive, diveSchedule } from "./MapDive";
 import { MapFill, FILL_FRAMES } from "./MapFill";
 import { DinnerReceipts, DINNER_FRAMES } from "./DinnerReceipts";
@@ -180,6 +181,9 @@ const Root: React.FC = () => (
     {/* "Why this map exists" (11 Nov 2026) */}
     <Composition id="WhyMap" component={WhyMap} durationInFrames={whySchedule().total} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, label: "WHY THIS MAP EXISTS", item: "cappuccino", low: "2,30\u00a0€", high: "7,50\u00a0€", where: "CAPPUCCINO · 1. BEZIRK", footer: "Lowest and highest cappuccino price found, both in the 1st · 120 cafés" }} />
+    {/* Motion-design concept film (17 Nov 2026) */}
+    <Composition id="MotionIntro" component={MotionIntro} durationInFrames={motionSchedule().total} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, low: 2.3, high: 7.5, places: "260+", prices: "1600+", item: "cappuccino" }} />
   </>
 );
 registerRoot(Root);

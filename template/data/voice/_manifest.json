@@ -395,5 +395,35 @@
    "show": "Is your café on it?",
    "frames": 31
   }
+ },
+ "motion-intro": {
+  "m1": {
+   "show": "How much is a cappuccino in Vienna?",
+   "frames": 58
+  },
+  "m2": {
+   "show": "2,30 € or 7,50 €. Same city.",
+   "frames": 76
+  },
+  "m3": {
+   "show": "And you only find out after you order.",
+   "frames": 53
+  },
+  "m4": {
+   "show": "So we put every price on one map.",
+   "frames": 47
+  },
+  "m5": {
+   "show": "Real prices, added by real people in Vienna.",
+   "frames": 77
+  },
+  "m6": {
+   "show": "Find the cheap one. Or add the price you just paid.",
+   "frames": 82
+  },
+  "end": {
+   "show": "howmuch.live",
+   "frames": 39
+  }
  }
 }
