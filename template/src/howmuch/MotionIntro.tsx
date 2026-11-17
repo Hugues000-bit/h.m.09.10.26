@@ -30,7 +30,7 @@ export const motionSchedule = () => {
 export type MotionProps = { theme?: Theme; low: number; high: number; places: string; prices: string; item: string };
 
 // One word at a time, timed over the voice line; *word* = accent.
-const Kinetic: React.FC<{ text: string; rel: number; frames: number; size: number; accent: string; top: number; align?: "left" | "center" }> = ({ text, rel, frames, size, accent, top, align = "left" }) => {
+export const Kinetic: React.FC<{ text: string; rel: number; frames: number; size: number; accent: string; top: number; align?: "left" | "center" }> = ({ text, rel, frames, size, accent, top, align = "left" }) => {
   const { fps } = useVideoConfig();
   const lines = text.split("|");
   const all = lines.flatMap((l) => l.trim().split(" "));
@@ -67,7 +67,7 @@ const Kinetic: React.FC<{ text: string; rel: number; frames: number; size: numbe
   );
 };
 
-const Tag: React.FC<{ label: string; col: string; w?: number; rot?: number }> = ({ label, col, w = 420, rot = 0 }) => (
+export const Tag: React.FC<{ label: string; col: string; w?: number; rot?: number }> = ({ label, col, w = 420, rot = 0 }) => (
   <div style={{ position: "relative", width: w, height: w * 0.46, transform: `rotate(${rot}deg)` }}>
     <svg width={w} height={w * 0.46} viewBox="0 0 420 194" style={{ position: "absolute", inset: 0, overflow: "visible" }}>
       <path d="M70 6 H404 a10 10 0 0 1 10 10 V178 a10 10 0 0 1 -10 10 H70 L8 97 Z" fill={BRAND.card as string} stroke={col} strokeWidth={7} strokeLinejoin="round" style={{ filter: `drop-shadow(0 0 18px ${g(col, 0.55)})` }} />

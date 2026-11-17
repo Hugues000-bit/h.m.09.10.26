@@ -16,6 +16,7 @@ import { withVoice } from "./Voice";
 import { AppExplainer, explainerSchedule } from "./AppExplainer";
 import { WhyMap, whySchedule } from "./WhyMap";
 import { MotionIntro, motionSchedule } from "./MotionIntro";
+import { MotionBusiness, businessSchedule } from "./MotionBusiness";
 import { MapDive, diveSchedule } from "./MapDive";
 import { MapFill, FILL_FRAMES } from "./MapFill";
 import { DinnerReceipts, DINNER_FRAMES } from "./DinnerReceipts";
@@ -184,6 +185,9 @@ const Root: React.FC = () => (
     {/* Motion-design concept film (17 Nov 2026) */}
     <Composition id="MotionIntro" component={MotionIntro} durationInFrames={motionSchedule().total} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, low: 2.3, high: 7.5, places: "260+", prices: "1600+", item: "cappuccino" }} />
+    {/* Motion-design film for venue owners: claim your page + Pro beta (17 Nov 2026) */}
+    <Composition id="MotionBusiness" component={MotionBusiness} durationInFrames={businessSchedule().total} fps={30} width={1080} height={1920}
+      defaultProps={{ theme: "dark" as const, places: "260+" }} />
   </>
 );
 registerRoot(Root);

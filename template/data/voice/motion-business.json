@@ -1,0 +1,13 @@
+{
+ "voice": "en-us-ryan-medium",
+ "speed": 1.0,
+ "lines": [
+  {"id": "b1", "say": "Your café or bar is probably already on this map."},
+  {"id": "b2", "say": "Your guests added the prices. Are they still right?"},
+  {"id": "b3", "say": "Claim your page, for free. Fix your details, confirm your prices, get the badge."},
+  {"id": "b4", "say": "Soon, Pro. See how your prices rank around you, and put your happy hour on the map."},
+  {"id": "b5", "say": "And the ranking? Never for sale."},
+  {"id": "b6", "say": "The Pro beta is invite only, and free during the beta. Request your access."},
+  {"id": "end", "say": "How much, dot live, slash business.", "show": "howmuch.live/business"}
+ ]
+}
