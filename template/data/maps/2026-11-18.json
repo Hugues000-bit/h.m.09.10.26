@@ -1,0 +1,14 @@
+{
+ "_source": "howmuch.live database, 18 Nov 2026. Places with at least one active price in Vienna. District from the address postcode, else from the map position. Latest price per place (Lovable DB, SELECT only). Aggregates only: no venue, no individual price.",
+ "date": "18.11.2026",
+ "total": 265,
+ "bezirke": {"1": 80, "2": 2, "3": 3, "4": 4, "5": 1, "6": 21, "7": 51, "8": 15, "9": 16, "10": 1, "11": 2, "12": 0, "13": 0, "14": 0, "15": 17, "16": 30, "17": 13, "18": 0, "19": 1, "20": 5, "21": 1, "22": 2, "23": 0},
+ "inner": 193,
+ "outer": 72,
+ "compare": [
+  {"id": "espresso", "label": "Espresso", "in": [1.80, 4.70, 100], "out": [2.30, 3.60, 21]},
+  {"id": "cappuccino", "label": "Cappuccino", "in": [2.30, 7.50, 100], "out": [3.50, 5.50, 22]},
+  {"id": "schnitzel", "label": "Schnitzel mit Salat", "in": [10.90, 39.90, 40], "out": [14.50, 29.50, 13]}
+ ],
+ "doener": {"label": "Döner (Sandwich)", "lim": 5, "in": [0, 9], "out": [7, 19], "minIn": 5.90, "minOut": 3.90}
+}

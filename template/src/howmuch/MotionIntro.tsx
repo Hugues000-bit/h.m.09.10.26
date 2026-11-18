@@ -79,12 +79,12 @@ const TEXT = (lang: Lang, item: string, lo: string, hi: string) =>
         footer: `Lowest and highest ${item} price found on howmuch.live · latest price per place · Vienna · Nov 2026`,
       };
 
-// One word at a time, timed over the voice line; *word* = accent, ~word~ = pink. A span can cover several words (*one map*).
+// One word at a time, timed over the voice line; *word* = accent, ~word~ = pink, ^word^ = yellow. A span can cover several words (*one map*).
 export const Kinetic: React.FC<{ text: string; rel: number; frames: number; size: number; accent: string; top: number; align?: "left" | "center" }> = ({ text, rel, frames, size, accent, top, align = "left" }) => {
   const { fps } = useVideoConfig();
   const lines = text.split("|");
   const all = lines.flatMap((l) => l.trim().split(" "));
-  const weight = (w: string) => w.replace(/[*~]/g, "").length + 2;
+  const weight = (w: string) => w.replace(/[*~^]/g, "").length + 2;
   const total = all.reduce((s, w) => s + weight(w), 0);
   let acc = 0;
   const at = all.map((w) => {
@@ -95,8 +95,8 @@ export const Kinetic: React.FC<{ text: string; rel: number; frames: number; size
   // which words sit inside a *…* or ~…~ span
   let open = "";
   const mark = all.map((w) => {
-    const m = open || (w.startsWith("*") ? "*" : w.startsWith("~") ? "~" : "");
-    open = m && /[*~][.,?!:]*$/.test(w) ? "" : m;
+    const m = open || (/^[*~^]/.test(w) ? w[0] : "");
+    open = m && /[*~^][.,?!:]*$/.test(w) ? "" : m;
     return m;
   });
   let k = 0;
@@ -109,10 +109,12 @@ export const Kinetic: React.FC<{ text: string; rel: number; frames: number; size
             const p = spring({ frame: rel - at[i], fps, config: { damping: 13, stiffness: 260, mass: 0.6 } });
             const acc2 = mark[i] === "*";
             const pink = mark[i] === "~";
-            const clean = w.replace(/[*~]/g, "");
+            const yel = mark[i] === "^";
+            const clean = w.replace(/[*~^]/g, "");
+            const hi = pink ? (BRAND.pink as string) : yel ? (BRAND.yellow as string) : accent;
             return (
               <span key={wi} style={{ display: "inline-block", marginRight: size * 0.24, fontFamily: BRAND.heading, fontWeight: 700, fontSize: size, letterSpacing: -size * 0.035,
-                color: pink ? (BRAND.pink as string) : acc2 ? accent : (BRAND.text as string), textShadow: acc2 || pink ? `0 0 ${size * 0.3}px ${g(pink ? (BRAND.pink as string) : accent, 0.5)}` : "none",
+                color: acc2 || pink || yel ? hi : (BRAND.text as string), textShadow: acc2 || pink || yel ? `0 0 ${size * 0.3}px ${g(hi, 0.5)}` : "none",
                 opacity: Math.min(1, p * 1.4), transform: `translateY(${(1 - Math.min(1, p)) * size * 0.6}px) scale(${0.85 + 0.15 * Math.min(1, p)})` }}>
                 {clean}
               </span>

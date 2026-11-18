@@ -515,5 +515,69 @@
    "show": "howmuch.live/business",
    "frames": 67
   }
+ },
+ "leere-karte": {
+  "k1": {
+   "show": "Wien hat 23 Bezirke.",
+   "frames": 50
+  },
+  "k2": {
+   "show": "Auf HOW MUCH?! stehen schon 265 Lokale mit echten Preisen.",
+   "frames": 118
+  },
+  "k3": {
+   "show": "Aber fast ein Drittel davon liegt im 1. Bezirk.",
+   "frames": 80
+  },
+  "k4": {
+   "show": "Und hier? Kein einziger Preis. Meidling, Hietzing, Penzing, Währing, Liesing.",
+   "frames": 165
+  },
+  "k5": {
+   "show": "Favoriten: über 200.000 Menschen. Und ein einziges Lokal.",
+   "frames": 117
+  },
+  "k6": {
+   "show": "Wohnst du dort? Dann trag den ersten Preis ein.",
+   "frames": 77
+  },
+  "end": {
+   "show": "howmuch.live",
+   "frames": 36
+  }
+ },
+ "innen-aussen": {
+  "a1": {
+   "show": "Ist Wien außen billiger als innen?",
+   "frames": 50
+  },
+  "a2": {
+   "show": "Innen, also im 1. bis 9. Bezirk: 193 Lokale. Außen: 72.",
+   "frames": 184
+  },
+  "a3": {
+   "show": "Espresso: Der billigste und der teuerste sind beide innen.",
+   "frames": 86
+  },
+  "a4": {
+   "show": "Beim Cappuccino: genauso.",
+   "frames": 50
+  },
+  "a5": {
+   "show": "Und beim Schnitzel auch. Innen liegen die größten Unterschiede.",
+   "frames": 88
+  },
+  "a6": {
+   "show": "Nur beim Döner dreht es sich. Unter 5 € steht er nur außen auf der Karte. Innen: 0 von 9.",
+   "frames": 181
+  },
+  "a7": {
+   "show": "Und außen fehlen noch viele Preise. Wohnst du dort? Trag deine ein.",
+   "frames": 116
+  },
+  "end": {
+   "show": "howmuch.live",
+   "frames": 37
+  }
  }
 }

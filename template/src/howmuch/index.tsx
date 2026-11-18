@@ -17,6 +17,7 @@ import { AppExplainer, explainerSchedule } from "./AppExplainer";
 import { WhyMap, whySchedule } from "./WhyMap";
 import { MotionIntro, motionSchedule } from "./MotionIntro";
 import { MotionBusiness, businessSchedule } from "./MotionBusiness";
+import { InnenAussen, LeereKarte, innenSchedule, leereSchedule } from "./MapFilms";
 import { MapDive, diveSchedule } from "./MapDive";
 import { MapFill, FILL_FRAMES } from "./MapFill";
 import { DinnerReceipts, DINNER_FRAMES } from "./DinnerReceipts";
@@ -193,6 +194,9 @@ const Root: React.FC = () => (
       defaultProps={{ theme: "dark" as const, low: 2.3, high: 7.5, places: "260+", prices: "1600+", item: "Cappuccino", lang: "de" as const }} />
     <Composition id="MotionBusinessDe" component={MotionBusiness} durationInFrames={businessSchedule("de").total} fps={30} width={1080} height={1920}
       defaultProps={{ theme: "dark" as const, places: "260+", lang: "de" as const }} />
+    {/* Map infographics, all in German (18 Nov 2026): the empty map, inner vs outer districts */}
+    <Composition id="LeereKarte" component={LeereKarte} durationInFrames={leereSchedule().total} fps={30} width={1080} height={1920} defaultProps={{ theme: "dark" as const }} />
+    <Composition id="InnenAussen" component={InnenAussen} durationInFrames={innenSchedule().total} fps={30} width={1080} height={1920} defaultProps={{ theme: "dark" as const }} />
   </>
 );
 registerRoot(Root);

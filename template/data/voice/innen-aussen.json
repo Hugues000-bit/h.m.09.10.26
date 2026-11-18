@@ -1,0 +1,14 @@
+{
+ "voice": "de-thorsten-low",
+ "speed": 1.0,
+ "lines": [
+  {"id": "a1", "say": "Ist Wien außen billiger als innen?"},
+  {"id": "a2", "say": "Innen, also im ersten bis neunten Bezirk: hundertdreiundneunzig Lokale. Außen: zweiundsiebzig.", "show": "Innen, also im 1. bis 9. Bezirk: 193 Lokale. Außen: 72."},
+  {"id": "a3", "say": "Espresso: Der billigste und der teuerste sind beide innen."},
+  {"id": "a4", "say": "Beim Kaputschino: genauso.", "show": "Beim Cappuccino: genauso."},
+  {"id": "a5", "say": "Und beim Schnitzel auch. Innen liegen die größten Unterschiede."},
+  {"id": "a6", "say": "Nur beim Döner dreht es sich. Unter fünf Euro steht er nur außen auf der Karte. Innen: null von neun.", "show": "Nur beim Döner dreht es sich. Unter 5 € steht er nur außen auf der Karte. Innen: 0 von 9."},
+  {"id": "a7", "say": "Und außen fehlen noch viele Preise. Wohnst du dort? Trag deine ein."},
+  {"id": "end", "say": "Hau matsch, Punkt laiv.", "show": "howmuch.live"}
+ ]
+}

@@ -1,0 +1,13 @@
+{
+ "voice": "de-thorsten-low",
+ "speed": 1.0,
+ "lines": [
+  {"id": "k1", "say": "Wien hat dreiundzwanzig Bezirke.", "show": "Wien hat 23 Bezirke."},
+  {"id": "k2", "say": "Auf Hau matsch stehen schon zweihundertfünfundsechzig Lokale mit echten Preisen.", "show": "Auf HOW MUCH?! stehen schon 265 Lokale mit echten Preisen."},
+  {"id": "k3", "say": "Aber fast ein Drittel davon liegt im ersten Bezirk.", "show": "Aber fast ein Drittel davon liegt im 1. Bezirk."},
+  {"id": "k4", "say": "Und hier? Kein einziger Preis. Meidling, Hietzing, Penzing, Währing, Liesing."},
+  {"id": "k5", "say": "Favoriten: über zweihunderttausend Menschen. Und ein einziges Lokal.", "show": "Favoriten: über 200.000 Menschen. Und ein einziges Lokal."},
+  {"id": "k6", "say": "Wohnst du dort? Dann trag den ersten Preis ein."},
+  {"id": "end", "say": "Hau matsch, Punkt laiv.", "show": "howmuch.live"}
+ ]
+}
